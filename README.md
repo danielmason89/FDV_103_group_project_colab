@@ -1,4 +1,4 @@
-# 🎓 FDV 103 Group Project – Vue.js Application
+# 🎓 FDV 103 Group Project – Vue.js/Tailwind CSS - CoLab
 
 Welcome to our collaborative Vue.js project for **FDV 103: JavaScript Frameworks** at McMaster University Continuing Education. This is part of our Experiential Learning component and represents a key deliverable in demonstrating our practical understanding of JavaScript, modern frameworks, and core web development skills.
 
