@@ -72,14 +72,19 @@ Edit
 npm run dev:all
 ```
 
-This runs:
+---
 
+This runs:
 ```bash
 Vite dev server (usually on http://localhost:5173)
 json-server for mock API (on http://localhost:8000)
 ```
-```
-📄 Scripts
+
+---
+
+###📄 Scripts
+
+```bash
 json
 Copy
 Edit
@@ -94,6 +99,8 @@ Edit
 }
 ```
 
+---
+
 ### ✅ Expectations
 
 This project supports the following course learning outcomes:
@@ -107,13 +114,11 @@ Document and present your code in a professional manner
 ### ✍️ Contribution Guidelines
 
 ```bash
-
 Use feature branches: git checkout -b feature/your-feature-name
 Pull regularly: git pull origin main
 Commit often, commit clearly: e.g. git commit -m "Add About page component"
 Open a pull request for each major change
 Use the Git/GitHub onboarding doc for help
-
 ```
 
 ### 🧪 Future Work
@@ -130,6 +135,8 @@ If you're stuck or unsure how to proceed, reach out to:
 
 Travis, Daniel, or Natalie (group leads)
 Use the #group-project discussion board in Avenue to Learn
+
+---
 
 ### 📚 Course Reference
 This repository is part of the experiential learning requirement for:
