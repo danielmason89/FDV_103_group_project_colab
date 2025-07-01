@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+
 </script>
 
+
 <template>
+  <header>
+    <h1>Page 2</h1>
+  </header>
   <main>
-    <TheWelcome />
   </main>
 </template>
+
+<style>
+@media (min-width: 1024px) {}
+</style>
