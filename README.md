@@ -52,6 +52,7 @@ db.json # Mock API data
 ### 1. Clone the repo
 
 ```bash
+
 git clone https://github.com/YOUR-GROUP-REPO/vue-fdv103-project.git
 cd vue-fdv103-project
 2. Install dependencies
@@ -64,6 +65,8 @@ bash
 Copy
 Edit
 npm run dev:all
+```
+
 This runs:
 
 Vite dev server (usually on http://localhost:5173)
