@@ -52,16 +52,21 @@ db.json # Mock API data
 ### 1. Clone the repo
 
 ```bash
-
 git clone https://github.com/YOUR-GROUP-REPO/vue-fdv103-project.git
 cd vue-fdv103-project
-2. Install dependencies
+```
+
+### 2. Install dependencies
+
+```bash
 bash
 Copy
 Edit
 npm install
-3. Run the dev server and mock API concurrently
-bash
+```
+
+### 3. Run the dev server and mock API concurrently
+```bash
 Copy
 Edit
 npm run dev:all
@@ -69,10 +74,11 @@ npm run dev:all
 
 This runs:
 
+```bash
 Vite dev server (usually on http://localhost:5173)
-
 json-server for mock API (on http://localhost:8000)
-
+```
+```
 📄 Scripts
 json
 Copy
@@ -86,49 +92,46 @@ Edit
   "lint": "eslint . --fix",
   "format": "prettier --write src/"
 }
-✅ Expectations
+```
+
+### ✅ Expectations
+
 This project supports the following course learning outcomes:
 
 Practice JavaScript and modern frameworks (Vue.js)
-
 Build interactive, mobile-first designs
-
 Use web development tools (e.g. Git, Vite, npm)
-
 Collaborate effectively on a web application
-
 Document and present your code in a professional manner
 
-✍️ Contribution Guidelines
+### ✍️ Contribution Guidelines
+
+```bash
+
 Use feature branches: git checkout -b feature/your-feature-name
-
 Pull regularly: git pull origin main
-
 Commit often, commit clearly: e.g. git commit -m "Add About page component"
-
 Open a pull request for each major change
-
 Use the Git/GitHub onboarding doc for help
 
-🧪 Future Work
+```
+
+### 🧪 Future Work
+ 
  Add reusable Vue components
-
  Set up Vue Router for 3 main pages
-
  Integrate real or mocked data via API
-
  Write simple unit tests with Vitest
-
  Deploy to GitHub Pages or Netlify
 
-📬 Questions or Support
+### 📬 Questions or Support
+
 If you're stuck or unsure how to proceed, reach out to:
 
 Travis, Daniel, or Natalie (group leads)
-
 Use the #group-project discussion board in Avenue to Learn
 
-📚 Course Reference
+### 📚 Course Reference
 This repository is part of the experiential learning requirement for:
 
 FDV 103 – JavaScript Frameworks
