@@ -45,10 +45,6 @@ src/
 ├── router.js # Vue Router configuration
 db.json # Mock API data
 
-yaml
-Copy
-Edit
-
 ---
 
 ## ⚙️ Getting Started
