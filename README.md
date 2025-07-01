@@ -43,9 +43,9 @@ src/
 ├── App.vue # Root component
 ├── main.js # App entry point
 ├── router.js # Vue Router configuration
-db.json # Mock API data
+db.json
 
----
+## Mock API data
 
 ## ⚙️ Getting Started
 
@@ -59,35 +59,30 @@ cd vue-fdv103-project
 ### 2. Install dependencies
 
 ```bash
-bash
-Copy
-Edit
 npm install
 ```
 
 ### 3. Run the dev server and mock API concurrently
+
 ```bash
-Copy
-Edit
 npm run dev:all
 ```
 
 ---
 
 This runs:
+
 ```bash
 Vite dev server (usually on http://localhost:5173)
+
 json-server for mock API (on http://localhost:8000)
 ```
 
 ---
 
-###📄 Scripts
+## 📄 Scripts
 
 ```bash
-json
-Copy
-Edit
 "scripts": {
   "dev": "vite",
   "api": "json-server --watch db.json --port 8000",
@@ -101,7 +96,7 @@ Edit
 
 ---
 
-### ✅ Expectations
+## ✅ Expectations
 
 This project supports the following course learning outcomes:
 
@@ -111,37 +106,50 @@ Use web development tools (e.g. Git, Vite, npm)
 Collaborate effectively on a web application
 Document and present your code in a professional manner
 
-### ✍️ Contribution Guidelines
+## ✍️ Contribution Guidelines
 
 ```bash
 Use feature branches: git checkout -b feature/your-feature-name
+
 Pull regularly: git pull origin main
+
 Commit often, commit clearly: e.g. git commit -m "Add About page component"
+
 Open a pull request for each major change
+
 Use the Git/GitHub onboarding doc for help
 ```
 
-### 🧪 Future Work
- 
- Add reusable Vue components
- Set up Vue Router for 3 main pages
- Integrate real or mocked data via API
- Write simple unit tests with Vitest
- Deploy to GitHub Pages or Netlify
+## 🧪 Future Work
 
-### 📬 Questions or Support
+```bash
+ Add reusable Vue components
+
+ Set up Vue Router for 3 main pages
+ 
+ Integrate real or mocked data via API
+ 
+ Write simple unit tests with Vitest
+ 
+ Deploy to GitHub Pages or Netlify
+```
+
+## 📬 Questions or Support
 
 If you're stuck or unsure how to proceed, reach out to:
 
 Travis, Daniel, or Natalie (group leads)
-Use the #group-project discussion board in Avenue to Learn
+Use the group-project discussion board in Avenue to Learn
 
 ---
 
-### 📚 Course Reference
+## 📚 Course Reference
+
 This repository is part of the experiential learning requirement for:
 
+```bash
 FDV 103 – JavaScript Frameworks
 Instructor: Noam Eppel
 McMaster Continuing Education | May–July 2025
 Group Project Weight: 50% of final grade
+```
