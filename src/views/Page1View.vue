@@ -4,7 +4,7 @@
 
 <template>
   <header>
-    <h1>Page 1</h1>
+    <h1>Page 1 Hello World Test!</h1>
   </header>
   <main>
   </main>
