@@ -42,7 +42,7 @@ const toggleSidebar = () => {
 .sidebar {
   width: 250px;
   height: 100vh;
-  background: #07575b;
+  background: var(--secondary);
   padding: 1rem 0.5rem 0.5rem 1rem;
   display: flex;
   flex-direction: column;
@@ -73,7 +73,7 @@ const toggleSidebar = () => {
 }
 .logo-icon {
   font-size: 1.5rem;
-  color: var(--primary, #5ecc75);
+  color: var(--primary);
 }
 
 .sidebar-title {
@@ -91,10 +91,6 @@ const toggleSidebar = () => {
   cursor: pointer;
   margin-left: 0.3rem;
   transition: transform 0.3s ease-in-out;
-}
-
-.minimize-icon:hover {
-  color: var(--primary, #5ecc75);
 }
 
 /* Navigation links */
@@ -122,12 +118,12 @@ const toggleSidebar = () => {
 
 .nav-link.router-link-active {
   background: var(--white);
-  color: #07575b;
+  color: var(--secondary);
   font-weight: bold;
 }
 
 .nav-link.router-link-active .icon {
-  color: #07575b;
+  color: var(--secondary);
 }
 
 .link-text {
