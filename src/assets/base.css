@@ -50,12 +50,231 @@ nav a.router-link-active {
   text-decoration: underline;
 }
 
-.mt-1 {
-  margin-top: 1rem;
+.mt-1 { margin-top: 1rem; }
+.mb-1 { margin-bottom: 1rem; }
+.text-center { text-align: center; }
+
+
+/* New CSS */
+:root {
+    /* Page Colors */
+    --pageBG: #F5F5F5;
+    --white: #FFFFFF;
+    --grey: #A9A9A9;
+    --black: #000000;
+    --red: #FF0000;
+    --heading: #2B283D;
+    --subHeading: #04454D;
+    --input: #2B283D;
+    --inputBorder: #04454D73;
+    --breadcrumbs: #04454D;
+
+    /* Buttons */
+    --primary: #5ECC75;
+    --primaryHover: #5ECC75;
+    --secondary: #04454D;
+    --secondaryHover: #04454D;
+
+    /* Badges */
+    --inactiveBadge: #B3B1BB;
+    --inactiveText: #FFFFFF;
+    --gradeBadge: #90D5FF;
+    --gradeText: #2D68C4;
+    --schoolBoardBadge: #E9D4FF;
+    --schoolBoardText: #E1BEE7;
+    --privateSchoolBadge: #FFDE21;
+    --privateSchoolText: #D39405;
+    --campBadge: #D9FCF1;
+    --campText: #039267;
+    --childCareBadge: #FCDBDB;
+    --childCareText: #980808;
+    --charityBadge: #FFECDC;
+    --charityText: #DF6F0B;
+    --postSecondaryBadge: #9FD1E4;
+    --postSecondaryText: #005F84;
+    --educationalTechBadge: #DAD9F5;
+    --educationalTechText: #110D59;
+    --tutoringCenterBadge: #DDFBC5;
+    --tutoringCenterText: #49950D;
+    --educationalNonProfitBadge: #CFE8FF;
+    --educationalNonProfitText: #08437A;
+    --governmentBadge: #FED5F2;
+    --governmentText: #930C6D;
+    --otherBadge: #5ECC75;
+    --otherText: #4C4958;
+
+    /* Cards */
+    --cardgreyBG: #B3B1BB;
+    --cardWhiteBG: #FFFFFF;
+    --cardGreenBG: #5ECC7526;
 }
-.mb-1 {
-  margin-bottom: 1rem;
+
+*,
+:after,
+:before {
+    box-sizing: border-box;
 }
-.text-center {
-  text-align: center;
+
+.page-title {
+    color: var(--heading);
+}
+
+input[type="text"],
+input[type="date"],
+input[type=datetime],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type=email],
+input[type="time"] {
+    font-size: 1em;
+    border: 1px solid var(--inputborder);
+    background-color: var(--input);
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    border: 1px solid;
+    border-color: var(--inputBorder);
+    border-radius: .5rem;
+    color: var(--input);
+    background-color: var(--white);
+}
+
+select {
+    font-size: 1em;
+    border: 1px solid var(--inputborder);
+    background-color: var(--input);
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    border: 1px solid;
+    border-color: var(--inputBorder);
+    border-radius: .5rem;
+    color: var(--input);
+    background-color: var(--white);
+}
+
+textarea {
+    font-size: 1em;
+    border: 1px solid var(--inputborder);
+    background-color: var(--input);
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    border: 1px solid;
+    border-color: var(--inputBorder);
+    border-radius: .5rem;
+    color: var(--input);
+    background-color: var(--white);
+}
+
+.primary-button {
+    font-weight: bold;
+    font-size: 1.125em;
+    line-height: 1.75rem;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    padding-left: .75rem;
+    padding-right: .75rem;
+    transition-duration: .2s;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    color: var(--white);
+    background-color: var(--primary);
+    border-radius: .5rem;
+    -moz-border-radius: .5rem;
+    -webkit-border-radius: .5rem;
+}
+
+.primary-button:hover {
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.secondary-button {
+    font-weight: bold;
+    font-size: 1.125em;
+    line-height: 1.75rem;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    padding-left: .75rem;
+    padding-right: .75rem;
+    transition-duration: .2s;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    color: var(--white);
+    background-color: var(--secondary);
+    border-radius: .5rem;
+    -moz-border-radius: .5rem;
+    -webkit-border-radius: .5rem;
+}
+
+.secondary-button:hover {
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.badge {
+    font-weight: 500;
+    font-size: .75em;
+    line-height: 1rem;
+    text-align: center;
+    padding-top: .125rem;
+    padding-bottom: .125rem;
+    padding-left: .5rem;
+    padding-right: .5rem;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    border-radius: .375rem;
+    -moz-border-radius: .375rem;
+    -webkit-border-radius: .375rem;
+    min-width: fit-content;
+    min-width: -moz-fit-content;
+    color: var(--inactiveText);
+    background-color: var(--inactiveBadge);
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 2rem;
+}
+
+.card-grid .card {
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    background-color: var(--cardWhiteBG);
+    padding: 1rem;
+    border-radius: .5rem;
+}
+
+.form-card {
+    background-color: var(--cardGreenBG);
+    padding: 1rem;
+    border-radius: .5rem;
+}
+
+@media (min-width: 768px) {
+    .card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1280px) {
+    .card-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 }
