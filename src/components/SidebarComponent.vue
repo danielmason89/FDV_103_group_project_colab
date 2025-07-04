@@ -1,27 +1,37 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
+
+// Reactive state for sidebar expansion
+const isExpanded = ref(true)
+
+// Toggle sidebar expansion
+const toggleSidebar = () => {
+  isExpanded.value = !isExpanded.value
+}
 </script>
 
 <template>
-  <aside class="sidebar">
+  <aside :class="['sidebar', { collapsed: !isExpanded }]">
     <div class="sidebar-header">
       <span class="logo-icon">🟢</span>
-      <span class="sidebar-title">CoLab Education</span>
-      <span class="minimize-icon">❮</span>
+      <span class="sidebar-title" v-show="isExpanded">CoLab Education</span>
+      <span class="minimize-icon" @click="toggleSidebar">
+        {{ isExpanded ? '❮' : '❯' }}
+      </span>
     </div>
     <nav class="sidebar-nav">
       <RouterLink to="/" class="nav-link">
         <span class="icon">🔲</span>
-        <span class="link-text">Page 1</span>
+        <span class="link-text" v-show="isExpanded">Page 1</span>
       </RouterLink>
       <RouterLink to="/page2" class="nav-link">
         <span class="icon">🗂️</span>
-        <span class="link-text">Page 2</span>
+        <span class="link-text" v-show="isExpanded">Page 2</span>
       </RouterLink>
       <RouterLink to="/page3" class="nav-link">
         <span class="icon">👥</span>
-        <span class="link-text">Page 3</span>
+        <span class="link-text" v-show="isExpanded">Page 3</span>
       </RouterLink>
     </nav>
   </aside>
@@ -34,11 +44,16 @@ import { RouterLink } from 'vue-router'
   height: 100vh;
   background: #07575b;
   padding: 1rem 0.5rem 0.5rem 1rem;
-  position: fixed;
-  left: 0;
-  top: 0;
   display: flex;
   flex-direction: column;
+  transition: width 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+/* Collapsed state */
+.sidebar.collapsed {
+  width: 70px;
+  padding: 1rem 0.5rem 0.5rem 0.5rem;
 }
 
 /* Header: logo, title, minimize icon */
@@ -67,6 +82,7 @@ import { RouterLink } from 'vue-router'
   font-weight: bold;
   letter-spacing: 0.5px;
   flex: 1;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .minimize-icon {
@@ -74,6 +90,11 @@ import { RouterLink } from 'vue-router'
   font-size: 0.9rem;
   cursor: pointer;
   margin-left: 0.3rem;
+  transition: transform 0.3s ease-in-out;
+}
+
+.minimize-icon:hover {
+  color: var(--primary, #5ecc75);
 }
 
 /* Navigation links */
@@ -96,6 +117,7 @@ import { RouterLink } from 'vue-router'
   transition:
     background 0.2s,
     color 0.2s;
+  white-space: nowrap;
 }
 
 .nav-link.router-link-active {
@@ -110,5 +132,29 @@ import { RouterLink } from 'vue-router'
 
 .link-text {
   white-space: nowrap;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 70px;
+    padding: 1rem 0.5rem 0.5rem 0.5rem;
+  }
+
+  .sidebar-title,
+  .link-text {
+    display: none;
+  }
+
+  .sidebar.expanded {
+    width: 250px;
+    padding: 1rem 0.5rem 0.5rem 1rem;
+  }
+
+  .sidebar.expanded .sidebar-title,
+  .sidebar.expanded .link-text {
+    display: block;
+  }
 }
 </style>

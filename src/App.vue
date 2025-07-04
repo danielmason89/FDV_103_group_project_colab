@@ -30,7 +30,6 @@ import SidebarComponent from './components/SidebarComponent.vue'
 
 .main-content {
   flex: 1;
-  margin-left: 250px;
   padding: 1rem;
 }
 
