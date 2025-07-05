@@ -74,5 +74,6 @@ function getBadgeClass(type: string): string {
   white-space: nowrap;
   color: #054851;
   font-weight: 600;
+  cursor: pointer;
 }
 </style>

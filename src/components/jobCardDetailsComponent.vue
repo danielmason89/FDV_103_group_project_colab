@@ -40,3 +40,8 @@ defineProps<{
     </div>
   </div>
 </template>
+<style scoped>
+.card {
+  cursor: pointer;
+}
+</style>
