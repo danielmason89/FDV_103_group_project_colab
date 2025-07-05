@@ -1,0 +1,54 @@
+<script lang="ts">
+export default {
+  name: 'ApplyButtonComponent',
+  props: {
+    buttonText: {
+      type: String,
+      default: 'Apply Now!',
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  methods: {
+    handleClick() {
+      if (!this.disabled) {
+        this.$emit('apply-clicked')
+      }
+    },
+  },
+}
+</script>
+
+<template>
+  <div class="apply-button-container">
+    <button class="primary-button apply-button" :disabled="disabled" @click="handleClick">
+      {{ buttonText }}
+    </button>
+  </div>
+</template>
+
+<style scoped>
+.apply-button-container {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.apply-button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  min-width: 120px;
+}
+
+.apply-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.apply-button:hover:not(:disabled) {
+  background-color: var(--primaryHover);
+}
+</style>
