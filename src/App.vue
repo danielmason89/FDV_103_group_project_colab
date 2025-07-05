@@ -1,22 +1,38 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+import SidebarComponent from './components/SidebarComponent.vue'
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <nav>
-        <RouterLink to="/">Page 1</RouterLink>
-        <RouterLink to="/page2">Page 2</RouterLink>
-        <RouterLink to="/page3">Page 3</RouterLink>
-      </nav>
-    </div>
-  </header>
+  <div class="app-container">
+    <SidebarComponent />
+    <main class="main-content">
+      <header>
+        <div class="wrapper">
+          <nav>
+            <RouterLink to="/">Page 1</RouterLink>
+            <RouterLink to="/page2">Page 2</RouterLink>
+            <RouterLink to="/page3">Page 3</RouterLink>
+          </nav>
+        </div>
+      </header>
 
-  <RouterView />
+      <RouterView />
+    </main>
+  </div>
 </template>
 
 <style scoped>
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: 1rem;
+}
+
 header {
   line-height: 1.5;
   max-height: 100vh;
