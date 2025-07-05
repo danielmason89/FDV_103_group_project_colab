@@ -40,7 +40,7 @@ const toggleSidebar = () => {
 <style scoped>
 /* Sidebar container */
 .sidebar {
-  width: 250px;
+  width: 256px;
   height: 100vh;
   background: var(--secondary);
   padding: 1rem 0.5rem 0.5rem 1rem;
@@ -52,7 +52,7 @@ const toggleSidebar = () => {
 
 /* Collapsed state */
 .sidebar.collapsed {
-  width: 70px;
+  width: 72px;
   padding: 1rem 0.5rem 0.5rem 0.5rem;
 }
 
