@@ -1,22 +1,14 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import SidebarComponent from './components/SidebarComponent.vue'
+import HeaderComponent from './components/HeaderComponent.vue';
 </script>
 
 <template>
   <div class="app-container">
     <SidebarComponent />
     <main class="main-content">
-      <header>
-        <div class="wrapper">
-          <nav>
-            <RouterLink to="/">Page 1</RouterLink>
-            <RouterLink to="/page2">Page 2</RouterLink>
-            <RouterLink to="/page3">Page 3</RouterLink>
-          </nav>
-        </div>
-      </header>
-
+      <HeaderComponent class="wrapper"/>
       <RouterView />
     </main>
   </div>
@@ -87,8 +79,6 @@ nav a:first-of-type {
   nav {
     text-align: left;
     font-size: 1rem;
-
-    padding: 1rem 0;
   }
 }
 </style>
