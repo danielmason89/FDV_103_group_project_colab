@@ -91,6 +91,8 @@ json-server for mock API (on http://localhost:8000)
   "preview": "vite preview",
   "lint": "eslint . --fix",
   "format": "prettier --write src/"
+  "api": "json-server db.json --port 8000",
+  "dev:all": "concurrently \"npm run dev\" \"npm run api\""
 }
 ```
 
