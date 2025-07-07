@@ -30,9 +30,19 @@ function handleSubmit() {
   }
 
   // If all validation passes, submit the form
-  alert('Job posting submitted for review!')
   // Here you would typically submit to an API
-  // For now, we'll just show success message
+  // For now, we'll simulate a successful submission
+
+  // Simulate API call success - redirect to success page
+  router.push('/page3-success')
+
+  // If you want to simulate potential failure scenarios, you could use:
+  // const randomSuccess = Math.random() > 0.1 // 90% success rate
+  // if (randomSuccess) {
+  //   router.push('/page3-success')
+  // } else {
+  //   router.push('/page3-failure')
+  // }
 }
 
 // Back button function

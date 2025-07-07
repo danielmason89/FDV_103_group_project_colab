@@ -40,17 +40,9 @@ const qualifications = ref('')
 
 // Simple continue function
 function handleContinue() {
-  // Simple validation
-  if (!gradeLevel.value) {
-    alert('Please select a grade level')
-    return
-  }
+  // Simple validation - only required fields
   if (!compensation.value) {
     alert('Please select recognition and compensation')
-    return
-  }
-  if (!yearsOfExperience.value) {
-    alert('Please select years of experience required')
     return
   }
   if (!qualifications.value) {

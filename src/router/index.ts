@@ -35,6 +35,16 @@ const router = createRouter({
       name: 'page3-form3',
       component: () => import('../views/Page3Form3.vue'),
     },
+    {
+      path: '/page3-success',
+      name: 'page3-success',
+      component: () => import('../views/Page3Success.vue'),
+    },
+    {
+      path: '/page3-failure',
+      name: 'page3-failure',
+      component: () => import('../views/Page3Failure.vue'),
+    },
   ],
 })
 
