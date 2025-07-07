@@ -25,7 +25,7 @@ const toggleFilter = () => {
 
         <!-- Filter Icon Button -->
         <button @click="toggleFilter" class="p-2 cursor-pointer" aria-label="Toggle Filter Panel">
-          <img src="@/assets/icons/filter.png" alt="filter icon" class="w-10 h-10 rounded-md" />
+          <img src="@/assets/icons/filter.png" alt="filter icon" class="w-8 h-8 rounded-md" />
         </button>
 
         <!-- Floating Filter Panel with Transition -->
@@ -46,22 +46,18 @@ const toggleFilter = () => {
         <button
           class="primary-button flex items-center gap-x-2 px-3 py-1 bg-green-200 rounded hover:bg-[#add9c4] cursor-pointer"
         >
-          <img src="@/assets/icons/Plus.png" alt="Plus Icon" class="w-5 h-5" />
-          <span>Request New Job Posting</span>
+          <img src="@/assets/icons/Plus.png" alt="Plus Icon" class="w-4 h-4" />
+          <span>Add New Job</span>
         </button>
         <button class="flex items-center gap-x-2 cursor-pointer">
           <img
             src="@/assets/icons/square-view.png"
             alt="Square View Icon"
-            class="w-10 h-10 rounded-md"
+            class="w-8 h-8 rounded-md"
           />
         </button>
         <button class="flex items-center gap-x-2 cursor-pointer">
-          <img
-            src="@/assets/icons/list-view.png"
-            alt="List View Icon"
-            class="w-10 h-10 rounded-md"
-          />
+          <img src="@/assets/icons/list-view.png" alt="List View Icon" class="w-8 h-8 rounded-md" />
         </button>
       </div>
     </div>
