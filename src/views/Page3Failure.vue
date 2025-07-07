@@ -1,10 +1,18 @@
 <script setup lang="ts">
-// Error page - no navigation logic needed
+import { onMounted } from 'vue'
+
+// Reset scroll position when component mounts
+onMounted(() => {
+  const contentArea = document.querySelector('.content-area')
+  if (contentArea) {
+    contentArea.scrollTop = 0
+  }
+})
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col">
-    <div class="max-w-6xl mx-auto p-6 w-full">
+  <div class="flex flex-col min-h-full">
+    <div class="max-w-6xl mx-auto w-full">
       <!-- Breadcrumb Navigation -->
       <div class="mb-8">
         <div class="flex items-center space-x-2 text-sm text-gray-600 mb-4">

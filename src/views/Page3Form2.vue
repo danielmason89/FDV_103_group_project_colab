@@ -1,8 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+
+// Reset scroll position when component mounts
+onMounted(() => {
+  const contentArea = document.querySelector('.content-area')
+  if (contentArea) {
+    contentArea.scrollTop = 0
+  }
+})
 
 // Subject area checkboxes
 const englishLanguageArts = ref(false)
@@ -61,7 +69,7 @@ function goBack() {
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto p-6">
+  <div class="max-w-6xl mx-auto">
     <!-- Breadcrumb Navigation -->
     <div class="mb-8">
       <div class="flex items-center space-x-2 text-sm text-gray-600 mb-4">
