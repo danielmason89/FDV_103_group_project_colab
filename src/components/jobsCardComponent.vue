@@ -17,9 +17,6 @@ defineProps<{
         <h3 class="text-lg font-semibold">
           {{ jobName || 'Job Name Goes Here' }}
         </h3>
-        <span class="badge grade-level flex items-center">{{
-          gradeLevelText || 'Grade Level'
-        }}</span>
       </div>
 
       <div class="card-footer flex items-center justify-between">
@@ -31,3 +28,5 @@ defineProps<{
     </div>
   </div>
 </template>
+
+<style scoped></style>
