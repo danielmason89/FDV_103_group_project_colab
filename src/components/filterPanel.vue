@@ -16,13 +16,11 @@ function toggleCityFilter() {
     <hr class="filters-divider" />
     <div class="filters-list">
       <div class="filter-item">
-        <span class="filter-icon">☆</span>
         <span class="filter-label">Organization Type</span>
       </div>
 
       <!-- City Filter: Clickable -->
       <div class="filter-item-active" @click="toggleCityFilter">
-        <span class="filter-icon-active">☆</span>
         <span class="filter-label-active">City</span>
       </div>
 
@@ -32,18 +30,25 @@ function toggleCityFilter() {
       </div>
 
       <div class="filter-item">
-        <span class="filter-icon">☆</span>
         <span class="filter-label">Province</span>
       </div>
-      <hr class="filters-divider" />
       <div class="filter-item">
-        <span class="filter-icon">☆</span>
         <span class="filter-label">Opportunity Type</span>
       </div>
 
       <div class="filter-item">
-        <span class="filter-icon">☆</span>
         <span class="filter-label">Subject Area</span>
+      </div>
+      <div class="filter-item">
+        <span class="filter-label">Grade Level</span>
+      </div>
+
+      <div class="filter-item">
+        <span class="filter-label">Recognition & Compensation</span>
+      </div>
+
+      <div class="filter-item">
+        <span class="filter-label">Years of Experience</span>
       </div>
     </div>
   </div>
