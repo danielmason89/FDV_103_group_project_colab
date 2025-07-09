@@ -23,18 +23,9 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/Page3Form1.vue'),
+      component: () => import('../views/Page3View.vue'),
     },
-    {
-      path: '/page3-form2',
-      name: 'page3-form2',
-      component: () => import('../views/Page3Form2.vue'),
-    },
-    {
-      path: '/page3-form3',
-      name: 'page3-form3',
-      component: () => import('../views/Page3Form3.vue'),
-    },
+
     {
       path: '/page3-success',
       name: 'page3-success',
