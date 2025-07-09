@@ -25,7 +25,8 @@ defineEmits<Emits>()
       @input="$emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)"
       :placeholder="placeholder"
       :rows="rows || 4"
-      class="form-textarea"
+      :required="required"
+      :maxlength="maxCharacters"
     ></textarea>
     <div v-if="showCharacterCount" class="character-count">
       {{ modelValue.length }}{{ maxCharacters ? `/${maxCharacters}` : '/0' }}
@@ -34,5 +35,5 @@ defineEmits<Emits>()
 </template>
 
 <style scoped>
-@import '../assets/shared-form-styles.css';
+@import '../assets/page3.css';
 </style>

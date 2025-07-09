@@ -26,9 +26,9 @@ defineEmits<Emits>()
     <select
       :value="modelValue"
       @change="$emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
-      class="form-select"
+      :required="required"
     >
-      <option value="">{{ placeholder || 'Select' }}</option>
+      <option value="" disabled>{{ placeholder || 'Please select an option' }}</option>
       <option v-for="option in options" :key="option.value" :value="option.value">
         {{ option.label }}
       </option>
@@ -37,5 +37,5 @@ defineEmits<Emits>()
 </template>
 
 <style scoped>
-@import '../assets/shared-form-styles.css';
+@import '../assets/page3.css';
 </style>

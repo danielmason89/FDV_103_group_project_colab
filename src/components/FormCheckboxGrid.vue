@@ -50,5 +50,5 @@ function handleCheckboxChange(optionValue: string) {
 </template>
 
 <style scoped>
-@import '../assets/shared-form-styles.css';
+@import '../assets/page3.css';
 </style>

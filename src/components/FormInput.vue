@@ -23,11 +23,11 @@ defineEmits<Emits>()
       :value="modelValue"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       :placeholder="placeholder"
-      class="form-input"
+      :required="required"
     />
   </div>
 </template>
 
 <style scoped>
-@import '../assets/shared-form-styles.css';
+@import '../assets/page3.css';
 </style>

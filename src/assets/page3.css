@@ -1,4 +1,4 @@
-/* Shared Form Styles for Page 3 Components */
+/* Page 3 Specific Styles */
 
 /* Content container for proper scrolling */
 .min-h-full {
@@ -7,11 +7,37 @@
 
 /* Form Container */
 .form-container {
-  background-color: #f0f9ff;
+  background-color: var(--cardGreenBG);
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 2rem;
   margin-bottom: 2rem;
+}
+
+/* Width overrides for form elements in Page 3 - ensures full width */
+.form-container input[type='text'],
+.form-container input[type='date'],
+.form-container input[type='datetime'],
+.form-container input[type='number'],
+.form-container input[type='password'],
+.form-container input[type='search'],
+.form-container input[type='tel'],
+.form-container input[type='email'],
+.form-container input[type='time'],
+.form-container select,
+.form-container textarea,
+.form-group input[type='text'],
+.form-group input[type='date'],
+.form-group input[type='datetime'],
+.form-group input[type='number'],
+.form-group input[type='password'],
+.form-group input[type='search'],
+.form-group input[type='tel'],
+.form-group input[type='email'],
+.form-group input[type='time'],
+.form-group select,
+.form-group textarea {
+  width: 100%;
 }
 
 /* Form Groups */
@@ -38,78 +64,8 @@
   display: block;
   font-weight: 500;
   font-size: 0.875rem;
-  color: #374151;
+  color: var(--heading);
   margin-bottom: 0.5rem;
-}
-
-/* Input Fields */
-.form-input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  color: #374151;
-  background-color: #ffffff;
-  transition: border-color 0.2s;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: #059669;
-  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.1);
-}
-
-.form-input::placeholder {
-  color: #9ca3af;
-}
-
-/* Select Dropdown */
-.form-select {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  color: #374151;
-  background-color: #ffffff;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 0.5rem center;
-  background-repeat: no-repeat;
-  background-size: 1.5em 1.5em;
-  padding-right: 2.5rem;
-  appearance: none;
-  transition: border-color 0.2s;
-}
-
-.form-select:focus {
-  outline: none;
-  border-color: #059669;
-  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.1);
-}
-
-/* Textarea */
-.form-textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  color: #374151;
-  background-color: #ffffff;
-  resize: vertical;
-  min-height: 120px;
-  transition: border-color 0.2s;
-}
-
-.form-textarea:focus {
-  outline: none;
-  border-color: #059669;
-  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.1);
-}
-
-.form-textarea::placeholder {
-  color: #9ca3af;
 }
 
 /* Character Count */
@@ -140,7 +96,7 @@
   display: flex;
   align-items: center;
   font-size: 0.875rem;
-  color: #374151;
+  color: var(--heading);
   cursor: pointer;
   padding: 0.25rem 0;
 }
@@ -153,25 +109,25 @@
 .form-checkbox {
   width: 1rem;
   height: 1rem;
-  color: #059669;
-  border: 1px solid #d1d5db;
+  color: var(--primary);
+  border: 1px solid var(--inputBorder);
   border-radius: 2px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .form-checkbox:checked {
-  background-color: #059669;
-  border-color: #059669;
+  background-color: var(--primary);
+  border-color: var(--primary);
 }
 
 .form-checkbox:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.1);
+  box-shadow: 0 0 0 2px rgba(94, 204, 117, 0.1);
 }
 
 .form-checkbox:hover {
-  border-color: #059669;
+  border-color: var(--primary);
 }
 
 /* Radio Button Groups */
@@ -187,7 +143,7 @@
   display: flex;
   align-items: center;
   font-size: 0.875rem;
-  color: #374151;
+  color: var(--heading);
   cursor: pointer;
   padding: 0.25rem 0;
 }
@@ -200,20 +156,20 @@
 .form-radio {
   width: 1rem;
   height: 1rem;
-  color: #059669;
-  border: 1px solid #d1d5db;
+  color: var(--primary);
+  border: 1px solid var(--inputBorder);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .form-radio:checked {
-  background-color: #059669;
-  border-color: #059669;
+  background-color: var(--primary);
+  border-color: var(--primary);
 }
 
 .form-radio:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.1);
+  box-shadow: 0 0 0 2px rgba(94, 204, 117, 0.1);
 }
 
 /* Breadcrumb Navigation */
@@ -235,7 +191,7 @@
 }
 
 .breadcrumb-step.active {
-  background-color: #0f766e;
+  background-color: var(--breadcrumbs);
   color: white;
 }
 
@@ -292,7 +248,7 @@
   }
 
   .breadcrumb-step.active::after {
-    border-left-color: #0f766e;
+    border-left-color: var(--breadcrumbs);
   }
 
   .breadcrumb-step.inactive::after {
@@ -302,71 +258,6 @@
   .breadcrumb-step.last::after {
     display: none;
   }
-}
-
-/* Navigation Buttons */
-.continue-button {
-  background-color: #22c55e;
-  color: white;
-  font-weight: 600;
-  padding: 0.75rem 2rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s;
-}
-
-.continue-button:hover {
-  background-color: #16a34a;
-}
-
-.continue-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3);
-}
-
-.back-button {
-  background-color: #6b7280;
-  color: white;
-  font-weight: 600;
-  padding: 0.75rem 2rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s;
-}
-
-.back-button:hover {
-  background-color: #4b5563;
-}
-
-.back-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(107, 114, 128, 0.3);
-}
-
-/* Submit Button */
-.submit-button {
-  background-color: #22c55e;
-  color: white;
-  font-weight: 600;
-  padding: 0.75rem 2rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s;
-}
-
-.submit-button:hover {
-  background-color: #16a34a;
-}
-
-.submit-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3);
 }
 
 /* Field descriptions */

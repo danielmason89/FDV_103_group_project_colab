@@ -109,7 +109,7 @@ function goBack() {
 </template>
 
 <style scoped>
-@import '../assets/shared-form-styles.css';
+@import '../assets/page3.css';
 
 /* Large textarea specific styling */
 .large-textarea {
