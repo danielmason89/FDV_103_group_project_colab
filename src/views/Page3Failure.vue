@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import BreadcrumbNavigation from '../components/BreadcrumbNavigation.vue'
 
 // Reset scroll position when component mounts
 onMounted(() => {
@@ -13,33 +14,7 @@ onMounted(() => {
 <template>
   <div class="flex flex-col min-h-full">
     <div class="max-w-6xl mx-auto w-full">
-      <!-- Breadcrumb Navigation -->
-      <div class="mb-8">
-        <div class="flex items-center space-x-2 text-sm text-gray-600 mb-4">
-          <span>&lt; breadcrumbs here</span>
-        </div>
-
-        <div class="breadcrumb-container">
-          <div class="breadcrumb-step inactive">
-            <div class="breadcrumb-content">
-              <div class="font-semibold">Organization details</div>
-              <div class="text-sm">About the organization</div>
-            </div>
-          </div>
-          <div class="breadcrumb-step inactive">
-            <div class="breadcrumb-content">
-              <div class="font-semibold">Job specifications</div>
-              <div class="text-sm">Role specifics</div>
-            </div>
-          </div>
-          <div class="breadcrumb-step active last">
-            <div class="breadcrumb-content">
-              <div class="font-semibold">Job description</div>
-              <div class="text-sm">and submission</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <BreadcrumbNavigation :current-step="3" />
     </div>
 
     <!-- Error Content - Centered -->

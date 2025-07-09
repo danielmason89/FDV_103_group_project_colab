@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import BreadcrumbNavigation from '../components/BreadcrumbNavigation.vue'
+import FormSelect from '../components/FormSelect.vue'
+import FormTextarea from '../components/FormTextarea.vue'
+import FormCheckboxGrid from '../components/FormCheckboxGrid.vue'
+import FormRadioGroup from '../components/FormRadioGroup.vue'
+import NavigationButtons from '../components/NavigationButtons.vue'
 
 const router = useRouter()
 
@@ -12,22 +18,8 @@ onMounted(() => {
   }
 })
 
-// Subject area checkboxes
-const englishLanguageArts = ref(false)
-const mathematics = ref(false)
-const science = ref(false)
-const socialStudies = ref(false)
-const foreignLanguages = ref(false)
-const specialEducation = ref(false)
-const physicalEducationHealth = ref(false)
-const arts = ref(false)
-const technologyComputerScience = ref(false)
-const libraryInformationServices = ref(false)
-const counsellingStudentServices = ref(false)
-const administrationLeadership = ref(false)
-const curriculumDevelopment = ref(false)
-const educationalTechnologyInstructionalDesign = ref(false)
-const earlyChildhoodEducation = ref(false)
+// Subject area checkboxes (converted to array)
+const subjectAreas = ref<string[]>([])
 
 // Grade level radio button
 const gradeLevel = ref('')
@@ -38,13 +30,61 @@ const compensation = ref('')
 // Years of experience dropdown
 const yearsOfExperience = ref('')
 
-// Certification required checkboxes
-const teachingLicense = ref(false)
-const subjectCertifications = ref(false)
-const otherCertification = ref(false)
+// Certification required checkboxes (converted to array)
+const certifications = ref<string[]>([])
 
 // Qualifications text area
 const qualifications = ref('')
+
+// Options for form elements
+const subjectAreaOptions = [
+  { value: 'english-language-arts', label: 'English/Language Arts' },
+  { value: 'mathematics', label: 'Mathematics' },
+  { value: 'science', label: 'Science' },
+  { value: 'social-studies', label: 'Social Studies' },
+  { value: 'foreign-languages', label: 'Foreign Languages' },
+  { value: 'special-education', label: 'Special Education' },
+  { value: 'physical-education-health', label: 'Physical Education/Health' },
+  { value: 'arts', label: 'Arts (Visual, Music, Performing)' },
+  { value: 'technology-computer-science', label: 'Technology/Computer Science' },
+  { value: 'library-information-services', label: 'Library/Information Services' },
+  { value: 'counselling-student-services', label: 'Counselling/Student Services' },
+  { value: 'administration-leadership', label: 'Administration/Leadership' },
+  { value: 'curriculum-development', label: 'Curriculum Development' },
+  {
+    value: 'educational-technology-instructional-design',
+    label: 'Educational Technology/Instructional Design',
+  },
+  { value: 'early-childhood-education', label: 'Early Childhood Education' },
+]
+
+const gradeLevelOptions = [
+  { value: 'pre-school', label: 'Pre-School' },
+  { value: 'k-8', label: 'K-8' },
+  { value: 'secondary', label: 'Secondary' },
+  { value: 'post-secondary', label: 'Post-Secondary' },
+  { value: 'all-grade-levels', label: 'All Grade Levels' },
+]
+
+const compensationOptions = [
+  { value: 'salary', label: 'Salary' },
+  { value: 'hourly', label: 'Hourly' },
+  { value: 'volunteer', label: 'Volunteer' },
+  { value: 'professional-learning-credits', label: 'Professional Learning Credits' },
+]
+
+const experienceOptions = [
+  { value: '0-1', label: '0-1 years' },
+  { value: '2-5', label: '2-5 years' },
+  { value: '5-10', label: '5-10 years' },
+  { value: '10+', label: '10+ years' },
+]
+
+const certificationOptions = [
+  { value: 'teaching-license', label: 'Teaching License' },
+  { value: 'subject-certifications', label: 'Subject Certifications' },
+  { value: 'other', label: 'Other' },
+]
 
 // Simple continue function
 function handleContinue() {
@@ -70,213 +110,47 @@ function goBack() {
 
 <template>
   <div class="max-w-6xl mx-auto">
-    <!-- Breadcrumb Navigation -->
-    <div class="mb-8">
-      <div class="flex items-center space-x-2 text-sm text-gray-600 mb-4">
-        <span>&lt; breadcrumbs here</span>
-      </div>
-
-      <div class="breadcrumb-container">
-        <div class="breadcrumb-step inactive">
-          <div class="breadcrumb-content">
-            <div class="font-semibold">Organization details</div>
-            <div class="text-sm">About the organization</div>
-          </div>
-        </div>
-        <div class="breadcrumb-step active">
-          <div class="breadcrumb-content">
-            <div class="font-semibold">Job specifications</div>
-            <div class="text-sm">Role specifics</div>
-          </div>
-        </div>
-        <div class="breadcrumb-step inactive last">
-          <div class="breadcrumb-content">
-            <div class="font-semibold">Job description</div>
-            <div class="text-sm">and submission</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <BreadcrumbNavigation :current-step="2" />
 
     <!-- Main Title -->
     <h1 class="text-4xl font-bold text-teal-700 mb-8">Job specifications</h1>
 
     <!-- Form -->
     <div class="form-container">
-      <!-- Subject Area -->
-      <div class="form-group">
-        <label class="form-label">Subject area</label>
-        <div class="checkbox-grid">
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="englishLanguageArts" class="form-checkbox" />
-            <span>English/Language Arts</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="mathematics" class="form-checkbox" />
-            <span>Mathematics</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="science" class="form-checkbox" />
-            <span>Science</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="socialStudies" class="form-checkbox" />
-            <span>Social Studies</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="foreignLanguages" class="form-checkbox" />
-            <span>Foreign Languages</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="specialEducation" class="form-checkbox" />
-            <span>Special Education</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="physicalEducationHealth" class="form-checkbox" />
-            <span>Physical Education/Health</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="arts" class="form-checkbox" />
-            <span>Arts (Visual, Music, Performing)</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="technologyComputerScience" class="form-checkbox" />
-            <span>Technology/Computer Science</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="libraryInformationServices" class="form-checkbox" />
-            <span>Library/Information Services</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="counsellingStudentServices" class="form-checkbox" />
-            <span>Counselling/Student Services</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="administrationLeadership" class="form-checkbox" />
-            <span>Administration/Leadership</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="curriculumDevelopment" class="form-checkbox" />
-            <span>Curriculum Development</span>
-          </label>
-          <label class="checkbox-item">
-            <input
-              type="checkbox"
-              v-model="educationalTechnologyInstructionalDesign"
-              class="form-checkbox"
-            />
-            <span>Educational Technology/Instructional Design</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="earlyChildhoodEducation" class="form-checkbox" />
-            <span>Early Childhood Education</span>
-          </label>
-        </div>
-      </div>
+      <FormCheckboxGrid v-model="subjectAreas" label="Subject area" :options="subjectAreaOptions" />
 
-      <!-- Grade Level -->
-      <div class="form-group">
-        <label class="form-label">Grade level(s)</label>
-        <div class="radio-group">
-          <label class="radio-item">
-            <input type="radio" v-model="gradeLevel" value="pre-school" class="form-radio" />
-            <span>Pre-School</span>
-          </label>
-          <label class="radio-item">
-            <input type="radio" v-model="gradeLevel" value="k-8" class="form-radio" />
-            <span>K-8</span>
-          </label>
-          <label class="radio-item">
-            <input type="radio" v-model="gradeLevel" value="secondary" class="form-radio" />
-            <span>Secondary</span>
-          </label>
-          <label class="radio-item">
-            <input type="radio" v-model="gradeLevel" value="post-secondary" class="form-radio" />
-            <span>Post-Secondary</span>
-          </label>
-          <label class="radio-item">
-            <input type="radio" v-model="gradeLevel" value="all-grade-levels" class="form-radio" />
-            <span>All Grade Levels</span>
-          </label>
-        </div>
-      </div>
+      <FormRadioGroup v-model="gradeLevel" label="Grade level(s)" :options="gradeLevelOptions" />
 
-      <!-- Recognition and Compensation -->
-      <div class="form-group">
-        <label class="form-label">Recognition and Compensation*</label>
-        <div class="radio-group">
-          <label class="radio-item">
-            <input type="radio" v-model="compensation" value="salary" class="form-radio" />
-            <span>Salary</span>
-          </label>
-          <label class="radio-item">
-            <input type="radio" v-model="compensation" value="hourly" class="form-radio" />
-            <span>Hourly</span>
-          </label>
-          <label class="radio-item">
-            <input type="radio" v-model="compensation" value="volunteer" class="form-radio" />
-            <span>Volunteer</span>
-          </label>
-          <label class="radio-item">
-            <input
-              type="radio"
-              v-model="compensation"
-              value="professional-learning-credits"
-              class="form-radio"
-            />
-            <span>Professional Learning Credits</span>
-          </label>
-        </div>
-      </div>
+      <FormRadioGroup
+        v-model="compensation"
+        label="Recognition and Compensation"
+        :options="compensationOptions"
+        required
+      />
 
-      <!-- Years of Experience -->
-      <div class="form-group">
-        <label class="form-label">Years of experience required</label>
-        <select v-model="yearsOfExperience" class="form-select" style="max-width: 300px">
-          <option value="">Select</option>
-          <option value="0-1">0-1 years</option>
-          <option value="2-5">2-5 years</option>
-          <option value="5-10">5-10 years</option>
-          <option value="10+">10+ years</option>
-        </select>
-      </div>
+      <FormSelect
+        v-model="yearsOfExperience"
+        label="Years of experience required"
+        :options="experienceOptions"
+        style="max-width: 300px"
+      />
 
-      <!-- Certification Required -->
-      <div class="form-group">
-        <label class="form-label">Certification required</label>
-        <div class="checkbox-grid">
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="teachingLicense" class="form-checkbox" />
-            <span>Teaching License</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="subjectCertifications" class="form-checkbox" />
-            <span>Subject Certifications</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" v-model="otherCertification" class="form-checkbox" />
-            <span>Other</span>
-          </label>
-        </div>
-      </div>
+      <FormCheckboxGrid
+        v-model="certifications"
+        label="Certification required"
+        :options="certificationOptions"
+      />
 
-      <!-- Qualifications -->
-      <div class="form-group">
-        <label class="form-label">Qualifications*</label>
-        <textarea
-          v-model="qualifications"
-          placeholder="Placeholder text"
-          rows="4"
-          class="form-textarea"
-        ></textarea>
-      </div>
+      <FormTextarea
+        v-model="qualifications"
+        label="Qualifications"
+        placeholder="Placeholder text"
+        :rows="4"
+        required
+      />
     </div>
 
-    <!-- Navigation Buttons -->
-    <div class="flex justify-between mt-8">
-      <button @click="goBack" class="back-button">Back</button>
-      <button @click="handleContinue" class="continue-button">Continue</button>
-    </div>
+    <NavigationButtons :show-back="true" @back="goBack" @continue="handleContinue" />
   </div>
 </template>
 

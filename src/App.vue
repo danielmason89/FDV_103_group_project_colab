@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import SidebarComponent from './components/SidebarComponent.vue'
 </script>
 
@@ -7,16 +7,6 @@ import SidebarComponent from './components/SidebarComponent.vue'
   <div class="app-container">
     <SidebarComponent />
     <main class="main-content">
-      <header class="main-header">
-        <div class="wrapper">
-          <nav>
-            <RouterLink to="/">Page 1</RouterLink>
-            <RouterLink to="/page2">Page 2</RouterLink>
-            <RouterLink to="/page3">Page 3</RouterLink>
-          </nav>
-        </div>
-      </header>
-
       <div class="content-area">
         <RouterView />
       </div>
@@ -34,15 +24,9 @@ import SidebarComponent from './components/SidebarComponent.vue'
 .main-content {
   flex: 1;
   display: flex;
+  padding: 1rem;
   flex-direction: column;
   overflow: hidden;
-}
-
-.main-header {
-  line-height: 1.5;
-  flex-shrink: 0;
-  padding: 1rem;
-  border-bottom: 1px solid var(--color-border);
 }
 
 .content-area {
@@ -55,6 +39,11 @@ import SidebarComponent from './components/SidebarComponent.vue'
 .logo {
   display: block;
   margin: 0 auto 2rem;
+}
+
+header {
+  line-height: 1.5;
+  max-height: 100vh;
 }
 
 nav {
@@ -83,7 +72,7 @@ nav a:first-of-type {
 }
 
 @media (min-width: 1024px) {
-  .main-header {
+  header {
     display: flex;
     padding-right: calc(var(--section-gap) / 2);
   }

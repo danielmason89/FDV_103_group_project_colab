@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import BreadcrumbNavigation from '../components/BreadcrumbNavigation.vue'
+import FormInput from '../components/FormInput.vue'
+import FormSelect from '../components/FormSelect.vue'
+import FormTextarea from '../components/FormTextarea.vue'
+import FormCheckboxGrid from '../components/FormCheckboxGrid.vue'
+import NavigationButtons from '../components/NavigationButtons.vue'
 
 const router = useRouter()
 
@@ -22,20 +28,43 @@ const city = ref('')
 const country = ref('')
 const opportunityTypes = ref<string[]>([])
 
-const characterCount = ref(0)
+// Options for dropdowns
+const organizationTypeOptions = [
+  { value: 'nonprofit', label: 'Non-profit' },
+  { value: 'corporate', label: 'Corporate' },
+  { value: 'government', label: 'Government' },
+  { value: 'educational', label: 'Educational' },
+]
 
-function updateCharacterCount() {
-  characterCount.value = aboutOrganization.value.length
-}
+const provinceOptions = [
+  { value: 'ontario', label: 'Ontario' },
+  { value: 'quebec', label: 'Quebec' },
+  { value: 'bc', label: 'British Columbia' },
+  { value: 'alberta', label: 'Alberta' },
+]
 
-function handleOpportunityTypeChange(type: string) {
-  const index = opportunityTypes.value.indexOf(type)
-  if (index > -1) {
-    opportunityTypes.value.splice(index, 1)
-  } else {
-    opportunityTypes.value.push(type)
-  }
-}
+const countryOptions = [
+  { value: 'canada', label: 'Canada' },
+  { value: 'usa', label: 'United States' },
+  { value: 'uk', label: 'United Kingdom' },
+]
+
+const opportunityTypeOptions = [
+  { value: 'full-time', label: 'Full-time' },
+  { value: 'contract', label: 'Contract/temporary/seasonal' },
+  { value: 'mentorship', label: 'Mentorship program' },
+  { value: 'part-time', label: 'Part-time' },
+  { value: 'supply', label: 'Supply/substitute teaching' },
+  { value: 'professional', label: 'Professional development' },
+  { value: 'volunteer', label: 'Volunteer' },
+  { value: 'internship-paid', label: 'Internship (paid)' },
+  { value: 'internship-unpaid', label: 'Internship (unpaid)' },
+  { value: 'hybrid', label: 'Hybrid' },
+  { value: 'remote', label: 'Remote' },
+  { value: 'consulting', label: 'Consulting' },
+  { value: 'speaking', label: 'Speaking engagement' },
+  { value: 'in-person', label: 'In person' },
+]
 
 function handleContinue() {
   // Simple validation - check if required fields are filled
@@ -79,259 +108,65 @@ function handleContinue() {
 
 <template>
   <div class="max-w-6xl mx-auto">
-    <!-- Breadcrumb Navigation -->
-    <div class="mb-8">
-      <div class="flex items-center space-x-2 text-sm text-gray-600 mb-4">
-        <span>&lt; breadcrumbs here</span>
-      </div>
-
-      <div class="breadcrumb-container">
-        <div class="breadcrumb-step active">
-          <div class="breadcrumb-content">
-            <div class="font-semibold">Organization details</div>
-            <div class="text-sm">About the organization</div>
-          </div>
-        </div>
-        <div class="breadcrumb-step inactive">
-          <div class="breadcrumb-content">
-            <div class="font-semibold">Job specifications</div>
-            <div class="text-sm">Role specifics</div>
-          </div>
-        </div>
-        <div class="breadcrumb-step inactive last">
-          <div class="breadcrumb-content">
-            <div class="font-semibold">Job description</div>
-            <div class="text-sm">and submission</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <BreadcrumbNavigation :current-step="1" />
 
     <!-- Main Title -->
     <h1 class="text-4xl font-bold text-teal-700 mb-8">Create a new job posting</h1>
 
     <!-- Form -->
     <div class="form-container">
-      <!-- Job Title -->
-      <div class="form-group">
-        <label class="form-label">Job title*</label>
-        <input type="text" v-model="jobTitle" placeholder="Placeholder text" class="form-input" />
-      </div>
+      <FormInput v-model="jobTitle" label="Job title" placeholder="Placeholder text" required />
 
       <!-- Organization Name and Type -->
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Organization name*</label>
-          <input
-            type="text"
-            v-model="organizationName"
-            placeholder="Placeholder text"
-            class="form-input"
-          />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Organization type*</label>
-          <select v-model="organizationType" class="form-select">
-            <option value="">Select</option>
-            <option value="nonprofit">Non-profit</option>
-            <option value="corporate">Corporate</option>
-            <option value="government">Government</option>
-            <option value="educational">Educational</option>
-          </select>
-        </div>
+        <FormInput
+          v-model="organizationName"
+          label="Organization name"
+          placeholder="Placeholder text"
+          required
+        />
+        <FormSelect
+          v-model="organizationType"
+          label="Organization type"
+          :options="organizationTypeOptions"
+          required
+        />
       </div>
 
-      <!-- About the Organization -->
-      <div class="form-group">
-        <label class="form-label">About the organization</label>
-        <textarea
-          v-model="aboutOrganization"
-          @input="updateCharacterCount"
-          placeholder="Placeholder text"
-          rows="6"
-          class="form-textarea"
-        ></textarea>
-        <div class="character-count">{{ characterCount }}/0</div>
-      </div>
+      <FormTextarea
+        v-model="aboutOrganization"
+        label="About the organization"
+        placeholder="Placeholder text"
+        :rows="6"
+        :show-character-count="true"
+      />
 
       <!-- Street Address and Province -->
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Street address*</label>
-          <input
-            type="text"
-            v-model="streetAddress"
-            placeholder="Placeholder text"
-            class="form-input"
-          />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Province*</label>
-          <select v-model="province" class="form-select">
-            <option value="">Select</option>
-            <option value="ontario">Ontario</option>
-            <option value="quebec">Quebec</option>
-            <option value="bc">British Columbia</option>
-            <option value="alberta">Alberta</option>
-          </select>
-        </div>
+        <FormInput
+          v-model="streetAddress"
+          label="Street address"
+          placeholder="Placeholder text"
+          required
+        />
+        <FormSelect v-model="province" label="Province" :options="provinceOptions" required />
       </div>
 
       <!-- City and Country -->
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">City*</label>
-          <input type="text" v-model="city" placeholder="Placeholder text" class="form-input" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Country*</label>
-          <select v-model="country" class="form-select">
-            <option value="">Select</option>
-            <option value="canada">Canada</option>
-            <option value="usa">United States</option>
-            <option value="uk">United Kingdom</option>
-          </select>
-        </div>
+        <FormInput v-model="city" label="City" placeholder="Placeholder text" required />
+        <FormSelect v-model="country" label="Country" :options="countryOptions" required />
       </div>
 
-      <!-- Opportunity Type Section -->
-      <div class="form-group">
-        <label class="form-label">Opportunity type*</label>
-        <div class="checkbox-grid">
-          <label class="checkbox-item">
-            <input
-              type="checkbox"
-              value="full-time"
-              @change="handleOpportunityTypeChange('full-time')"
-              class="form-checkbox"
-            />
-            <span>Full-time</span>
-          </label>
-          <label class="checkbox-item">
-            <input
-              type="checkbox"
-              value="contract"
-              @change="handleOpportunityTypeChange('contract')"
-              class="form-checkbox"
-            />
-            <span>Contract/temporary/seasonal</span>
-          </label>
-          <label class="checkbox-item">
-            <input
-              type="checkbox"
-              value="mentorship"
-              @change="handleOpportunityTypeChange('mentorship')"
-              class="form-checkbox"
-            />
-            <span>Mentorship program</span>
-          </label>
-          <label class="checkbox-item">
-            <input
-              type="checkbox"
-              value="part-time"
-              @change="handleOpportunityTypeChange('part-time')"
-              class="form-checkbox"
-            />
-            <span>Part-time</span>
-          </label>
-          <label class="checkbox-item">
-            <input
-              type="checkbox"
-              value="supply"
-              @change="handleOpportunityTypeChange('supply')"
-              class="form-checkbox"
-            />
-            <span>Supply/substitute teaching</span>
-          </label>
-          <label class="checkbox-item">
-            <input
-              type="checkbox"
-              value="professional"
-              @change="handleOpportunityTypeChange('professional')"
-              class="form-checkbox"
-            />
-            <span>Professional development</span>
-          </label>
-          <label class="checkbox-item">
-            <input
-              type="checkbox"
-              value="volunteer"
-              @change="handleOpportunityTypeChange('volunteer')"
-              class="form-checkbox"
-            />
-            <span>Volunteer</span>
-          </label>
-          <label class="checkbox-item">
-            <input
-              type="checkbox"
-              value="internship-paid"
-              @change="handleOpportunityTypeChange('internship-paid')"
-              class="form-checkbox"
-            />
-            <span>Internship (paid)</span>
-          </label>
-          <label class="checkbox-item">
-            <input
-              type="checkbox"
-              value="internship-unpaid"
-              @change="handleOpportunityTypeChange('internship-unpaid')"
-              class="form-checkbox"
-            />
-            <span>Internship (unpaid)</span>
-          </label>
-          <label class="checkbox-item">
-            <input
-              type="checkbox"
-              value="hybrid"
-              @change="handleOpportunityTypeChange('hybrid')"
-              class="form-checkbox"
-            />
-            <span>Hybrid</span>
-          </label>
-          <label class="checkbox-item">
-            <input
-              type="checkbox"
-              value="remote"
-              @change="handleOpportunityTypeChange('remote')"
-              class="form-checkbox"
-            />
-            <span>Remote</span>
-          </label>
-          <label class="checkbox-item">
-            <input
-              type="checkbox"
-              value="consulting"
-              @change="handleOpportunityTypeChange('consulting')"
-              class="form-checkbox"
-            />
-            <span>Consulting</span>
-          </label>
-          <label class="checkbox-item">
-            <input
-              type="checkbox"
-              value="speaking"
-              @change="handleOpportunityTypeChange('speaking')"
-              class="form-checkbox"
-            />
-            <span>Speaking engagement</span>
-          </label>
-          <label class="checkbox-item">
-            <input
-              type="checkbox"
-              value="in-person"
-              @change="handleOpportunityTypeChange('in-person')"
-              class="form-checkbox"
-            />
-            <span>In person</span>
-          </label>
-        </div>
-      </div>
+      <FormCheckboxGrid
+        v-model="opportunityTypes"
+        label="Opportunity type"
+        :options="opportunityTypeOptions"
+        required
+      />
     </div>
 
-    <!-- Continue Button -->
-    <div class="flex justify-end mt-8">
-      <button @click="handleContinue" class="continue-button">Continue</button>
-    </div>
+    <NavigationButtons @continue="handleContinue" />
   </div>
 </template>
 
