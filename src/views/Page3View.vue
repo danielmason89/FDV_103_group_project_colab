@@ -36,7 +36,7 @@ const opportunityTypes = ref<string[]>([])
 
 // Step 2 data - Job specifications
 const subjectAreas = ref<string[]>([])
-const gradeLevel = ref('')
+const gradeLevel = ref<string[]>([])
 const compensation = ref('')
 const yearsOfExperience = ref('')
 const certifications = ref<string[]>([])
@@ -334,7 +334,7 @@ function getContinueText(): string {
             :options="subjectAreaOptions"
           />
 
-          <FormRadioGroup
+          <FormCheckboxGrid
             v-model="gradeLevel"
             label="Grade level(s)"
             :options="gradeLevelOptions"
