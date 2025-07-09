@@ -19,14 +19,19 @@ function toggleCityFilter() {
         <span class="filter-label">Organization Type</span>
       </div>
 
-      <!-- City Filter: Clickable -->
-      <div class="filter-item-active" @click="toggleCityFilter">
-        <span class="filter-label-active">City</span>
-      </div>
+      <div class="relative inline-block">
+        <!-- City Filter: Clickable -->
+        <div class="filter-item-active cursor-pointer" @click="toggleCityFilter">
+          <span class="filter-label-active">City</span>
+        </div>
 
-      <!-- CityFilter component shown when toggled -->
-      <div v-if="showCityFilter" class="city-filter-popup" style="transform: translateX(-100%)">
-        <CityFilter @filter-changed="(val: string[]) => (selectedCities = val)" />
+        <!-- CityFilter component shown when toggled -->
+        <div
+          v-if="showCityFilter"
+          class="absolute z-10 mt-2 left-0 bg-white border border-gray-300 shadow-md rounded w-56"
+        >
+          <CityFilter @filter-changed="(val: string[]) => (selectedCities = val)" />
+        </div>
       </div>
 
       <div class="filter-item">
