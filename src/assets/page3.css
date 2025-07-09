@@ -260,6 +260,39 @@
   }
 }
 
+/* Responsive breadcrumbs for tablets */
+@media (max-width: 1024px) {
+  .breadcrumb-step {
+    min-width: 150px;
+    padding: 0.75rem 1.5rem;
+    margin-right: 0.5rem;
+  }
+
+  .breadcrumb-content .font-semibold {
+    font-size: 0.8rem;
+  }
+
+  .breadcrumb-content .text-sm {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .breadcrumb-step {
+    min-width: 120px;
+    padding: 0.5rem 1rem;
+    margin-right: 0.25rem;
+  }
+
+  .breadcrumb-content .font-semibold {
+    font-size: 0.75rem;
+  }
+
+  .breadcrumb-content .text-sm {
+    font-size: 0.65rem;
+  }
+}
+
 /* Field descriptions */
 .field-description {
   font-size: 0.75rem;
