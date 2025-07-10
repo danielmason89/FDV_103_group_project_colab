@@ -8,8 +8,10 @@ import HeaderComponent from './components/HeaderComponent.vue';
   <div class="app-container">
     <SidebarComponent />
     <main class="main-content">
-      <HeaderComponent class="wrapper"/>
-      <RouterView />
+      <HeaderComponent class="wrapper" />
+      <div class="content-area">
+        <RouterView />
+      </div>
     </main>
   </div>
 </template>
@@ -17,22 +19,33 @@ import HeaderComponent from './components/HeaderComponent.vue';
 <style scoped>
 .app-container {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .main-content {
   flex: 1;
+  display: flex;
   padding: 1rem;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  position: relative;
 }
 
 .logo {
   display: block;
   margin: 0 auto 2rem;
+}
+
+header {
+  line-height: 1.5;
+  max-height: 100vh;
 }
 
 nav {
