@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import SidebarComponent from './components/SidebarComponent.vue'
+import HeaderComponent from './components/HeaderComponent.vue';
 </script>
 
 <template>
@@ -10,6 +11,8 @@ import SidebarComponent from './components/SidebarComponent.vue'
       <div class="content-area">
         <RouterView />
       </div>
+      <HeaderComponent class="wrapper"/>
+      <RouterView />
     </main>
   </div>
 </template>
@@ -90,8 +93,6 @@ nav a:first-of-type {
   nav {
     text-align: left;
     font-size: 1rem;
-
-    padding: 1rem 0;
   }
 }
 </style>
