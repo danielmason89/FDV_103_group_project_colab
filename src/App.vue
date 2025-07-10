@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import SidebarComponent from './components/SidebarComponent.vue'
+import HeaderComponent from './components/HeaderComponent.vue'
 </script>
 
 <template>
   <div class="app-container">
     <SidebarComponent />
     <main class="main-content">
-      <RouterView />
+      <HeaderComponent class="wrapper" />
+      <div class="content-area">
+        <RouterView />
+      </div>
     </main>
   </div>
 </template>
@@ -15,22 +19,33 @@ import SidebarComponent from './components/SidebarComponent.vue'
 <style scoped>
 .app-container {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .main-content {
   flex: 1;
+  display: flex;
   padding: 1rem;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  position: relative;
 }
 
 .logo {
   display: block;
   margin: 0 auto 2rem;
+}
+
+header {
+  line-height: 1.5;
+  max-height: 100vh;
 }
 
 nav {
@@ -77,8 +92,6 @@ nav a:first-of-type {
   nav {
     text-align: left;
     font-size: 1rem;
-
-    padding: 1rem 0;
   }
 }
 </style>
