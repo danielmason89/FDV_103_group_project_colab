@@ -8,11 +8,10 @@ import HeaderComponent from './components/HeaderComponent.vue';
   <div class="app-container">
     <SidebarComponent />
     <main class="main-content">
+      <HeaderComponent class="wrapper" />
       <div class="content-area">
         <RouterView />
       </div>
-      <HeaderComponent class="wrapper"/>
-      <RouterView />
     </main>
   </div>
 </template>
