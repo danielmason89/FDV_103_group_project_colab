@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import { RouterView } from 'vue-router'
 import SidebarComponent from './components/SidebarComponent.vue'
 import HeaderComponent from './components/HeaderComponent.vue'
