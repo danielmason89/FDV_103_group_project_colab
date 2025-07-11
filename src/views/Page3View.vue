@@ -285,6 +285,27 @@ function scrollToTop() {
  */
 function handleSubmit() {
   // TODO: Implement actual form submission to backend/database
+  // temporary console log to simulate submission
+  console.log('Form submitted with data:', {
+    jobTitle: jobTitle.value,
+    organizationName: organizationName.value,
+    organizationType: organizationType.value,
+    aboutOrganization: aboutOrganization.value,
+    streetAddress: streetAddress.value,
+    province: province.value,
+    city: city.value,
+    country: country.value,
+    opportunityTypes: opportunityTypes.value,
+    subjectAreas: subjectAreas.value,
+    gradeLevel: gradeLevel.value,
+    compensation: compensation.value,
+    yearsOfExperience: yearsOfExperience.value,
+    certifications: certifications.value,
+    qualifications: qualifications.value,
+    jobDescription: jobDescription.value,
+    applicationLink: applicationLink.value,
+    applicationDeadline: applicationDeadline.value,
+  })
   // For now, simulate successful submission by redirecting to success page
   router.push('/page3-success')
 }
