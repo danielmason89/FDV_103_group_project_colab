@@ -4,10 +4,6 @@ import CityFilter from '@/components/CityFilter.vue' // Import CityFilter compon
 
 const showCityFilter = ref(false)
 const selectedCities = ref<string[]>([])
-
-function toggleCityFilter() {
-  showCityFilter.value = !showCityFilter.value
-}
 </script>
 
 <template>
@@ -21,15 +17,12 @@ function toggleCityFilter() {
 
       <div class="relative inline-block">
         <!-- City Filter: Clickable -->
-        <div class="filter-item-active cursor-pointer" @click="toggleCityFilter">
+        <div class="filter-item-active">
           <span class="filter-label-active">City</span>
         </div>
 
         <!-- CityFilter component shown when toggled -->
-        <div
-          v-if="showCityFilter"
-          class="absolute z-10 mt-2 left-0 bg-white border border-gray-300 shadow-md rounded w-56"
-        >
+        <div v-if="showCityFilter" class="city-filter-popup" style="transform: translateX(-100%)">
           <CityFilter @filter-changed="(val: string[]) => (selectedCities = val)" />
         </div>
       </div>
