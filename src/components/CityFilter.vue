@@ -29,13 +29,7 @@ export default {
   name: 'CityFilter',
   data() {
     return {
-      cities: [
-        { name: 'Brampton', selected: true },
-        { name: 'Toronto', selected: true },
-        { name: 'Windsor', selected: false },
-        { name: 'Ottawa', selected: false },
-        { name: 'London', selected: false },
-      ],
+      cities: [{ name: 'enter here', selected: true }],
     }
   },
   methods: {
