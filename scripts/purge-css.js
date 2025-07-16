@@ -1,7 +1,11 @@
-import fs from "fs";
-import path from "path";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const TARGET_DIR = path.resolve(__dirname, '../css'); // adjust path as needed
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const TARGET_DIR = path.resolve(__dirname, '../css');
 
 function purgeCssFiles(dir) {
   fs.readdirSync(dir).forEach((file) => {
@@ -10,7 +14,11 @@ function purgeCssFiles(dir) {
 
     if (stat.isDirectory()) {
       purgeCssFiles(fullPath);
-    } else if (stat.isFile() && path.extname(fullPath) === '.css' && path.basename(fullPath) !== 'base.css') {
+    } else if (
+      stat.isFile() &&
+      path.extname(fullPath) === '.css' &&
+      path.basename(fullPath) !== 'base.css'
+    ) {
       fs.unlinkSync(fullPath);
       console.log(`🗑️ Deleted: ${fullPath}`);
     }
