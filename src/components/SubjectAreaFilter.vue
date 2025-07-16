@@ -1,5 +1,5 @@
 <template>
-  <div class="subject-filter">
+  <div :class="grid ? 'grid grid-cols-1 md:grid-cols-2 gap-2' : 'subject-filter'">
     <div
       v-for="subject in subjects"
       :key="subject.name"
@@ -70,32 +70,6 @@ export default {
   },
 }
 </script>
-
-<template>
-  <div :class="grid ? 'grid grid-cols-1 md:grid-cols-2 gap-2' : 'subject-filter'">
-    <div
-      v-for="subject in subjects"
-      :key="subject.name"
-      class="subject-option"
-      :class="{ selected: subject.selected }"
-      @click="toggleSubject(subject.name)"
-    >
-      <div class="checkbox">
-        <svg
-          v-if="subject.selected"
-          class="checkmark"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="3"
-        >
-          <polyline points="20,6 9,17 4,12"></polyline>
-        </svg>
-      </div>
-      <span class="subject-name">{{ subject.name }}</span>
-    </div>
-  </div>
-</template>
 
 <style scoped>
 .subject-filter {

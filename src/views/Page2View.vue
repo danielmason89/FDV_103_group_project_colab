@@ -27,7 +27,7 @@ function updateSubjects(subjects: string[]) {
 </script>
 
 <template>
-  <main class="bg-[#f5f5f5] py-10 px-4 md:px-8" aria-label="Job Details Page">
+  <main class="bg-[#f5f5f5] py-10 px-4 md:px-8 card" aria-label="Job Details Page">
     <div class="max-w-5xl mx-auto space-y-8">
       <!-- Breadcrumb -->
       <!-- <BreadcrumbNavigation :currentStep="2" /> -->
@@ -58,7 +58,7 @@ function updateSubjects(subjects: string[]) {
         </div>
       </div>
       <!-- Opportunity Type -->
-      <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8">
+      <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <SectionCard class="mb-4 text-lg font-semibold text-gray-700" title="Opportunity Type">
           <opportunityTypeComponent />
         </SectionCard>
@@ -72,7 +72,7 @@ function updateSubjects(subjects: string[]) {
       </div>
 
       <!-- Certifications -->
-      <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8">
+      <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <SectionCard
           class="mb-4 text-lg font-semibold text-gray-700"
           title="Certifications Required"
@@ -82,7 +82,7 @@ function updateSubjects(subjects: string[]) {
       </div>
 
       <!-- About the Organization -->
-      <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8">
+      <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <p class="text-gray-600">
           <SectionCard
             class="mb-2 font-normal text-gray-700 text-md"
@@ -99,7 +99,7 @@ function updateSubjects(subjects: string[]) {
       </div>
 
       <!-- Job Description -->
-      <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8">
+      <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <h2 class="mb-2 text-xl font-semibold text-gray-700">Job Description</h2>
         <div class="text-gray-600">
           <p>
@@ -116,7 +116,7 @@ function updateSubjects(subjects: string[]) {
       </div>
 
       <!-- Qualifications -->
-      <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8">
+      <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <h2 class="mb-2 text-xl font-semibold text-gray-700">Qualifications</h2>
         <div class="text-gray-600">
           <p>
@@ -129,12 +129,24 @@ function updateSubjects(subjects: string[]) {
       </div>
 
       <!-- Final Apply Button -->
-      <div class="flex justify-center">
-        <applyButtonComponent text="Apply Now!" aria-label="Apply for this teaching job" />
+       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
+         <div class="flex justify-evenly align-center">
+           <applyButtonComponent class="apply-button" text="Apply Now!" aria-label="Apply for this teaching job" />
+          </div>
+        </div>
       </div>
-    </div>
   </main>
 </template>
 
 <style scoped>
+
+.card {
+  padding: 1rem;
+  margin: 1rem 0rem;
+}
+
+.apply-button {
+  width: 50%;
+  justify-content: space-evenly;
+}
 </style>
