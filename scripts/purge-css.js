@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const TARGET_DIR = path.resolve(__dirname, '../css');
+const TARGET_DIR = path.resolve(__dirname, '../src/assets');
 
 function purgeCssFiles(dir) {
   fs.readdirSync(dir).forEach((file) => {
