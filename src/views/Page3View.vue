@@ -8,8 +8,8 @@ import FormTextarea from '../components/FormTextarea.vue'
 import FormCheckboxGrid from '../components/FormCheckboxGrid.vue'
 import FormRadioGroup from '../components/FormRadioGroup.vue'
 import NavigationButtons from '../components/NavigationButtons.vue'
-import { useForm, useField, Field } from 'vee-validate'
-import * as yup from 'yup'
+// import { useForm, useField, Field } from 'vee-validate'
+// import * as yup from 'yup'
 
 const router = useRouter()
 
