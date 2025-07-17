@@ -586,7 +586,7 @@ function getContinueText(): string {
 </template>
 
 <style scoped>
-@import '../assets/page3.css';
+@import '../assets/base.css';
 
 .form-step {
   display: none;
