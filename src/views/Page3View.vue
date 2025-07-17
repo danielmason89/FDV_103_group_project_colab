@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, watch, type Ref } from 'vue'
 import BreadcrumbNavigation from '../components/BreadcrumbNavigation.vue'
 import FormInput from '../components/FormInput.vue'
 import FormSelect from '../components/FormSelect.vue'
@@ -11,11 +10,12 @@ import NavigationButtons from '../components/NavigationButtons.vue'
 // import { useForm, useField, Field } from 'vee-validate'
 // import * as yup from 'yup'
 
-const router = useRouter()
-
 // Current step tracking
 const currentStep = ref<1 | 2 | 3>(1)
 const totalSteps = 3
+
+// Submission state tracking
+const submissionState = ref<'form' | 'success' | 'failure'>('form')
 
 // Reset scroll position when component mounts
 onMounted(() => {
@@ -51,7 +51,7 @@ const applicationDeadline = ref('')
 
 // Auto-save form data to localStorage
 // Group all reactive form fields into one object
-const formState = {
+const formState: Record<string, Ref<string | string[]>> = {
   jobTitle,
   organizationName,
   organizationType,
@@ -277,21 +277,29 @@ function scrollToTop() {
 }
 
 function handleSubmit() {
-  // Simulate successful submission
-  router.push('/page3-success')
+  // Simulate random success/failure for testing
+  // In a real application, this would be based on actual API response
+  const isSuccess = Math.random() > 0.3 // 70% success rate for testing
+  submissionState.value = isSuccess ? 'success' : 'failure'
+
+  // Clear localStorage after submission to prevent data restoration on refresh
+  localStorage.removeItem('jobFormData')
 }
 
 //Load saved data on mount
 onMounted(() => {
-  const saved = localStorage.getItem('jobFormData')
-  if (saved) {
-    const parsed = JSON.parse(saved)
-    Object.entries(parsed).forEach(([key, value]) => {
-      if (formState[key]) {
-        formState[key].value = value
-      }
-    })
-    console.log('[Load] Loaded saved from data from localStorage.')
+  // Only load saved data if we're in form state (not success/failure)
+  if (submissionState.value === 'form') {
+    const saved = localStorage.getItem('jobFormData')
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      Object.entries(parsed).forEach(([key, value]) => {
+        if (formState[key] && (typeof value === 'string' || Array.isArray(value))) {
+          formState[key].value = value
+        }
+      })
+      console.log('[Load] Loaded saved from data from localStorage.')
+    }
   }
 })
 
@@ -316,7 +324,92 @@ function getContinueText(): string {
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto">
+  <!-- Success State -->
+  <div v-if="submissionState === 'success'" class="flex flex-col min-h-full">
+    <div class="max-w-6xl mx-auto w-full">
+      <BreadcrumbNavigation :current-step="3" />
+    </div>
+
+    <!-- Success Content - Centered -->
+    <div class="flex-1 flex items-center justify-center px-4 py-8">
+      <div class="text-center max-w-2xl mx-auto">
+        <!-- Success Icon -->
+        <div class="flex justify-center mb-6 md:mb-8">
+          <div
+            class="w-20 h-20 md:w-24 md:h-24 bg-green-500 rounded-full flex items-center justify-center border-4 border-green-400"
+          >
+            <svg
+              class="w-10 h-10 md:w-12 md:h-12 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="3"
+                d="M5 13l4 4L19 7"
+              ></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Success Title -->
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-teal-700 mb-4 md:mb-6 px-4">
+          Success!
+        </h1>
+
+        <!-- Success Subtitle -->
+        <h2 class="text-xl md:text-2xl font-semibold text-teal-700 mb-6 md:mb-8 px-4">
+          Your job posting has been submitted for review
+        </h2>
+
+        <!-- Success Message -->
+        <div class="text-gray-700 text-base md:text-lg leading-relaxed px-4 space-y-4">
+          <p>
+            Thank you for your submission. Your post is currently under review by our team. We'll
+            send you an email once it's approved — keep an eye on your inbox!
+          </p>
+          <p>
+            If you have any questions or need to make changes, feel free to
+            <a href="#" class="text-blue-600 hover:text-blue-800 underline">contact us</a>!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Failure State -->
+  <div v-else-if="submissionState === 'failure'" class="flex flex-col min-h-full">
+    <div class="max-w-6xl mx-auto w-full">
+      <BreadcrumbNavigation :current-step="3" />
+    </div>
+
+    <!-- Error Content - Centered -->
+    <div class="flex-1 flex items-center justify-center px-4 py-8">
+      <div class="text-left max-w-4xl mx-auto">
+        <!-- Error Title -->
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-teal-700 mb-6 md:mb-8 px-4">
+          Sorry, we encountered an issue
+        </h1>
+
+        <!-- Error Message -->
+        <div class="text-gray-700 text-base md:text-lg leading-relaxed px-4 space-y-4">
+          <p>
+            Something went wrong on our end. Please try submitting again We apologize for the
+            inconvenience.
+          </p>
+          <p>
+            Please refresh the page and try again. If the problem continues, please
+            <a href="#" class="text-blue-600 hover:text-blue-800 underline">contact support</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form State -->
+  <div v-else class="max-w-6xl mx-auto">
     <BreadcrumbNavigation :current-step="currentStep" />
 
     <form id="multiStepForm" @submit.prevent="nextStep">
