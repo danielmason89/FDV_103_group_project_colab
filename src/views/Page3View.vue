@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import BreadcrumbNavigation from '../components/BreadcrumbNavigation.vue'
 import FormInput from '../components/FormInput.vue'
@@ -8,6 +8,8 @@ import FormTextarea from '../components/FormTextarea.vue'
 import FormCheckboxGrid from '../components/FormCheckboxGrid.vue'
 import FormRadioGroup from '../components/FormRadioGroup.vue'
 import NavigationButtons from '../components/NavigationButtons.vue'
+// import { useForm, useField, Field } from 'vee-validate'
+// import * as yup from 'yup'
 
 const router = useRouter()
 
@@ -46,6 +48,44 @@ const qualifications = ref('')
 const jobDescription = ref('')
 const applicationLink = ref('')
 const applicationDeadline = ref('')
+
+// Auto-save form data to localStorage
+// Group all reactive form fields into one object
+const formState = {
+  jobTitle,
+  organizationName,
+  organizationType,
+  aboutOrganization,
+  streetAddress,
+  province,
+  city,
+  country,
+  opportunityTypes,
+  subjectAreas,
+  gradeLevel,
+  compensation,
+  yearsOfExperience,
+  certifications,
+  qualifications,
+  jobDescription,
+  applicationLink,
+  applicationDeadline,
+}
+
+// Save form data to localStorage whenever any field changes
+Object.values(formState).forEach((r) => {
+  watch(
+    r,
+    () => {
+      const serialized = Object.fromEntries(
+        Object.entries(formState).map(([key, refObj]) => [key, refObj.value]),
+      )
+      localStorage.setItem('jobFormData', JSON.stringify(serialized))
+      console.log('[Auto-Save] Form data saved to localStorage.')
+    },
+    { deep: true },
+  )
+})
 
 // Options for dropdowns and form elements
 const organizationTypeOptions = [
@@ -240,6 +280,20 @@ function handleSubmit() {
   // Simulate successful submission
   router.push('/page3-success')
 }
+
+//Load saved data on mount
+onMounted(() => {
+  const saved = localStorage.getItem('jobFormData')
+  if (saved) {
+    const parsed = JSON.parse(saved)
+    Object.entries(parsed).forEach(([key, value]) => {
+      if (formState[key]) {
+        formState[key].value = value
+      }
+    })
+    console.log('[Load] Loaded saved from data from localStorage.')
+  }
+})
 
 // Get step title
 function getStepTitle(step: number): string {
