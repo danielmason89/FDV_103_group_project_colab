@@ -36,8 +36,8 @@ function updateSubjects(subjects: string[]) {
       <div class="p-6 space-y-4 bg-white shadow-md rounded-xl">
         <div class="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
-            <h1 class="text-2xl font-bold text-gray-800">Arts School Teacher</h1>
-            <p class="text-gray-500">CoLab Education</p>
+            <h1 class="text-3xl font-bold">Arts School Teacher</h1>
+            <p class="text-3xl">CoLab Education</p>
           </div>
           <applyButtonComponent text="Apply Now!" aria-label="Apply for this teaching job" />
         </div>
@@ -73,9 +73,9 @@ function updateSubjects(subjects: string[]) {
 
       <!-- Certifications -->
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
+        <h2 class="mb-2 text-lg font-bold">Certifications Required</h2>
         <SectionCard
           class="mb-4 text-lg font-semibold text-gray-700"
-          title="Certifications Required"
         >
           <certificationComponent />
         </SectionCard>
@@ -83,10 +83,10 @@ function updateSubjects(subjects: string[]) {
 
       <!-- About the Organization -->
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
+        <h2 class="mb-2 text-lg font-bold">About the Organization</h2>
         <p class="text-gray-600">
           <SectionCard
-            class="mb-2 font-normal text-gray-700 text-md"
-            title="About the Organization"
+            class="mb-2 text-sm font-normal"
           >
             <p>
               CoLab connects educators across schools to share resources, build communities, and accelerate widespread initiatives. Turning isolated teachers into collaborative innovators.
@@ -100,8 +100,8 @@ function updateSubjects(subjects: string[]) {
 
       <!-- Job Description -->
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
-        <h2 class="mb-2 text-xl font-semibold text-gray-700">Job Description</h2>
-        <div class="text-gray-600">
+        <h2 class="mb-2 text-lg font-bold">Job Description</h2>
+        <div class="mb-2 text-sm font-normal">
           <p>
             Colab is looking for an enthusiastic and dedicated Middle School Science Teacher to join our academic team for the upcoming school year. We're seeking a passionate educator who can inspire a love for scientific inquiry and critical thinking in students aged 11-14. This role offers the opportunity to shape young minds, foster curiosity, and contribute to a vibrant school community.
           </p>
@@ -117,8 +117,8 @@ function updateSubjects(subjects: string[]) {
 
       <!-- Qualifications -->
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
-        <h2 class="mb-2 text-xl font-semibold text-gray-700">Qualifications</h2>
-        <div class="text-gray-600">
+        <h2 class="mb-2 text-lg font-bold text-gray-700">Qualifications</h2>
+        <div class="mb-2 text-sm font-normal">
           <p>
             Educational Background: Bachelor's degree or higher in Education. A Master's degree and/or a teaching credential/license is highly preferred.
           </p>
@@ -148,5 +148,10 @@ function updateSubjects(subjects: string[]) {
 .apply-button {
   width: 50%;
   justify-content: space-evenly;
+}
+
+.apply-button:hover {
+  background-color: #add9c4;
+  cursor: pointer;
 }
 </style>
