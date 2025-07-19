@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // IMPORTS
 import { ref, onMounted, watch, type Ref } from 'vue'
+import { useRouter } from 'vue-router'
 import BreadcrumbNavigation from '../components/BreadcrumbNavigation.vue'
 import FormInput from '../components/FormInput.vue'
 import FormSelect from '../components/FormSelect.vue'
@@ -8,6 +9,7 @@ import FormTextarea from '../components/FormTextarea.vue'
 import FormCheckboxGrid from '../components/FormCheckboxGrid.vue'
 import FormRadioGroup from '../components/FormRadioGroup.vue'
 import NavigationButtons from '../components/NavigationButtons.vue'
+const router = useRouter()
 
 // STEP TRACKING - Keep track of which step the user is on
 const currentStep = ref<1 | 2 | 3>(1) // Start at step 1
@@ -39,6 +41,7 @@ const qualifications = ref('')
 const jobDescription = ref('')
 const applicationLink = ref('')
 const applicationDeadline = ref('')
+const approvalStatus = ref<'yes' | 'no'>('yes')
 
 // AUTO-SAVE FUNCTIONALITY - Save form data as user types
 // Group all form fields together for easy saving
@@ -61,6 +64,7 @@ const formState: Record<string, Ref<string | string[]>> = {
   jobDescription,
   applicationLink,
   applicationDeadline,
+  approvalStatus,
 }
 
 // Watch for changes in any form field and save to browser storage
@@ -273,16 +277,39 @@ function scrollToTop() {
     contentArea.scrollTop = 0
   }
 }
-
+/* Joren's code, possible testing scenario:
 // FORM SUBMISSION - Handle when user submits the form
 function handleSubmit() {
   // Simulate random success/failure for testing
   // In a real app, this would check actual server response
   const isSuccess = Math.random() > 0.3 // 70% success rate for testing
   submissionState.value = isSuccess ? 'success' : 'failure'
+}
+*/
 
-  // Clear saved form data after submission
+// *FORM SUBMISSION - Save & Publish Locally*
+function handleSubmit() {
+  // One object with all field values + metadata
+  const submission = {
+    id: `job-${Date.now()}`, // crude unique id
+    submittedAt: new Date().toISOString(), // ISO date‑time
+    approved: approvalStatus.value, // "yes" for demo
+    ...Object.fromEntries(Object.entries(formState).map(([key, r]) => [key, r.value])),
+  }
+
+  // Append to jobSubmissions list in localStorage
+  const list = JSON.parse(localStorage.getItem('jobSubmissions') || '[]')
+  list.push(submission)
+  localStorage.setItem('jobSubmissions', JSON.stringify(list))
+
+  // Clear draft so next post starts empty
   localStorage.removeItem('jobFormData')
+
+  // Log for Pages 1 and 2
+  console.log('[Submit] saved jobSubmissions →', list)
+
+  // Shows Submission Success Panel
+  submissionState.value = 'success'
 }
 
 // LOAD SAVED DATA - Restore form data when page loads
@@ -381,6 +408,10 @@ function getContinueText(): string {
             If you have any questions or need to make changes, feel free to
             <a href="#" class="text-blue-600 hover:text-blue-800 underline">contact us</a>!
           </p>
+
+          <div class="flex justify-center mt-8">
+            <NavigationButtons :action-label="'View Job Board'" @action="router.push('/')" />
+          </div>
         </div>
       </div>
     </div>
@@ -419,7 +450,7 @@ function getContinueText(): string {
   <div v-else class="max-w-6xl mx-auto">
     <BreadcrumbNavigation :current-step="currentStep" />
 
-    <form id="multiStepForm" @submit.prevent="nextStep">
+    <form id="multiStepForm" novalidate @submit.prevent="nextStep">
       <!-- Step 1: Basic job posting information -->
       <div class="form-step" :class="{ active: currentStep === 1 }">
         <h1 class="text-4xl font-bold text-teal-700 mb-8">{{ getStepTitle(1) }}</h1>
