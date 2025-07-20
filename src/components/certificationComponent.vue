@@ -32,19 +32,29 @@ function getBadgeClass(type: string): string {
 <style scoped>
 .certification-badges {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 columns on large screens */
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
 @media (max-width: 1200px) {
   .certification-badges {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 1000px) {
+  .certification-badges {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-@media (max-width: 800px) {
+@media (max-width: 900px) {
   .certification-badges {
     grid-template-columns: repeat(1, 1fr);
   }
 }
+
+  .badge {
+    padding: 5px 10px;
+  }
+
 
 .badge {
   padding: 10px 20px;

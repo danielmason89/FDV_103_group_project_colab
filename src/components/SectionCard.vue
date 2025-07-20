@@ -5,7 +5,7 @@ defineProps<{
 </script>
 
 <template>
-  <section class="p-6 bg-white shadow-md rounded-xl">
+  <section class="p-6 bg-white rounded-xl">
     <h2 v-if="title" class="mb-4 text-lg font-semibold text-gray-700">
       {{ title }}
     </h2>
