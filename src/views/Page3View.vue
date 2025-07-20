@@ -475,7 +475,8 @@ function getContinueText(): string {
 </template>
 
 <style scoped>
-@import '../assets/page3.css';
+/* @import '../assets/page3.css'; */
+/* Comment out until needed or it can cause errors elsewhere. */
 
 /* Multi-step form styling */
 .form-step {

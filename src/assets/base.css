@@ -94,10 +94,10 @@ nav a.router-link-active {
   --inactiveText: #ffffff;
   --gradeBadge: #90d5ff;
   --gradeText: #2d68c4;
-  --schoolBoardBadge: #e9d4ff;
-  --schoolBoardText: #e1bee7;
-  --privateSchoolBadge: #ffde21;
-  --privateSchoolText: #d39405;
+  --schoolBoardBadge: #f3cefa;
+  --schoolBoardText: #800c93;
+  --privateSchoolBadge: #fddfa1;
+  --privateSchoolText: #ecaa18;
   --campBadge: #d9fcf1;
   --campText: #039267;
   --childCareBadge: #fcdbdb;
@@ -192,10 +192,15 @@ textarea {
 
 .card-grid .card {
   background-color: var(--cardWhiteBG);
-  padding: 1rem;
+  padding: 0rem;
   border-radius: 0.5rem;
   box-shadow:
-    var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    0 0 #0000,
+    0 0 #0000,
+    0 0 #0000,
+    0 0 #0000,
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1) !important;
 }
 
 .form-card {
