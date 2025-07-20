@@ -102,9 +102,6 @@ const props = withDefaults(
   justify-items: right;
 }
 
-.badge-container .badge {
-}
-
 .badge {
   font-weight: 500;
   font-size: 0.75em;
