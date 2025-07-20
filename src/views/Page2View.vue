@@ -23,6 +23,7 @@ const selectedSubjects = ref<string[]>([])
 function updateSubjects(subjects: string[]) {
   selectedSubjects.value = subjects
   console.log('Selected subjects:', subjects)
+}
 
 </script>
 
