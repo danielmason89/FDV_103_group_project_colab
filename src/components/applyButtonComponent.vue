@@ -32,8 +32,6 @@ export default {
 <style scoped>
 .apply-button-container {
   display: flex;
-  justify-content: flex-start;
-  width: 100%;
 }
 
 .apply-button {
@@ -41,6 +39,7 @@ export default {
   border: none;
   outline: none;
   min-width: 120px;
+  padding: 1.05rem;
 }
 
 .apply-button:disabled {

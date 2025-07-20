@@ -50,23 +50,28 @@ function getBadgeClass(type: string): string {
 <style scoped>
 .opportunity-badges {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Always 4 columns on larger screens */
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
-@media (max-width: 1200px) {
+@media (max-width: 1350px) {
+  .opportunity-badges {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 1300px) {
   .opportunity-badges {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
   .opportunity-badges {
     grid-template-columns: repeat(1, 1fr);
   }
 }
 
 .badge {
-  padding: 10px 20px;
-  border: 3px solid #000000; /* Dark green border */
+  padding: 5px 10px;
+  border: 3px solid #000000;
   background-color: #dce4e4;
   border-radius: 6px;
   font-size: 1.4rem;
