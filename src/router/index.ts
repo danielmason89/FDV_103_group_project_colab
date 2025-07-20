@@ -25,17 +25,6 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/Page3View.vue'),
     },
-
-    {
-      path: '/page3-success',
-      name: 'page3-success',
-      component: () => import('../views/Page3Success.vue'),
-    },
-    {
-      path: '/page3-failure',
-      name: 'page3-failure',
-      component: () => import('../views/Page3Failure.vue'),
-    },
   ],
 })
 

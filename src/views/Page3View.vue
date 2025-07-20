@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+// IMPORTS
+import { ref, onMounted, watch, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import BreadcrumbNavigation from '../components/BreadcrumbNavigation.vue'
 import FormInput from '../components/FormInput.vue'
@@ -8,24 +9,16 @@ import FormTextarea from '../components/FormTextarea.vue'
 import FormCheckboxGrid from '../components/FormCheckboxGrid.vue'
 import FormRadioGroup from '../components/FormRadioGroup.vue'
 import NavigationButtons from '../components/NavigationButtons.vue'
-// import { useForm, useField, Field } from 'vee-validate'
-// import * as yup from 'yup'
-
 const router = useRouter()
 
-// Current step tracking
-const currentStep = ref<1 | 2 | 3>(1)
+// STEP TRACKING - Keep track of which step the user is on
+const currentStep = ref<1 | 2 | 3>(1) // Start at step 1
 const totalSteps = 3
 
-// Reset scroll position when component mounts
-onMounted(() => {
-  const contentArea = document.querySelector('.content-area')
-  if (contentArea) {
-    contentArea.scrollTop = 0
-  }
-})
+// SUBMISSION STATE - Track if form is being filled, submitted successfully, or failed
+const submissionState = ref<'form' | 'success' | 'failure'>('form')
 
-// Step 1 data - Create a new job posting
+// STEP 1 FORM FIELDS - Job posting basic information
 const jobTitle = ref('')
 const organizationName = ref('')
 const organizationType = ref('')
@@ -36,7 +29,7 @@ const city = ref('')
 const country = ref('')
 const opportunityTypes = ref<string[]>([])
 
-// Step 2 data - Job specifications
+// STEP 2 FORM FIELDS - Job requirements and specifications
 const subjectAreas = ref<string[]>([])
 const gradeLevel = ref<string[]>([])
 const compensation = ref('')
@@ -44,14 +37,15 @@ const yearsOfExperience = ref('')
 const certifications = ref<string[]>([])
 const qualifications = ref('')
 
-// Step 3 data - Job description
+// STEP 3 FORM FIELDS - Job description and application details
 const jobDescription = ref('')
 const applicationLink = ref('')
 const applicationDeadline = ref('')
+const approvalStatus = ref<'yes' | 'no'>('yes')
 
-// Auto-save form data to localStorage
-// Group all reactive form fields into one object
-const formState = {
+// AUTO-SAVE FUNCTIONALITY - Save form data as user types
+// Group all form fields together for easy saving
+const formState: Record<string, Ref<string | string[]>> = {
   jobTitle,
   organizationName,
   organizationType,
@@ -70,24 +64,27 @@ const formState = {
   jobDescription,
   applicationLink,
   applicationDeadline,
+  approvalStatus,
 }
 
-// Save form data to localStorage whenever any field changes
-Object.values(formState).forEach((r) => {
+// Watch for changes in any form field and save to browser storage
+Object.values(formState).forEach((field) => {
   watch(
-    r,
+    field,
     () => {
+      // Convert all form data to a simple object
       const serialized = Object.fromEntries(
         Object.entries(formState).map(([key, refObj]) => [key, refObj.value]),
       )
+      // Save to browser's local storage
       localStorage.setItem('jobFormData', JSON.stringify(serialized))
       console.log('[Auto-Save] Form data saved to localStorage.')
     },
-    { deep: true },
+    { deep: true }, // Watch nested changes (like arrays)
   )
 })
 
-// Options for dropdowns and form elements
+// DROPDOWN OPTIONS - Predefined choices for form dropdowns
 const organizationTypeOptions = [
   { value: 'nonprofit', label: 'Non-profit' },
   { value: 'corporate', label: 'Corporate' },
@@ -174,8 +171,9 @@ const certificationOptions = [
   { value: 'other', label: 'Other' },
 ]
 
-// Validation functions for each step
+// VALIDATION FUNCTIONS - Check if required fields are filled
 function validateStep1(): boolean {
+  // Check each required field and show error if empty
   if (!jobTitle.value) {
     alert('Please enter a job title')
     return false
@@ -239,10 +237,11 @@ function validateStep3(): boolean {
   return true
 }
 
-// Navigation functions
+// NAVIGATION FUNCTIONS - Handle moving between steps
 function nextStep() {
   let isValid = false
 
+  // Validate current step before moving forward
   if (currentStep.value === 1) {
     isValid = validateStep1()
   } else if (currentStep.value === 2) {
@@ -253,16 +252,18 @@ function nextStep() {
 
   if (isValid) {
     if (currentStep.value < totalSteps) {
+      // Move to next step
       currentStep.value++
       scrollToTop()
     } else {
-      // Final submission
+      // Submit the form
       handleSubmit()
     }
   }
 }
 
 function prevStep() {
+  // Go back to previous step
   if (currentStep.value > 1) {
     currentStep.value--
     scrollToTop()
@@ -270,33 +271,74 @@ function prevStep() {
 }
 
 function scrollToTop() {
+  // Scroll to top of form when changing steps
   const contentArea = document.querySelector('.content-area')
   if (contentArea) {
     contentArea.scrollTop = 0
   }
 }
-
+/* Joren's code, possible testing scenario:
+// FORM SUBMISSION - Handle when user submits the form
 function handleSubmit() {
-  // Simulate successful submission
-  router.push('/page3-success')
+  // Simulate random success/failure for testing
+  // In a real app, this would check actual server response
+  const isSuccess = Math.random() > 0.3 // 70% success rate for testing
+  submissionState.value = isSuccess ? 'success' : 'failure'
+}
+*/
+
+// *FORM SUBMISSION - Save & Publish Locally*
+function handleSubmit() {
+  // One object with all field values + metadata
+  const submission = {
+    id: `job-${Date.now()}`, // crude unique id
+    submittedAt: new Date().toISOString(), // ISO date‑time
+    approved: approvalStatus.value, // "yes" for demo
+    ...Object.fromEntries(Object.entries(formState).map(([key, r]) => [key, r.value])),
+  }
+
+  // Append to jobSubmissions list in localStorage
+  const list = JSON.parse(localStorage.getItem('jobSubmissions') || '[]')
+  list.push(submission)
+  localStorage.setItem('jobSubmissions', JSON.stringify(list))
+
+  // Clear draft so next post starts empty
+  localStorage.removeItem('jobFormData')
+
+  // Log for Pages 1 and 2
+  console.log('[Submit] saved jobSubmissions →', list)
+
+  // Shows Submission Success Panel
+  submissionState.value = 'success'
 }
 
-//Load saved data on mount
+// LOAD SAVED DATA - Restore form data when page loads
 onMounted(() => {
-  const saved = localStorage.getItem('jobFormData')
-  if (saved) {
-    const parsed = JSON.parse(saved)
-    Object.entries(parsed).forEach(([key, value]) => {
-      if (formState[key]) {
-        formState[key].value = value
-      }
-    })
-    console.log('[Load] Loaded saved from data from localStorage.')
+  // Reset scroll position when component loads
+  const contentArea = document.querySelector('.content-area')
+  if (contentArea) {
+    contentArea.scrollTop = 0
+  }
+
+  // Only load saved data if we're still filling out the form
+  if (submissionState.value === 'form') {
+    const saved = localStorage.getItem('jobFormData')
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      // Restore each field from saved data
+      Object.entries(parsed).forEach(([key, value]) => {
+        if (formState[key] && (typeof value === 'string' || Array.isArray(value))) {
+          formState[key].value = value
+        }
+      })
+      console.log('[Load] Loaded saved form data from localStorage.')
+    }
   }
 })
 
-// Get step title
+// HELPER FUNCTIONS - Get text for UI elements
 function getStepTitle(step: number): string {
+  // Return the title for each step
   switch (step) {
     case 1:
       return 'Create a new job posting'
@@ -309,25 +351,115 @@ function getStepTitle(step: number): string {
   }
 }
 
-// Get continue button text
 function getContinueText(): string {
+  // Show "Submit" on last step, "Continue" on others
   return currentStep.value === totalSteps ? 'Submit for review' : 'Continue'
 }
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto">
+  <!-- SUCCESS STATE - Show when form is submitted successfully -->
+  <div v-if="submissionState === 'success'" class="flex flex-col min-h-full">
+    <div class="max-w-6xl mx-auto w-full">
+      <BreadcrumbNavigation :current-step="3" />
+    </div>
+
+    <!-- Success message centered on page -->
+    <div class="flex-1 flex items-center justify-center px-4 py-8">
+      <div class="text-center max-w-2xl mx-auto">
+        <!-- Green checkmark icon -->
+        <div class="flex justify-center mb-6 md:mb-8">
+          <div
+            class="w-20 h-20 md:w-24 md:h-24 bg-green-500 rounded-full flex items-center justify-center border-4 border-green-400"
+          >
+            <svg
+              class="w-10 h-10 md:w-12 md:h-12 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="3"
+                d="M5 13l4 4L19 7"
+              ></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Success title -->
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-teal-700 mb-4 md:mb-6 px-4">
+          Success!
+        </h1>
+
+        <!-- Success subtitle -->
+        <h2 class="text-xl md:text-2xl font-semibold text-teal-700 mb-6 md:mb-8 px-4">
+          Your job posting has been submitted for review
+        </h2>
+
+        <!-- Success message with details -->
+        <div class="text-gray-700 text-base md:text-lg leading-relaxed px-4 space-y-4">
+          <p>
+            Thank you for your submission. Your post is currently under review by our team. We'll
+            send you an email once it's approved — keep an eye on your inbox!
+          </p>
+          <p>
+            If you have any questions or need to make changes, feel free to
+            <a href="#" class="text-blue-600 hover:text-blue-800 underline">contact us</a>!
+          </p>
+
+          <div class="flex justify-center mt-8">
+            <NavigationButtons :action-label="'View Job Board'" @action="router.push('/')" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAILURE STATE - Show when form submission fails -->
+  <div v-else-if="submissionState === 'failure'" class="flex flex-col min-h-full">
+    <div class="max-w-6xl mx-auto w-full">
+      <BreadcrumbNavigation :current-step="3" />
+    </div>
+
+    <!-- Error message -->
+    <div class="flex-1 flex items-center justify-center px-4 py-8">
+      <div class="text-left max-w-4xl mx-auto">
+        <!-- Error title -->
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-teal-700 mb-6 md:mb-8 px-4">
+          Sorry, we encountered an issue
+        </h1>
+
+        <!-- Error message with instructions -->
+        <div class="text-gray-700 text-base md:text-lg leading-relaxed px-4 space-y-4">
+          <p>
+            Something went wrong on our end. Please try submitting again. We apologize for the
+            inconvenience.
+          </p>
+          <p>
+            Please refresh the page and try again. If the problem continues, please
+            <a href="#" class="text-blue-600 hover:text-blue-800 underline">contact support</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM STATE - The actual form with 3 steps -->
+  <div v-else class="max-w-6xl mx-auto">
     <BreadcrumbNavigation :current-step="currentStep" />
 
-    <form id="multiStepForm" @submit.prevent="nextStep">
-      <!-- Step 1: Create a new job posting -->
+    <form id="multiStepForm" novalidate @submit.prevent="nextStep">
+      <!-- Step 1: Basic job posting information -->
       <div class="form-step" :class="{ active: currentStep === 1 }">
         <h1 class="text-4xl font-bold text-teal-700 mb-8">{{ getStepTitle(1) }}</h1>
 
         <div class="form-container">
+          <!-- Job title field -->
           <FormInput v-model="jobTitle" label="Job title" placeholder="Placeholder text" required />
 
-          <!-- Organization Name and Type -->
+          <!-- Organization name and type in a row -->
           <div class="form-row">
             <FormInput
               v-model="organizationName"
@@ -343,6 +475,7 @@ function getContinueText(): string {
             />
           </div>
 
+          <!-- About organization text area -->
           <FormTextarea
             v-model="aboutOrganization"
             label="About the organization"
@@ -351,7 +484,7 @@ function getContinueText(): string {
             :show-character-count="true"
           />
 
-          <!-- Street Address and Province -->
+          <!-- Address fields in rows -->
           <div class="form-row">
             <FormInput
               v-model="streetAddress"
@@ -362,12 +495,12 @@ function getContinueText(): string {
             <FormSelect v-model="province" label="Province" :options="provinceOptions" required />
           </div>
 
-          <!-- City and Country -->
           <div class="form-row">
             <FormInput v-model="city" label="City" placeholder="Placeholder text" required />
             <FormSelect v-model="country" label="Country" :options="countryOptions" required />
           </div>
 
+          <!-- Opportunity types as checkboxes -->
           <FormCheckboxGrid
             v-model="opportunityTypes"
             label="Opportunity type"
@@ -377,23 +510,26 @@ function getContinueText(): string {
         </div>
       </div>
 
-      <!-- Step 2: Job specifications -->
+      <!-- Step 2: Job requirements and specifications -->
       <div class="form-step" :class="{ active: currentStep === 2 }">
         <h1 class="text-4xl font-bold text-teal-700 mb-8">{{ getStepTitle(2) }}</h1>
 
         <div class="form-container">
+          <!-- Subject areas as checkboxes -->
           <FormCheckboxGrid
             v-model="subjectAreas"
             label="Subject area"
             :options="subjectAreaOptions"
           />
 
+          <!-- Grade levels as checkboxes -->
           <FormCheckboxGrid
             v-model="gradeLevel"
             label="Grade level(s)"
             :options="gradeLevelOptions"
           />
 
+          <!-- Compensation as radio buttons -->
           <FormRadioGroup
             v-model="compensation"
             label="Recognition and Compensation"
@@ -401,6 +537,7 @@ function getContinueText(): string {
             required
           />
 
+          <!-- Years of experience dropdown -->
           <FormSelect
             v-model="yearsOfExperience"
             label="Years of experience required"
@@ -408,12 +545,14 @@ function getContinueText(): string {
             style="max-width: 300px"
           />
 
+          <!-- Certifications as checkboxes -->
           <FormCheckboxGrid
             v-model="certifications"
             label="Certification required"
             :options="certificationOptions"
           />
 
+          <!-- Qualifications text area -->
           <FormTextarea
             v-model="qualifications"
             label="Qualifications"
@@ -424,11 +563,12 @@ function getContinueText(): string {
         </div>
       </div>
 
-      <!-- Step 3: Job description -->
+      <!-- Step 3: Job description and application details -->
       <div class="form-step" :class="{ active: currentStep === 3 }">
         <h1 class="text-4xl font-bold text-teal-700 mb-8">{{ getStepTitle(3) }}</h1>
 
         <div class="form-container">
+          <!-- Job description text area -->
           <FormTextarea
             v-model="jobDescription"
             label="Job description"
@@ -439,6 +579,7 @@ function getContinueText(): string {
             class="large-textarea"
           />
 
+          <!-- Application link with description -->
           <div class="form-group">
             <FormInput
               v-model="applicationLink"
@@ -449,6 +590,7 @@ function getContinueText(): string {
             <div class="field-description">(email or link to job posting / job portal)</div>
           </div>
 
+          <!-- Application deadline with format hint -->
           <div class="form-group">
             <FormInput
               v-model="applicationDeadline"
@@ -462,7 +604,7 @@ function getContinueText(): string {
         </div>
       </div>
 
-      <!-- Navigation Buttons -->
+      <!-- Navigation buttons at bottom -->
       <NavigationButtons
         :show-back="currentStep > 1"
         :continue-text="getContinueText()"
@@ -475,10 +617,8 @@ function getContinueText(): string {
 </template>
 
 <style scoped>
-/* @import '../assets/page3.css'; */
-/* Comment out until needed or it can cause errors elsewhere. */
+@import '../assets/base.css';
 
-/* Multi-step form styling */
 .form-step {
   display: none;
 }
@@ -487,12 +627,10 @@ function getContinueText(): string {
   display: block;
 }
 
-/* Large textarea specific styling */
 .large-textarea {
   min-height: 200px;
 }
 
-/* Smooth transitions for better UX */
 .form-step {
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
@@ -503,7 +641,6 @@ function getContinueText(): string {
   display: block;
 }
 
-/* Step indicator styling (if you want to add visual indicators later) */
 .step-indicator {
   display: flex;
   justify-content: center;

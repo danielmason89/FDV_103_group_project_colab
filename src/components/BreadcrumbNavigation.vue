@@ -45,5 +45,5 @@ defineProps<Props>()
 </template>
 
 <style scoped>
-@import '../assets/page3.css';
+@import '../assets/base.css';
 </style>
