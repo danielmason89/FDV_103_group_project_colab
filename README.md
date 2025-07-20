@@ -143,6 +143,9 @@ If you're stuck or unsure how to proceed, reach out to:
 Travis, Daniel, or Natalie (group leads)
 Use the group-project discussion board in Avenue to Learn
 
+CoLab Opportunity Board Form Fields:
+https://docs.google.com/spreadsheets/d/1ZJsS3FGUM9GcY8ZbbyhgzTjYFNlntJQttr7SluFKNg0/edit?usp=sharing
+
 ---
 
 ## 📚 Course Reference
