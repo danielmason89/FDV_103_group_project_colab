@@ -1,15 +1,23 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue'
+// Components that are used
 import FilterPanel from '@/components/filterPanel.vue'
 import JobCardComponent from '@/components/jobsCardComponent.vue'
-import { ref, computed } from 'vue'
+
+interface Job {
+  id: number
+  jobTitle: string
+  organizationName: string
+  organizationType: string
+  datePosted: string
+}
 
 const showFilter = ref(false)
 const toggleFilter = () => {
   showFilter.value = !showFilter.value
 }
 
-// Dummy job posts data (replace with API or file data later)
-const jobs = ref([
+const jobs = ref<Job[]>([
   {
     id: 1,
     jobTitle: 'Grade 3 Teacher',
@@ -97,11 +105,10 @@ const jobs = ref([
 ])
 
 const search = ref('')
-const sortOption = ref('date')
+const sortOption = ref<'date' | 'az' | 'za'>('date')
 const viewMode = ref<'grid' | 'list'>('grid')
 
-// Badge color mapping (matches CSS variables in base.css)
-const badgeStyles = {
+const badgeStyles: Record<string, { bg: string; color: string }> = {
   'School Board': { bg: 'var(--schoolBoardBadge)', color: 'var(--schoolBoardText)' },
   'Private School': { bg: 'var(--privateSchoolBadge)', color: 'var(--privateSchoolText)' },
   Camp: { bg: 'var(--campBadge)', color: 'var(--campText)' },
@@ -124,35 +131,26 @@ const badgeStyles = {
   Other: { bg: 'var(--otherBadge)', color: 'var(--otherText)' },
 }
 
-// Helper to get badge style
 function badgeStyle(orgType: string) {
-  const style = badgeStyles[orgType] || badgeStyles['Other']
-  return {
-    backgroundColor: style.bg,
-    color: style.color,
-  }
+  return badgeStyles[orgType] || badgeStyles['Other']
 }
 
-// Filtering and sorting logic
 const filteredJobs = computed(() => {
-  const filtered = jobs.value.filter((job) =>
+  let filtered = jobs.value.filter((job) =>
     job.jobTitle.toLowerCase().includes(search.value.toLowerCase()),
   )
-
   if (sortOption.value === 'az') {
-    return filtered.slice().sort((a, b) => a.jobTitle.localeCompare(b.jobTitle))
+    filtered = filtered.slice().sort((a, b) => a.jobTitle.localeCompare(b.jobTitle))
   } else if (sortOption.value === 'za') {
-    return filtered.slice().sort((a, b) => b.jobTitle.localeCompare(a.jobTitle))
+    filtered = filtered.slice().sort((a, b) => b.jobTitle.localeCompare(a.jobTitle))
   } else if (sortOption.value === 'date') {
-    return filtered
+    filtered = filtered
       .slice()
       .sort((a, b) => new Date(b.datePosted).getTime() - new Date(a.datePosted).getTime())
-  } else {
-    return filtered
   }
+  return filtered
 })
 
-// For toggling view mode
 function setGridView() {
   viewMode.value = 'grid'
 }
@@ -162,292 +160,88 @@ function setListView() {
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto">
-    <h1 class="page-title text-2xl mb-1">Opportunities</h1>
+  <div>
+    <button @click="toggleFilter">{{ showFilter ? 'Hide' : 'Show' }} Filters</button>
 
-    <div class="search-filter-bar flex flex-wrap gap-4 items-center mt-1 mb-1">
-      <!-- Left side group -->
-      <div class="flex items-center gap-4 flex-wrap flex-grow relative">
-        <input
-          v-model="search"
-          type="search"
-          placeholder="Search anything..."
-          class="search-input border rounded px-3 py-1"
-        />
+    <FilterPanel v-if="showFilter" />
 
-        <!-- Filter Icon Button -->
-        <button
-          @click="toggleFilter"
-          class="toggle-filter-btn"
-          :class="{ active: showFilter }"
-          aria-label="Toggle Filter Panel"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            aria-hidden="true"
-            data-slot="icon"
-            height="25"
-            width="25"
-            class="h-6 w-6 cursor-pointer text-40"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z"
-            ></path>
-          </svg>
-        </button>
+    <input type="text" v-model="search" placeholder="Search job titles..." style="margin: 1em 0" />
 
-        <!-- Floating Filter Panel with Transition -->
-        <transition name="fade-slide">
-          <FilterPanel
-            v-if="showFilter"
-            class="absolute top-14 left-0 z-[9999] shadow-lg bg-white border rounded p-4 min-w-[250px]"
-          />
-        </transition>
-
-        <select v-model="sortOption" class="sort-select border rounded px-2 py-1">
-          <option value="date">Date Posted</option>
-          <option value="az">A-Z</option>
-          <option value="za">Z-A</option>
-        </select>
-      </div>
-
-      <!-- Right side group pushed right -->
-      <div class="flex items-center gap-x-4 ml-4">
-        <button
-          class="primary-button flex items-center gap-x-2 px-3 py-1"
-          style="background-color: var(--primary); color: var(--white)"
-        >
-          <i class="fa-solid fa-square-plus" style="margin-right: 0.5rem"></i>
-          <span>Request New Job Posting</span>
-        </button>
-
-        <!-- Grid View Button -->
-        <button
-          :class="['view-toggle-btn', viewMode === 'grid' ? 'active' : '']"
-          @click="setGridView"
-          aria-label="Square View"
-          type="button"
-        >
-          <!-- Grid View SVG -->
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            aria-hidden="true"
-            data-slot="icon"
-            width="24"
-            height="24"
-            class="cursor-pointer text-100"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z"
-            ></path>
-          </svg>
-        </button>
-
-        <!-- List View Button -->
-        <button
-          :class="['view-toggle-btn', viewMode === 'list' ? 'active' : '']"
-          @click="setListView"
-          aria-label="List View"
-          type="button"
-        >
-          <!-- List View SVG -->
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            aria-hidden="true"
-            data-slot="icon"
-            width="24"
-            height="24"
-            class="cursor-pointer text-100"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-            ></path>
-          </svg>
-        </button>
-      </div>
+    <div>
+      <label> <input type="radio" value="date" v-model="sortOption" /> Sort by Date </label>
+      <label> <input type="radio" value="az" v-model="sortOption" /> Sort A-Z </label>
+      <label> <input type="radio" value="za" v-model="sortOption" /> Sort Z-A </label>
     </div>
 
-    <!-- Card Grid View -->
-    <div
-      v-if="viewMode === 'grid'"
-      class="card-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
-    >
+    <div style="margin: 1em 0">
+      <button :disabled="viewMode === 'grid'" @click="setGridView">Grid View</button>
+      <button :disabled="viewMode === 'list'" @click="setListView">List View</button>
+    </div>
+
+    <div v-if="viewMode === 'grid'" class="grid-container">
       <JobCardComponent
         v-for="job in filteredJobs"
         :key="job.id"
-        :jobName="job.jobTitle"
-        :organizationName="job.organizationName"
-        :organizationType="job.organizationType"
-        :badgeStyle="badgeStyle(job.organizationType)"
+        :job="job"
+        :badge-style="badgeStyle(job.organizationType)"
       />
     </div>
 
-    <!-- List/Table View -->
-    <div v-else>
-      <table class="job-table">
-        <thead>
-          <tr>
-            <th class="table-heading first-heading">Job Name</th>
-            <th class="table-heading last-heading">Organization Name</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="job in filteredJobs" :key="job.id" class="table-row">
-            <td>{{ job.jobTitle }}</td>
-            <td>
-              <span class="badge" :style="badgeStyle(job.organizationName)">
-                {{ job.organizationName }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <table v-else class="list-table">
+      <thead>
+        <tr>
+          <th>Job Title</th>
+          <th>Organization</th>
+          <th>Type</th>
+          <th>Date Posted</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="job in filteredJobs" :key="job.id">
+          <td>{{ job.jobTitle }}</td>
+          <td>{{ job.organizationName }}</td>
+          <td>
+            <span
+              class="badge"
+              :style="{
+                backgroundColor: badgeStyle(job.organizationType).bg,
+                color: badgeStyle(job.organizationType).color,
+              }"
+            >
+              {{ job.organizationType }}
+            </span>
+          </td>
+          <td>{{ job.datePosted }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <style scoped>
-/* Transition fade-slide */
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition: all 0.3s ease;
-}
-.fade-slide-enter-from,
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
-}
-.fade-slide-enter-to,
-.fade-slide-leave-from {
-  opacity: 1;
-  transform: translateY(0);
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
 }
 
-/* Button hover */
-.primary-button:hover {
-  background-color: #add9c4;
-  cursor: pointer;
-}
-
-/* Filter button cursor */
-button {
-  cursor: pointer;
-}
-
-/* Toggle Filter Panel button styles */
-.toggle-filter-btn {
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  background: transparent;
-  border: none;
-  transition: background 0.15s;
-}
-.toggle-filter-btn:hover {
-  background: rgb(179 177 187 / 0.1);
-}
-.toggle-filter-btn.active {
-  background: rgb(255 255 255 / 1);
-}
-
-/* Basic styling for inputs/select */
-.search-input,
-.sort-select {
-  border: 1px solid #ccc;
-  border-radius: 0.375rem;
-  padding: 0.25rem 0.5rem;
-  outline: none;
-}
-
-/* Card grid spacing */
-.card-grid {
-  margin-top: 1.5rem;
-}
-
-/* View toggle button */
-.view-toggle-btn {
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  background: transparent;
-  border: none;
-  transition: background 0.15s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.view-toggle-btn.active {
-  background: rgb(255 255 255 / 1);
-}
-.view-toggle-btn:not(.active):hover {
-  background: rgb(179 177 187 / 0.1);
-}
-
-/* List View table styles */
-.job-table {
+.list-table {
   width: 100%;
-  background-color: var(--cardWhiteBG);
-  box-shadow:
-    0 0 #0000,
-    0 0 #0000,
-    0 0 #0000,
-    0 0 #0000,
-    0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -4px rgba(0, 0, 0, 0.1) !important;
-  border-radius: 0.5rem;
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: collapse;
 }
 
-.table-heading {
-  padding: 1.25rem;
-  background-color: #e7eced;
-  color: #04454d;
-  font-weight: 700;
-  font-size: 0.75rem;
-  line-height: 1rem;
+.list-table th,
+.list-table td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
   text-align: left;
 }
 
-.first-heading {
-  border-top-left-radius: 0.5rem;
-}
-
-.last-heading {
-  border-top-right-radius: 0.5rem;
-}
-
-.table-row td {
-  padding: 0.75rem;
-  color: var(--heading);
-  font-size: 1.1rem;
-  background: transparent;
-  transition:
-    background 0.2s,
-    color 0.2s;
-}
-
-.table-row:hover td {
-  background-color: rgb(4 69 77);
-  color: #fff;
-  transition:
-    background 0.2s,
-    color 0.2s;
+.badge {
+  padding: 0.25em 0.5em;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+  font-weight: 600;
+  display: inline-block;
 }
 </style>
