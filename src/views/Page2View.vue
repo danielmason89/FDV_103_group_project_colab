@@ -1,4 +1,4 @@
- "<script setup lang="ts">
+<script setup lang="ts">
 import { ref } from 'vue'
 
 // import BreadcrumbNavigation from '@/components/BreadcrumbNavigation.vue'
@@ -10,12 +10,20 @@ import SectionCard from '@/components/SectionCard.vue'
 import jobCardDetailsComponent from '@/components/jobCardDetailsComponent.vue'
 import '../assets/base.css'
 
+const badges = [
+  { label: 'Camp, Child Care', bg: 'var(--campBadge)', text: 'var(--campText)' },
+  { label: 'All Grade Levels' },
+  { label: 'Years of Experience: Entry Level' },
+  { label: 'Recognition & Compensation: Hourly, Salary' },
+  { label: 'Application Deadline: dd/mm/yyyy' },
+]
+
 const selectedSubjects = ref<string[]>([])
 
 function updateSubjects(subjects: string[]) {
   selectedSubjects.value = subjects
   console.log('Selected subjects:', subjects)
-}
+
 </script>
 
 <template>
