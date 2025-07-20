@@ -138,6 +138,7 @@ function updateSubjects(subjects: string[]) {
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <div class="flex justify-evenly align-center">
           <applyButtonComponent
+            class="apply-button"
             text="Apply Now!"
             aria-label="Apply for this teaching job"
           />
@@ -168,7 +169,17 @@ p {
   margin: 1rem 0rem;
 }
 
-@media (max-width: 1200px) {
+.apply-button {
+  width: 50%;
+  justify-content: space-evenly;
+}
+
+.apply-button:hover {
+  background-color: #add9c4;
+  cursor: pointer;
+}
+
+/* @media (max-width: 1200px) {
   .job-card-details {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -177,5 +188,5 @@ p {
   .job-card-details {
     grid-template-columns: repeat(1, 1fr);
   }
-}
+} */
 </style>
