@@ -308,20 +308,27 @@ function setListView() {
         <thead>
           <tr>
             <th class="table-heading first-heading">Job Name</th>
-            <th class="table-heading last-heading">Organization Name</th>
+            <th class="table-heading">Organization Name</th>
+            <th class="table-heading last-heading">Organization Type</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="job in filteredJobs" :key="job.id" class="table-row">
             <td>{{ job.jobTitle }}</td>
+            <td>{{ job.organizationName }}</td>
             <td>
-              <span class="badge" :style="badgeStyle(job.organizationName)">
-                {{ job.organizationName }}
+              <span class="badge" :style="badgeStyle(job.organizationType)">
+                {{ job.organizationType }}
               </span>
             </td>
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- No results message -->
+    <div v-if="filteredJobs.length === 0" class="text-center mt-8">
+      <p class="text-gray-500">No job postings found matching your criteria.</p>
     </div>
   </div>
 </template>
