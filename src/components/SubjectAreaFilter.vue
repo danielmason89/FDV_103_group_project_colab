@@ -1,5 +1,5 @@
 <template>
-  <div class="subject-filter">
+  <div :class="grid ? 'grid grid-cols-1 md:grid-cols-2 gap-2' : 'subject-filter'">
     <div
       v-for="subject in subjects"
       :key="subject.name"
@@ -27,6 +27,12 @@
 <script lang="ts">
 export default {
   name: 'SubjectAreaFilter',
+  props: {
+    grid: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       subjects: [

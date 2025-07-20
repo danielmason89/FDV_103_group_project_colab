@@ -8,7 +8,7 @@ defineProps<Props>()
 
 <template>
   <div class="mb-8">
-    <div class="flex items-center space-x-2 text-sm text-gray-600 mb-4">
+    <div class="flex items-center mb-4 space-x-2 text-sm text-gray-600">
       <span>&lt; breadcrumbs here</span>
     </div>
 
