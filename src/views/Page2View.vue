@@ -10,14 +10,6 @@ import SectionCard from '@/components/SectionCard.vue'
 import jobCardDetailsComponent from '@/components/jobCardDetailsComponent.vue'
 import '../assets/base.css'
 
-const badges = [
-  { label: 'Camp, Child Care', bg: 'var(--campBadge)', text: 'var(--campText)' },
-  { label: 'All Grade Levels' },
-  { label: 'Years of Experience: Entry Level' },
-  { label: 'Recognition & Compensation: Hourly, Salary' },
-  { label: 'Application Deadline: dd/mm/yyyy' },
-]
-
 const selectedSubjects = ref<string[]>([])
 
 function updateSubjects(subjects: string[]) {
@@ -138,7 +130,6 @@ function updateSubjects(subjects: string[]) {
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <div class="flex justify-evenly align-center">
           <applyButtonComponent
-            class="apply-button"
             text="Apply Now!"
             aria-label="Apply for this teaching job"
           />
@@ -167,16 +158,6 @@ p {
 .card {
   padding: 1rem;
   margin: 1rem 0rem;
-}
-
-.apply-button {
-  width: 50%;
-  justify-content: space-evenly;
-}
-
-.apply-button:hover {
-  background-color: #add9c4;
-  cursor: pointer;
 }
 
 /* @media (max-width: 1200px) {
