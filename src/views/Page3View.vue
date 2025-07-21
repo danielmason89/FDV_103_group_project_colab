@@ -360,20 +360,20 @@ function getContinueText(): string {
 <template>
   <!-- SUCCESS STATE - Show when form is submitted successfully -->
   <div v-if="submissionState === 'success'" class="flex flex-col min-h-full">
-    <div class="max-w-6xl mx-auto w-full">
+    <div class="w-full max-w-6xl mx-auto">
       <BreadcrumbNavigation :current-step="3" />
     </div>
 
     <!-- Success message centered on page -->
-    <div class="flex-1 flex items-center justify-center px-4 py-8">
-      <div class="text-center max-w-2xl mx-auto">
+    <div class="flex items-center justify-center flex-1 px-4 py-8">
+      <div class="max-w-2xl mx-auto text-center">
         <!-- Green checkmark icon -->
         <div class="flex justify-center mb-6 md:mb-8">
           <div
-            class="w-20 h-20 md:w-24 md:h-24 bg-green-500 rounded-full flex items-center justify-center border-4 border-green-400"
+            class="flex items-center justify-center w-20 h-20 bg-green-500 border-4 border-green-400 rounded-full md:w-24 md:h-24"
           >
             <svg
-              class="w-10 h-10 md:w-12 md:h-12 text-white"
+              class="w-10 h-10 text-white md:w-12 md:h-12"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -389,24 +389,24 @@ function getContinueText(): string {
         </div>
 
         <!-- Success title -->
-        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-teal-700 mb-4 md:mb-6 px-4">
+        <h1 class="px-4 mb-4 text-3xl font-bold text-teal-700 md:text-4xl lg:text-5xl md:mb-6">
           Success!
         </h1>
 
         <!-- Success subtitle -->
-        <h2 class="text-xl md:text-2xl font-semibold text-teal-700 mb-6 md:mb-8 px-4">
+        <h2 class="px-4 mb-6 text-xl font-semibold text-teal-700 md:text-2xl md:mb-8">
           Your job posting has been submitted for review
         </h2>
 
         <!-- Success message with details -->
-        <div class="text-gray-700 text-base md:text-lg leading-relaxed px-4 space-y-4">
+        <div class="px-4 space-y-4 text-base leading-relaxed text-gray-700 md:text-lg">
           <p>
             Thank you for your submission. Your post is currently under review by our team. We'll
             send you an email once it's approved — keep an eye on your inbox!
           </p>
           <p>
             If you have any questions or need to make changes, feel free to
-            <a href="#" class="text-blue-600 hover:text-blue-800 underline">contact us</a>!
+            <a href="#" class="text-blue-600 underline hover:text-blue-800">contact us</a>!
           </p>
 
           <div class="flex justify-center mt-8">
@@ -419,27 +419,27 @@ function getContinueText(): string {
 
   <!-- FAILURE STATE - Show when form submission fails -->
   <div v-else-if="submissionState === 'failure'" class="flex flex-col min-h-full">
-    <div class="max-w-6xl mx-auto w-full">
+    <div class="w-full max-w-6xl mx-auto">
       <BreadcrumbNavigation :current-step="3" />
     </div>
 
     <!-- Error message -->
-    <div class="flex-1 flex items-center justify-center px-4 py-8">
-      <div class="text-left max-w-4xl mx-auto">
+    <div class="flex items-center justify-center flex-1 px-4 py-8">
+      <div class="max-w-4xl mx-auto text-left">
         <!-- Error title -->
-        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-teal-700 mb-6 md:mb-8 px-4">
+        <h1 class="px-4 mb-6 text-3xl font-bold text-teal-700 md:text-4xl lg:text-5xl md:mb-8">
           Sorry, we encountered an issue
         </h1>
 
         <!-- Error message with instructions -->
-        <div class="text-gray-700 text-base md:text-lg leading-relaxed px-4 space-y-4">
+        <div class="px-4 space-y-4 text-base leading-relaxed text-gray-700 md:text-lg">
           <p>
             Something went wrong on our end. Please try submitting again. We apologize for the
             inconvenience.
           </p>
           <p>
             Please refresh the page and try again. If the problem continues, please
-            <a href="#" class="text-blue-600 hover:text-blue-800 underline">contact support</a>
+            <a href="#" class="text-blue-600 underline hover:text-blue-800">contact support</a>
           </p>
         </div>
       </div>
@@ -453,7 +453,7 @@ function getContinueText(): string {
     <form id="multiStepForm" novalidate @submit.prevent="nextStep">
       <!-- Step 1: Basic job posting information -->
       <div class="form-step" :class="{ active: currentStep === 1 }">
-        <h1 class="text-4xl font-bold text-teal-700 mb-8">{{ getStepTitle(1) }}</h1>
+        <h1 class="mb-8 text-4xl font-bold text-teal-700">{{ getStepTitle(1) }}</h1>
 
         <div class="form-container">
           <!-- Job title field -->
@@ -512,7 +512,7 @@ function getContinueText(): string {
 
       <!-- Step 2: Job requirements and specifications -->
       <div class="form-step" :class="{ active: currentStep === 2 }">
-        <h1 class="text-4xl font-bold text-teal-700 mb-8">{{ getStepTitle(2) }}</h1>
+        <h1 class="mb-8 text-4xl font-bold text-teal-700">{{ getStepTitle(2) }}</h1>
 
         <div class="form-container">
           <!-- Subject areas as checkboxes -->
@@ -565,7 +565,7 @@ function getContinueText(): string {
 
       <!-- Step 3: Job description and application details -->
       <div class="form-step" :class="{ active: currentStep === 3 }">
-        <h1 class="text-4xl font-bold text-teal-700 mb-8">{{ getStepTitle(3) }}</h1>
+        <h1 class="mb-8 text-4xl font-bold text-teal-700">{{ getStepTitle(3) }}</h1>
 
         <div class="form-container">
           <!-- Job description text area -->

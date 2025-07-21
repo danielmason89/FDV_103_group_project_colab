@@ -1,21 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
 // import BreadcrumbNavigation from '@/components/BreadcrumbNavigation.vue'
 import applyButtonComponent from '@/components/applyButtonComponent.vue'
 import opportunityTypeComponent from '@/components/opportunityTypeComponent.vue'
-import SubjectAreaFilter from '@/components/SubjectAreaFilter.vue'
 import certificationComponent from '@/components/certificationComponent.vue'
 import SectionCard from '@/components/SectionCard.vue'
 import jobCardDetailsComponent from '@/components/jobCardDetailsComponent.vue'
+import subjectAreacomponent from '@/components/subjectAreacomponent.vue'
 import '../assets/base.css'
-
-const selectedSubjects = ref<string[]>([])
-
-function updateSubjects(subjects: string[]) {
-  selectedSubjects.value = subjects
-  console.log('Selected subjects:', subjects)
-}
 
 </script>
 
@@ -53,7 +44,7 @@ function updateSubjects(subjects: string[]) {
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <h2 class="mb-2 text-lg font-extrabold">Subject Area</h2>
         <SectionCard class="mb-4 text-lg font-semibold">
-          <SubjectAreaFilter grid @filter-changed="updateSubjects" />
+          <subjectAreacomponent grid />
         </SectionCard>
       </div>
 
@@ -151,23 +142,12 @@ p {
 .job-card-details {
   display: grid;
   grid-gap: 1px;
-  grid-template-columns: repeat(3, 1fr); /* 3 columns */
-  grid-template-rows: repeat(2, auto); /* 2 rows */
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, auto);
 }
 
 .card {
   padding: 1rem;
   margin: 1rem 0rem;
 }
-
-/* @media (max-width: 1200px) {
-  .job-card-details {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-@media (max-width: 900px) {
-  .job-card-details {
-    grid-template-columns: repeat(1, 1fr);
-  }
-} */
 </style>
