@@ -20,6 +20,9 @@ function loadJobsFromLocalStorage() {
   jobSubmissions.value = parsed
 }
 
+// On component mount, we load the serialized job posts from localStorage, parse it to JSON, and assign it to this ref
+// jobSubmissions then holds an array of all job posts from localStorage.
+// Using ref means Vue tracks it reactively and updates the UI automatically when it changes.
 onMounted(() => {
   loadJobsFromLocalStorage()
 
@@ -137,6 +140,8 @@ function bannerStyle(orgType: OrgType) {
 }
 
 // Filter jobs & Sort jobs
+// We use a computed property to filter and sort this data before displaying.
+// This means any UI bindings that rely on filteredJobs will reactively update if you change the search query, filters, or the underlying data.
 const filteredJobs = computed(() => {
   const s = search.value.toLowerCase()
   const f = activeFilters.value
