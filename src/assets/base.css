@@ -159,6 +159,10 @@ textarea {
   box-sizing: border-box;
 }
 
+select {
+  height: 2.65rem;
+}
+
 .primary-button,
 .secondary-button {
   font-weight: bold;
