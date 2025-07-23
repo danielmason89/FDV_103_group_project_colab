@@ -1,122 +1,65 @@
 <script setup lang="ts">
 import FilterPanel from '@/components/filterPanel.vue'
 import JobCardComponent from '@/components/jobsCardComponent.vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
-import { ref, computed } from 'vue'
+//update the jobSubmissions ref when the data in local storage actually changes
+const jobSubmissions = ref(JSON.parse(localStorage.getItem('jobSubmissions') || '[]'))
+onMounted(() => {
+  window.addEventListener('storage', () => {
+    jobSubmissions.value = JSON.parse(localStorage.getItem('jobSubmissions') || '[]')
+  })
+})
+onUnmounted(() => {
+  window.removeEventListener('storage', () => {
+    jobSubmissions.value = JSON.parse(localStorage.getItem('jobSubmissions') || '[]')
+  })
+})
 
-/*
-function useStorage() {
-  const jobStore = localStorage.getItem(pars)
-  JSON.parse(localStorage.getItem(jobSubmissions))
-  console.log("here", jobStore)
-  const data = ref(storedValue ? JSON.parse(storedValue) : defaultValue)
-  return data
-}
+// Watch for changes in local storage
+const formattedJobs = computed(() => {
+  return jobSubmissions.value.map((job) => ({
+    id: job.id,
+    jobTitle: job.jobTitle,
+    organizationName: job.organizationName,
+    organizationType: job.organizationType,
+    datePosted: job.submittedAt,
+    streetAddress: job.streetAddress,
+    province: job.province,
+    city: job.city,
+    country: job.country,
+    opportunityTypes: job.opportunityTypes,
+    subjectAreas: job.subjectAreas,
+    gradeLevel: job.gradeLevel,
+    compensation: job.compensation,
+    yearsOfExperience: job.yearsOfExperience,
+    certifications: job.certifications,
+    qualifications: job.qualifications,
+    jobDescription: job.jobDescription,
+    applicationLink: job.applicationLink,
+    applicationDeadline: job.applicationDeadline,
+    approvalStatus: job.approvalStatus,
+  }))
+})
 
-export function getJobSubmissions(): JobSubmission[] {
-  return JSON.parse(localStorage.getItem('jobSubmissions') || '[]')
-}
-*/
-
+// Reactive variables for search, sort, and view mode
+const search = ref('')
+const sortOption = ref('date')
+const viewMode = ref<'grid' | 'list'>('grid')
 const showFilter = ref(false)
 const toggleFilter = () => {
   showFilter.value = !showFilter.value
 }
 
-// Dummy job posts data (replace with API or file data later)
+// Functions to set view mode
+const setGridView = () => {
+  viewMode.value = 'grid'
+}
+const setListView = () => {
+  viewMode.value = 'list'
+}
 
-const jobs = ref([
-  {
-    id: 1,
-    jobTitle: 'Grade 3 Teacher',
-    organizationName: 'Maple Ridge School',
-    organizationType: 'School Board',
-    datePosted: '2025-07-15',
-  },
-  {
-    id: 2,
-    jobTitle: 'Math Tutor',
-    organizationName: 'Bright Minds Tutoring',
-    organizationType: 'Tutoring Center',
-    datePosted: '2025-07-17',
-  },
-  {
-    id: 3,
-    jobTitle: 'Camp Counselor',
-    organizationName: 'Evergreen Summer Camp',
-    organizationType: 'Camp',
-    datePosted: '2025-07-10',
-  },
-  {
-    id: 4,
-    jobTitle: 'Early Childhood Educator',
-    organizationName: 'Little Sprouts Daycare',
-    organizationType: 'Child Care',
-    datePosted: '2025-07-18',
-  },
-  {
-    id: 5,
-    jobTitle: 'STEM Program Lead',
-    organizationName: 'InnovEd Labs',
-    organizationType: 'Educational Technology Company',
-    datePosted: '2025-07-12',
-  },
-  {
-    id: 6,
-    jobTitle: 'Fundraising Coordinator',
-    organizationName: 'Hearts United Foundation',
-    organizationType: 'Charity',
-    datePosted: '2025-07-14',
-  },
-  {
-    id: 7,
-    jobTitle: 'Research Assistant',
-    organizationName: 'Westview University',
-    organizationType: 'Post-Secondary',
-    datePosted: '2025-07-16',
-  },
-  {
-    id: 8,
-    jobTitle: 'Volunteer Organizer',
-    organizationName: 'Youth Future Initiative',
-    organizationType: 'Educational Non-Profit',
-    datePosted: '2025-07-13',
-  },
-  {
-    id: 9,
-    jobTitle: 'Policy Analyst',
-    organizationName: 'Ministry of Learning',
-    organizationType: 'Government Education Department',
-    datePosted: '2025-07-11',
-  },
-  {
-    id: 10,
-    jobTitle: 'Substitute Teacher',
-    organizationName: 'Oak Hill Academy',
-    organizationType: 'Private School',
-    datePosted: '2025-07-19',
-  },
-  {
-    id: 11,
-    jobTitle: 'General Education Assistant',
-    organizationName: 'Northern Pines College',
-    organizationType: 'Other',
-    datePosted: '2025-07-09',
-  },
-  {
-    id: 12,
-    jobTitle: 'Digital Learning Specialist',
-    organizationName: 'Future Pathways Online',
-    organizationType: 'Educational Technology Company',
-    datePosted: '2025-07-20',
-  },
-])
-
-const search = ref('')
-const sortOption = ref('date')
-const viewMode = ref<'grid' | 'list'>('grid')
-
-// Badge color mapping (matches CSS variables in base.css)
+// Define badge styles for different organization types
 const badgeStyles = {
   'School Board': {
     bg: 'var(--schoolBoardBadge)',
@@ -128,7 +71,11 @@ const badgeStyles = {
     color: 'var(--privateSchoolText)',
     banner: 'var(--privateSchoolBanner)',
   },
-  Camp: { bg: 'var(--campBadge)', color: 'var(--campText)', banner: 'var(--campBanner)' },
+  Camp: {
+    bg: 'var(--campBadge)',
+    color: 'var(--campText)',
+    banner: 'var(--campBanner)',
+  },
   'Child Care': {
     bg: 'var(--childCareBadge)',
     color: 'var(--childCareText)',
@@ -170,13 +117,13 @@ const badgeStyles = {
     banner: 'var(--inactiveBanner)',
   },
 }
-
 const defaultStyles = {
   bg: 'var(--inactiveBadge)',
   color: 'var(--inactiveText)',
   banner: 'var(--inactiveBanner)',
 }
-// Helper to get badge style
+
+//Helper function to get badge styles based on organization type
 type OrgType = keyof typeof badgeStyles | string
 function badgeStyle(orgType: OrgType) {
   const style = badgeStyles[orgType] || defaultStyles
@@ -185,7 +132,8 @@ function badgeStyle(orgType: OrgType) {
     color: style.color,
   }
 }
-// Helper to get banner style
+
+// Helper function to get banner styles based on organization type
 function bannerStyle(orgType: OrgType) {
   const style = badgeStyles[orgType] || defaultStyles
   return {
@@ -193,12 +141,11 @@ function bannerStyle(orgType: OrgType) {
   }
 }
 
-// Filtering and sorting logic
+// Computed property to filter jobs based on search input and sort option
 const filteredJobs = computed(() => {
-  const filtered = jobs.value.filter((job) =>
+  const filtered = formattedJobs.value.filter((job) =>
     job.jobTitle.toLowerCase().includes(search.value.toLowerCase()),
   )
-
   if (sortOption.value === 'az') {
     return filtered.slice().sort((a, b) => a.jobTitle.localeCompare(b.jobTitle))
   } else if (sortOption.value === 'za') {
@@ -211,20 +158,11 @@ const filteredJobs = computed(() => {
     return filtered
   }
 })
-
-// For toggling view mode
-function setGridView() {
-  viewMode.value = 'grid'
-}
-function setListView() {
-  viewMode.value = 'list'
-}
 </script>
 
 <template>
   <div class="max-w-6xl mx-auto">
     <h1 class="page-title text-2xl mb-1">Opportunities</h1>
-
     <div class="search-filter-bar flex flex-wrap gap-4 items-center mt-1 mb-1">
       <!-- Left side group -->
       <div class="flex items-center gap-4 flex-wrap flex-grow relative">
@@ -290,7 +228,6 @@ function setListView() {
             class="absolute top-14 left-0 z-[9999] shadow-lg bg-white border rounded p-4 min-w-[250px]"
           />
         </transition>
-
         <select v-model="sortOption" class="sort-select border rounded px-2 py-1">
           <option value="date">Date Posted</option>
           <option value="az">A-Z</option>
