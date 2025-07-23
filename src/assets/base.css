@@ -85,33 +85,49 @@ nav a.router-link-active {
   --secondary: #04454d;
   --secondaryHover: #04454d;
 
-  /* Badges */
+  /* Badges & Banners */
   --inactiveBadge: #b3b1bb;
   --inactiveText: #ffffff;
+  --inactiveBanner: linear-gradient(rgba(255, 255, 255, 1) 0%, rgba(179, 177, 187, 1) 100%);
   --gradeBadge: #90d5ff;
   --gradeText: #2d68c4;
+  --gradeBanner: linear-gradient(rgba(255, 255, 255, 1) 0%, rgba(144, 213, 255, 1) 100%);
   --schoolBoardBadge: #f3cefa;
   --schoolBoardText: #800c93;
+  --schoolBoardBanner: linear-gradient(rgba(255, 255, 255, 1) 0%, rgba(243, 206, 250, 1) 100%);
   --privateSchoolBadge: #fddfa1;
   --privateSchoolText: #ecaa18;
+  --privateSchoolBanner: linear-gradient(rgba(255, 255, 255, 1) 0%, rgba(253, 223, 161, 1) 100%);
   --campBadge: #d9fcf1;
   --campText: #039267;
+  --campBanner: linear-gradient(rgba(255, 255, 255, 1) 0%, rgba(217, 252, 241, 1) 100%);
   --childCareBadge: #fcdbdb;
   --childCareText: #980808;
+  --childCareBanner: linear-gradient(rgba(255, 255, 255, 1) 0%, rgba(252, 219, 219, 1) 100%);
   --charityBadge: #ffecdc;
   --charityText: #df6f0b;
+  --charityBanner: linear-gradient(rgba(255, 255, 255, 1) 0%, rgba(255, 236, 220, 1) 100%);
   --postSecondaryBadge: #9fd1e4;
   --postSecondaryText: #005f84;
+  --postSecondaryBanner: linear-gradient(rgba(255, 255, 255, 1) 0%, rgba(159, 209, 228, 1) 100%);
   --educationalTechBadge: #dad9f5;
   --educationalTechText: #110d59;
+  --educationalTechBanner: linear-gradient(rgba(255, 255, 255, 1) 0%, rgba(218, 217, 245, 1) 100%);
   --tutoringCenterBadge: #ddfbc5;
   --tutoringCenterText: #49950d;
+  --tutoringCenterBanner: linear-gradient(rgba(255, 255, 255, 1) 0%, rgba(221, 251, 197, 1) 100%);
   --educationalNonProfitBadge: #cfe8ff;
   --educationalNonProfitText: #08437a;
+  --educationalNonProfitBanner: linear-gradient(
+    rgba(255, 255, 255, 1) 0%,
+    rgba(207, 232, 255, 1) 100%
+  );
   --governmentBadge: #fed5f2;
   --governmentText: #930c6d;
+  --governmentBanner: linear-gradient(rgba(255, 255, 255, 1) 0%, rgba(254, 213, 242, 1) 100%);
   --otherBadge: #5ecc75;
   --otherText: #4c4958;
+  --otherBanner: linear-gradient(rgba(255, 255, 255, 1) 0%, rgba(94, 204, 117, 1) 100%);
 
   /* Cards */
   --cardgreyBG: #b3b1bb;
@@ -141,6 +157,10 @@ textarea {
   padding: 8px;
   color: var(--input);
   box-sizing: border-box;
+}
+
+select {
+  height: 2.65rem;
 }
 
 .primary-button,
