@@ -86,95 +86,95 @@ Object.values(formState).forEach((field) => {
 
 // DROPDOWN OPTIONS - Predefined choices for form dropdowns
 const organizationTypeOptions = [
-  { value: 'camp', label: 'Camp' },
-  { value: 'charity', label: 'Charity' },
-  { value: 'child-care', label: 'Child Care' },
-  { value: 'educational-non-profit', label: 'Educational Non-Profit' },
-  { value: 'educational-technology-company', label: 'Educational Technology Company' },
-  { value: 'government-education-epartment', label: 'Government Education Department' },
-  { value: 'post-secondary', label: 'Post-Secondary' },
-  { value: 'private-school', label: 'Private School' },
-  { value: 'school-board', label: 'School Board' },
-  { value: 'tutoring-center', label: 'Tutoring Center' },
-  { value: 'other', label: 'Other' },
+  { value: 'Camp', label: 'Camp' },
+  { value: 'Charity', label: 'Charity' },
+  { value: 'Child Care', label: 'Child Care' },
+  { value: 'Educational Non-Profit', label: 'Educational Non-Profit' },
+  { value: 'Educational Technology Company', label: 'Educational Technology Company' },
+  { value: 'Government Education Department', label: 'Government Education Department' },
+  { value: 'Post-Secondary', label: 'Post-Secondary' },
+  { value: 'Private School', label: 'Private School' },
+  { value: 'School Board', label: 'School Board' },
+  { value: 'Tutoring Center', label: 'Tutoring Center' },
+  { value: 'Other', label: 'Other' },
 ]
 
 const provinceOptions = [
-  { value: 'ontario', label: 'Ontario' },
-  { value: 'quebec', label: 'Quebec' },
-  { value: 'bc', label: 'British Columbia' },
-  { value: 'alberta', label: 'Alberta' },
+  { value: 'Ontario', label: 'Ontario' },
+  { value: 'Quebec', label: 'Quebec' },
+  { value: 'British Columbia', label: 'British Columbia' },
+  { value: 'Alberta', label: 'Alberta' },
 ]
 
 const countryOptions = [
-  { value: 'canada', label: 'Canada' },
-  { value: 'usa', label: 'United States' },
-  { value: 'uk', label: 'United Kingdom' },
+  { value: 'Canada', label: 'Canada' },
+  { value: 'USA', label: 'USA' },
+  { value: 'UK', label: 'UK' },
 ]
 
 const opportunityTypeOptions = [
-  { value: 'full-time', label: 'Full-time' },
-  { value: 'contract', label: 'Contract/temporary/seasonal' },
-  { value: 'mentorship', label: 'Mentorship program' },
-  { value: 'part-time', label: 'Part-time' },
-  { value: 'supply', label: 'Supply/substitute teaching' },
-  { value: 'professional', label: 'Professional development' },
-  { value: 'volunteer', label: 'Volunteer' },
-  { value: 'internship-paid', label: 'Internship (paid)' },
-  { value: 'internship-unpaid', label: 'Internship (unpaid)' },
-  { value: 'hybrid', label: 'Hybrid' },
-  { value: 'remote', label: 'Remote' },
-  { value: 'consulting', label: 'Consulting' },
-  { value: 'speaking', label: 'Speaking engagement' },
-  { value: 'in-person', label: 'In person' },
+  { value: 'Full-Time', label: 'Full-Time' },
+  { value: 'Part-Time', label: 'Part-Time' },
+  { value: 'Contract / Temporary / Seasonal', label: 'Contract / Temporary / Seasonal' },
+  { value: 'Supply/Substitute Teaching', label: 'Supply/Substitute Teaching' },
+  { value: 'Mentorship Program', label: 'Mentorship Program' },
+  { value: 'Professional Development', label: 'Professional Development' },
+  { value: 'Consulting', label: 'Consulting' },
+  { value: 'Speaking Engagement', label: 'Speaking Engagement' },
+  { value: 'Volunteer', label: 'Volunteer' },
+  { value: 'Internship (Paid)', label: 'Internship (Paid)' },
+  { value: 'Internship (Unpaid)', label: 'Internship (Unpaid)' },
+  { value: 'In-person', label: 'In-person' },
+  { value: 'Hybrid', label: 'Hybrid' },
+  { value: 'Remote', label: 'Remote' },
 ]
 
 const subjectAreaOptions = [
-  { value: 'english-language-arts', label: 'English/Language Arts' },
-  { value: 'mathematics', label: 'Mathematics' },
-  { value: 'science', label: 'Science' },
-  { value: 'social-studies', label: 'Social Studies' },
-  { value: 'foreign-languages', label: 'Foreign Languages' },
-  { value: 'special-education', label: 'Special Education' },
-  { value: 'physical-education-health', label: 'Physical Education/Health' },
-  { value: 'arts', label: 'Arts (Visual, Music, Performing)' },
-  { value: 'technology-computer-science', label: 'Technology/Computer Science' },
-  { value: 'library-information-services', label: 'Library/Information Services' },
-  { value: 'counselling-student-services', label: 'Counselling/Student Services' },
-  { value: 'administration-leadership', label: 'Administration/Leadership' },
-  { value: 'curriculum-development', label: 'Curriculum Development' },
+  { value: 'English / Language Arts', label: 'English / Language Arts' },
+  { value: 'Mathematics', label: 'Mathematics' },
+  { value: 'Science', label: 'Science' },
+  { value: 'Social Studies', label: 'Social Studies' },
+  { value: 'Foreign Languages', label: 'Foreign Languages' },
+  { value: 'Special Education', label: 'Special Education' },
+  { value: 'Physical Education / Health', label: 'Physical Education / Health' },
+  { value: 'Arts (Visual, Music, Performing)', label: 'Arts (Visual, Music, Performing)' },
+  { value: 'Technology / Computer Science', label: 'Technology / Computer Science' },
+  { value: 'Library/Information Sciences', label: 'Library/Information Sciences' },
+  { value: 'Counseling/Student Services', label: 'Counseling/Student Services' },
+  { value: 'Administration/Leadership', label: 'Administration/Leadership' },
+  { value: 'Curriculum Development', label: 'Curriculum Development' },
   {
-    value: 'educational-technology-instructional-design',
+    value: 'Educational Technology/Instructional Design',
     label: 'Educational Technology/Instructional Design',
   },
-  { value: 'early-childhood-education', label: 'Early Childhood Education' },
+  { value: 'Early Childhood Education', label: 'Early Childhood Education' },
 ]
 
 const gradeLevelOptions = [
-  { value: 'pre-school', label: 'Pre-School' },
-  { value: 'k-8', label: 'K-8' },
-  { value: 'secondary', label: 'Secondary' },
-  { value: 'post-secondary', label: 'Post-Secondary' },
-  { value: 'all-grade-levels', label: 'All Grade Levels' },
+  { value: 'Preschool', label: 'Preschool' },
+  { value: 'K-8', label: 'K-8' },
+  { value: 'Secondary', label: 'Secondary' },
+  { value: 'Post-Secondary', label: 'Post-Secondary' },
+  { value: 'All Grade Levels', label: 'All Grade Levels' },
 ]
 
 const compensationOptions = [
-  { value: 'salary', label: 'Salary' },
-  { value: 'hourly', label: 'Hourly' },
-  { value: 'volunteer', label: 'Volunteer' },
-  { value: 'professional-learning-credits', label: 'Professional Learning Credits' },
+  { value: 'Salary', label: 'Salary' },
+  { value: 'Hourly', label: 'Hourly' },
+  { value: 'Volunteer', label: 'Volunteer' },
+  { value: 'Professional Learning Credits', label: 'Professional Learning Credits' },
 ]
 
 const experienceOptions = [
-  { value: '0-1', label: '0-1 years' },
-  { value: '2-5', label: '2-5 years' },
-  { value: '5-10', label: '5-10 years' },
-  { value: '10+', label: '10+ years' },
+  { value: 'Entry Level', label: 'Entry Level' },
+  { value: '1-3 years', label: '1-3 years' },
+  { value: '3-5 years', label: '3-5 years' },
+  { value: '5+ years', label: '5+ years' },
 ]
 
 const certificationOptions = [
-  { value: 'teaching-license', label: 'Teaching License' },
-  { value: 'subject-certifications', label: 'Subject Certifications' },
+  { value: 'Teaching License', label: 'Teaching License' },
+  { value: 'Subject Certifications', label: 'Subject Certifications' },
   { value: 'other', label: 'Other' },
 ]
 
