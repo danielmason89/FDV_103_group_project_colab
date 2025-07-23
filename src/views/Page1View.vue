@@ -13,23 +13,23 @@ const openJobDetails = (job: any) => {
 // Reactive ref for job submissions
 const jobSubmissions = ref([] as any[])
 
-onMounted(() => {
+function loadJobsFromLocalStorage() {
   const data = localStorage.getItem('jobSubmissions') || '[]'
   const parsed = JSON.parse(data)
   console.log('Jobs loaded from localStorage:', parsed)
   jobSubmissions.value = parsed
+}
 
-  window.addEventListener('storage', () => {
-    const updatedData = localStorage.getItem('jobSubmissions') || '[]'
-    jobSubmissions.value = JSON.parse(updatedData)
-    console.log('LocalStorage updated, new jobs:', jobSubmissions.value)
-  })
+onMounted(() => {
+  loadJobsFromLocalStorage()
+
+  window.addEventListener('storage', loadJobsFromLocalStorage)
+  window.addEventListener('job-list-updated', loadJobsFromLocalStorage)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('storage', () => {
-    jobSubmissions.value = JSON.parse(localStorage.getItem('jobSubmissions') || '[]')
-  })
+  window.removeEventListener('storage', loadJobsFromLocalStorage)
+  window.removeEventListener('job-list-updated', loadJobsFromLocalStorage)
 })
 
 // Reactive variables for search, sort, and view mode
@@ -392,7 +392,13 @@ function clearFilters() {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="job in filteredJobs" :key="job.id" class="table-row">
+            <tr
+              v-for="job in filteredJobs"
+              :key="job.id"
+              class="table-row"
+              @click="openJobDetails(job)"
+              style="cursor: pointer"
+            >
               <td>{{ job.jobTitle }}</td>
               <td>{{ job.organizationName }}</td>
               <td>
