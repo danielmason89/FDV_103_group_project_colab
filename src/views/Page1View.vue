@@ -7,7 +7,7 @@ const router = useRouter()
 
 const openJobDetails = (job: any) => {
   console.log('Navigating to job details with:', job)
-  router.push({ name: 'Page2', params: { id: job.id } })
+  router.push({ name: 'page2', params: { id: job.id } }) // use lowercase 'page2' to match router
 }
 
 //update the jobSubmissions ref when the data in local storage actually changes
