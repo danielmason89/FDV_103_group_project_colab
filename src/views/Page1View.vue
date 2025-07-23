@@ -118,36 +118,78 @@ const viewMode = ref<'grid' | 'list'>('grid')
 
 // Badge color mapping (matches CSS variables in base.css)
 const badgeStyles = {
-  'School Board': { bg: 'var(--schoolBoardBadge)', color: 'var(--schoolBoardText)' },
-  'Private School': { bg: 'var(--privateSchoolBadge)', color: 'var(--privateSchoolText)' },
-  Camp: { bg: 'var(--campBadge)', color: 'var(--campText)' },
-  'Child Care': { bg: 'var(--childCareBadge)', color: 'var(--childCareText)' },
-  Charity: { bg: 'var(--charityBadge)', color: 'var(--charityText)' },
-  'Post-Secondary': { bg: 'var(--postSecondaryBadge)', color: 'var(--postSecondaryText)' },
+  'School Board': {
+    bg: 'var(--schoolBoardBadge)',
+    color: 'var(--schoolBoardText)',
+    banner: 'var(--schoolBoardBanner)',
+  },
+  'Private School': {
+    bg: 'var(--privateSchoolBadge)',
+    color: 'var(--privateSchoolText)',
+    banner: 'var(--privateSchoolBanner)',
+  },
+  Camp: { bg: 'var(--campBadge)', color: 'var(--campText)', banner: 'var(--campBanner)' },
+  'Child Care': {
+    bg: 'var(--childCareBadge)',
+    color: 'var(--childCareText)',
+    banner: 'var(--childCareBanner)',
+  },
+  Charity: {
+    bg: 'var(--charityBadge)',
+    color: 'var(--charityText)',
+    banner: 'var(--charityBanner)',
+  },
+  'Post-Secondary': {
+    bg: 'var(--postSecondaryBadge)',
+    color: 'var(--postSecondaryText)',
+    banner: 'var(--postSecondaryBanner)',
+  },
   'Educational Technology Company': {
     bg: 'var(--educationalTechBadge)',
     color: 'var(--educationalTechText)',
+    banner: 'var(--educationalTechBanner)',
   },
-  'Tutoring Center': { bg: 'var(--tutoringCenterBadge)', color: 'var(--tutoringCenterText)' },
+  'Tutoring Center': {
+    bg: 'var(--tutoringCenterBadge)',
+    color: 'var(--tutoringCenterText)',
+    banner: 'var(--tutoringCenterBanner)',
+  },
   'Educational Non-Profit': {
     bg: 'var(--educationalNonProfitBadge)',
     color: 'var(--educationalNonProfitText)',
+    banner: 'var(--educationalNonProfitBanner)',
   },
   'Government Education Department': {
     bg: 'var(--governmentBadge)',
     color: 'var(--governmentText)',
+    banner: 'var(--governmentBanner)',
   },
-  Other: { bg: 'var(--otherBadge)', color: 'var(--otherText)' },
+  Other: {
+    bg: 'var(--inactiveBadge)',
+    color: 'var(--inactiveText)',
+    banner: 'var(--inactiveBanner)',
+  },
 }
 
+const defaultStyles = {
+  bg: 'var(--inactiveBadge)',
+  color: 'var(--inactiveText)',
+  banner: 'var(--inactiveBanner)',
+}
 // Helper to get badge style
 type OrgType = keyof typeof badgeStyles | string
-
 function badgeStyle(orgType: OrgType) {
-  const style = badgeStyles[orgType] || badgeStyles['Other']
+  const style = badgeStyles[orgType] || defaultStyles
   return {
     backgroundColor: style.bg,
     color: style.color,
+  }
+}
+// Helper to get banner style
+function bannerStyle(orgType: OrgType) {
+  const style = badgeStyles[orgType] || defaultStyles
+  return {
+    backgroundColor: style.banner,
   }
 }
 
@@ -258,31 +300,33 @@ function setListView() {
 
       <!-- Right side group pushed right -->
       <div class="flex items-center gap-x-4 ml-4">
-        <button
-          class="request-new-button primary-button flex items-center gap-x-2 px-3 py-1"
-          style="background-color: var(--primary); color: var(--white)"
-        >
-          <svg
-            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium text-white css-vubbuv"
-            style="
-              fill: white;
-              font-size: 0.875rem;
-              line-height: 1.25rem;
-              font-weight: 600;
-              width: 1.5rem;
-              height: 1.5rem;
-            "
-            focusable="false"
-            aria-hidden="true"
-            viewBox="0 0 24 24"
-            data-testid="AddIcon"
-            width="15"
-            height="15"
+        <a href="/Page3">
+          <button
+            class="create-new-button primary-button flex items-center gap-x-2 px-3 py-1"
+            style="background-color: var(--primary); color: var(--white)"
           >
-            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"></path>
-          </svg>
-          <span>Request New Job Posting</span>
-        </button>
+            <svg
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium text-white css-vubbuv"
+              style="
+                fill: white;
+                font-size: 0.875rem;
+                line-height: 1.25rem;
+                font-weight: 600;
+                width: 1.5rem;
+                height: 1.5rem;
+              "
+              focusable="false"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              data-testid="AddIcon"
+              width="15"
+              height="15"
+            >
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"></path>
+            </svg>
+            <span>Create New Job Posting</span>
+          </button>
+        </a>
 
         <!-- Grid View Button -->
         <button
@@ -354,6 +398,7 @@ function setListView() {
         :organizationName="job.organizationName"
         :organizationType="job.organizationType"
         :badgeStyle="badgeStyle(job.organizationType)"
+        :bannerStyle="bannerStyle(job.organizationType)"
       />
     </div>
 
@@ -555,13 +600,12 @@ button {
   border-radius: 0.375rem;
 }
 
-.request-new-button {
-  /* requires class */
+.create-new-button {
   display: flex;
   gap: 0.25rem;
 }
 
-.request-new-button svg {
+.create-new-button svg {
   color: white;
   fill: white;
   font-size: 0.875rem;
@@ -571,16 +615,7 @@ button {
   height: 1.5rem;
 }
 
-.card-content {
-  padding: 1rem;
-  flex-direction: column;
-  bottom: 0;
-  position: relative;
-  display: flex;
-}
-
 .job-table-container {
-  /* requires class */
   margin-top: 1.5rem;
 }
 </style>
