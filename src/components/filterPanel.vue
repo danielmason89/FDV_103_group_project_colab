@@ -10,6 +10,7 @@
         {{ item.label }}
       </div>
     </div>
+
     <!-- Secondary filter menu -->
     <div v-if="activeFilter" class="secondary-menu">
       <!-- Organization Type -->
@@ -18,14 +19,18 @@
         <select v-model="selected.organizationType" class="secondary-dropdown">
           <option v-for="org in organizationTypes" :key="org" :value="org">{{ org }}</option>
         </select>
+        <button @click="selected.organizationType = ''" class="clear-filter-btn">Clear</button>
       </template>
+
       <!-- City -->
       <template v-else-if="activeFilter === 'city'">
         <label class="secondary-label">City</label>
         <select v-model="selected.city" class="secondary-dropdown">
           <option v-for="city in cities" :key="city" :value="city">{{ city }}</option>
         </select>
+        <button @click="selected.city = ''" class="clear-filter-btn">Clear</button>
       </template>
+
       <!-- Province -->
       <template v-else-if="activeFilter === 'province'">
         <label class="secondary-label">Province</label>
@@ -34,7 +39,9 @@
             {{ province }}
           </option>
         </select>
+        <button @click="selected.province = ''" class="clear-filter-btn">Clear</button>
       </template>
+
       <!-- Country -->
       <template v-else-if="activeFilter === 'country'">
         <label class="secondary-label">Country</label>
@@ -43,7 +50,9 @@
             {{ country }}
           </option>
         </select>
+        <button @click="selected.country = ''" class="clear-filter-btn">Clear</button>
       </template>
+
       <!-- Opportunity Type -->
       <template v-else-if="activeFilter === 'opportunityType'">
         <label class="secondary-label">Opportunity Type</label>
@@ -53,7 +62,9 @@
             {{ type }}
           </label>
         </div>
+        <button @click="selected.opportunityType = []" class="clear-filter-btn">Clear</button>
       </template>
+
       <!-- Subject Area -->
       <template v-else-if="activeFilter === 'subjectArea'">
         <label class="secondary-label">Subject Area</label>
@@ -63,7 +74,9 @@
             {{ subject }}
           </label>
         </div>
+        <button @click="selected.subjectArea = []" class="clear-filter-btn">Clear</button>
       </template>
+
       <!-- Grade Level -->
       <template v-else-if="activeFilter === 'gradeLevel'">
         <label class="secondary-label">Grade Level</label>
@@ -73,7 +86,9 @@
             {{ grade }}
           </label>
         </div>
+        <button @click="selected.gradeLevel = []" class="clear-filter-btn">Clear</button>
       </template>
+
       <!-- Compensation -->
       <template v-else-if="activeFilter === 'compensation'">
         <label class="secondary-label">Recognition & Compensation</label>
@@ -83,7 +98,9 @@
             {{ comp }}
           </label>
         </div>
+        <button @click="selected.compensation = ''" class="clear-filter-btn">Clear</button>
       </template>
+
       <!-- Years of Experience -->
       <template v-else-if="activeFilter === 'yearsOfExperience'">
         <label class="secondary-label">Years of Experience Required</label>
@@ -93,15 +110,17 @@
             {{ exp }}
           </label>
         </div>
+        <button @click="selected.yearsOfExperience = []" class="clear-filter-btn">Clear</button>
       </template>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 
-// Filter items
+const emit = defineEmits(['update-filters'])
+
 const filterItems = [
   { key: 'organizationType', label: 'Organization Type' },
   { key: 'city', label: 'City' },
@@ -120,7 +139,42 @@ function toggleFilter(key: string) {
   activeFilter.value = activeFilter.value === key ? null : key
 }
 
-// Dropdown/multiselect options
+const selected = ref({
+  organizationType: '',
+  city: '',
+  province: '',
+  country: '',
+  opportunityType: [] as string[],
+  subjectArea: [] as string[],
+  gradeLevel: [] as string[],
+  compensation: '',
+  yearsOfExperience: [] as string[],
+})
+
+watch(
+  selected,
+  (newVal) => {
+    emit('update-filters', newVal)
+  },
+  { deep: true },
+)
+
+onMounted(() => {
+  window.addEventListener('clear-all-filters', () => {
+    selected.value = {
+      organizationType: '',
+      city: '',
+      province: '',
+      country: '',
+      opportunityType: [],
+      subjectArea: [],
+      gradeLevel: [],
+      compensation: '',
+      yearsOfExperience: [],
+    }
+  })
+})
+
 const organizationTypes = [
   'Camp',
   'Charity',
@@ -137,7 +191,6 @@ const organizationTypes = [
 const cities = ['Brampton', 'Toronto', 'Windsor', 'Ottawa', 'London']
 const provinces = ['Ontario', 'Quebec', 'British Columbia', 'Alberta']
 const countries = ['Canada', 'USA', 'UK']
-
 const opportunityTypes = [
   'Full-Time',
   'Part-Time',
@@ -174,19 +227,6 @@ const subjectAreas = [
 const gradeLevels = ['Preschool', 'K-8', 'Secondary', 'Post-Secondary', 'All Grade Levels']
 const compensations = ['Salary', 'Hourly', 'Volunteer', 'Professional Learning Credits']
 const yearsOfExperience = ['Entry Level', '1-3 years', '3-5 years', '5+ years']
-
-// Selected values for each filter
-const selected = ref({
-  organizationType: '',
-  city: '',
-  province: '',
-  country: '',
-  opportunityType: [] as string[],
-  subjectArea: [] as string[],
-  gradeLevel: [] as string[],
-  compensation: '',
-  yearsOfExperience: [] as string[],
-})
 </script>
 
 <style scoped>
@@ -284,5 +324,19 @@ const selected = ref({
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+}
+.clear-filter-btn {
+  margin-top: 0.5rem;
+  background: transparent;
+  border: none;
+  color: #d7263d;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0;
+  text-align: left;
+}
+.clear-filter-btn:hover {
+  text-decoration: underline;
 }
 </style>

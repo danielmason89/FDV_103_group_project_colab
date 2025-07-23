@@ -2,6 +2,13 @@
 import FilterPanel from '@/components/filterPanel.vue'
 import JobCardComponent from '@/components/jobsCardComponent.vue'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+const openJobDetails = (job: any) => {
+  console.log('Navigating to job details with:', job)
+  router.push({ name: 'Page2', params: { id: job.id } })
+}
 
 //update the jobSubmissions ref when the data in local storage actually changes
 const jobSubmissions = ref(JSON.parse(localStorage.getItem('jobSubmissions') || '[]'))
@@ -21,8 +28,13 @@ const search = ref('')
 const sortOption = ref('date')
 const viewMode = ref<'grid' | 'list'>('grid')
 const showFilter = ref(false)
+const activeFilters = ref({})
 const toggleFilter = () => {
   showFilter.value = !showFilter.value
+}
+
+function applyFilters(filters: any) {
+  activeFilters.value = filters
 }
 
 // Functions to set view mode
@@ -114,11 +126,43 @@ function bannerStyle(orgType: OrgType) {
   }
 }
 
-// Computed property to filter jobs based on search input and sort option
+// Filter jobs & Sort jobs
 const filteredJobs = computed(() => {
-  const filtered = jobSubmissions.value.filter((job) =>
-    job.jobTitle.toLowerCase().includes(search.value.toLowerCase()),
-  )
+  const s = search.value.toLowerCase()
+  const f = activeFilters.value
+
+  // Step 1: Filtering logic
+  const filtered = jobSubmissions.value.filter((job) => {
+    const matchSearch = job.jobTitle.toLowerCase().includes(s)
+    const matchOrgType = !f.organizationType || job.organizationType === f.organizationType
+    const matchCity = !f.city || job.city === f.city
+    const matchProvince = !f.province || job.province === f.province
+    const matchCountry = !f.country || job.country === f.country
+    const matchOpportunityType =
+      !f.opportunityType?.length || f.opportunityType.includes(job.opportunityType)
+    const matchSubjectArea =
+      !f.subjectArea?.length ||
+      f.subjectArea.some((area: string) => job.subjectAreas?.includes(area))
+    const matchGradeLevel = !f.gradeLevel?.length || f.gradeLevel.includes(job.gradeLevel)
+    const matchCompensation = !f.compensation || job.compensation === f.compensation
+    const matchYearsOfExperience =
+      !f.yearsOfExperience?.length || f.yearsOfExperience.includes(job.yearsOfExperience)
+
+    return (
+      matchSearch &&
+      matchOrgType &&
+      matchCity &&
+      matchProvince &&
+      matchCountry &&
+      matchOpportunityType &&
+      matchSubjectArea &&
+      matchGradeLevel &&
+      matchCompensation &&
+      matchYearsOfExperience
+    )
+  })
+
+  // Step 2: Sorting logic
   if (sortOption.value === 'az') {
     return filtered.slice().sort((a, b) => a.jobTitle.localeCompare(b.jobTitle))
   } else if (sortOption.value === 'za') {
@@ -131,6 +175,14 @@ const filteredJobs = computed(() => {
     return filtered
   }
 })
+
+function clearFilters() {
+  console.log('Clearing all filters...')
+  activeFilters.value = {}
+  applyFilters({})
+  const event = new CustomEvent('clear-all-filters')
+  window.dispatchEvent(event)
+}
 </script>
 
 <template>
@@ -199,6 +251,7 @@ const filteredJobs = computed(() => {
           <FilterPanel
             v-if="showFilter"
             class="absolute top-14 left-0 z-[9999] shadow-lg bg-white border rounded p-4 min-w-[250px]"
+            @update-filters="applyFilters"
           />
         </transition>
         <select v-model="sortOption" class="sort-select border rounded px-2 py-1">
@@ -301,15 +354,20 @@ const filteredJobs = computed(() => {
       v-if="viewMode === 'grid'"
       class="card-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
     >
-      <JobCardComponent
+      <div
         v-for="job in filteredJobs"
         :key="job.id"
-        :jobName="job.jobTitle"
-        :organizationName="job.organizationName"
-        :organizationType="job.organizationType"
-        :badgeStyle="badgeStyle(job.organizationType)"
-        :bannerStyle="bannerStyle(job.organizationType)"
-      />
+        @click="openJobDetails(job)"
+        style="cursor: pointer"
+      >
+        <JobCardComponent
+          :jobName="job.jobTitle"
+          :organizationName="job.organizationName"
+          :organizationType="job.organizationType"
+          :badgeStyle="badgeStyle(job.organizationType)"
+          :bannerStyle="bannerStyle(job.organizationType)"
+        />
+      </div>
     </div>
 
     <!-- List/Table View -->
