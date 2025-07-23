@@ -10,11 +10,9 @@ function useStorage() {
   const data = ref(storedValue ? JSON.parse(storedValue) : defaultValue)
   return data
 }
-
 export function getJobSubmissions(): JobSubmission[] {
   return JSON.parse(localStorage.getItem('jobSubmissions') || '[]')
 }
-
 useStorage('test')
 
 const showFilter = ref(false)
@@ -23,6 +21,7 @@ const toggleFilter = () => {
 }
 
 // Dummy job posts data (replace with API or file data later)
+
 /*
 const jobs = ref([
   {
@@ -110,7 +109,7 @@ const jobs = ref([
     datePosted: '2025-07-20',
   },
 ])
-  */
+*/
 
 const search = ref('')
 const sortOption = ref('date')
