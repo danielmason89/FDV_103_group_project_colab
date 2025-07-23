@@ -1,162 +1,183 @@
 <script setup lang="ts">
 import FilterPanel from '@/components/filterPanel.vue'
 import JobCardComponent from '@/components/jobsCardComponent.vue'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
-function useStorage() {
-  const jobStore = localStorage.getItem(pars)
-  JSON.parse(localStorage.getItem(jobSubmissions))
-  console.log('here', jobStore)
-  const data = ref(storedValue ? JSON.parse(storedValue) : defaultValue)
-  return data
+const openJobDetails = (job: any) => {
+  console.log('Navigating to job details with:', job)
+  router.push({ name: 'page2', params: { id: job.id } }) // use lowercase 'page2' to match router
 }
 
-export function getJobSubmissions(): JobSubmission[] {
-  return JSON.parse(localStorage.getItem('jobSubmissions') || '[]')
+// Reactive ref for job submissions
+const jobSubmissions = ref([] as any[])
+
+function loadJobsFromLocalStorage() {
+  const data = localStorage.getItem('jobSubmissions') || '[]'
+  const parsed = JSON.parse(data)
+  console.log('Jobs loaded from localStorage:', parsed)
+  jobSubmissions.value = parsed
 }
 
-useStorage('test')
+// On component mount, we load the serialized job posts from localStorage, parse it to JSON, and assign it to this ref
+// jobSubmissions then holds an array of all job posts from localStorage.
+// Using ref means Vue tracks it reactively and updates the UI automatically when it changes.
+onMounted(() => {
+  loadJobsFromLocalStorage()
 
+  window.addEventListener('storage', loadJobsFromLocalStorage)
+  window.addEventListener('job-list-updated', loadJobsFromLocalStorage)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('storage', loadJobsFromLocalStorage)
+  window.removeEventListener('job-list-updated', loadJobsFromLocalStorage)
+})
+
+// Reactive variables for search, sort, and view mode
+const search = ref('')
+const sortOption = ref('date')
+const viewMode = ref<'grid' | 'list'>('grid')
 const showFilter = ref(false)
+const activeFilters = ref({})
 const toggleFilter = () => {
   showFilter.value = !showFilter.value
 }
 
-// Dummy job posts data (replace with API or file data later)
-/*
-const jobs = ref([
-  {
-    id: 1,
-    jobTitle: 'Grade 3 Teacher',
-    organizationName: 'Maple Ridge School',
-    organizationType: 'School Board',
-    datePosted: '2025-07-15',
-  },
-  {
-    id: 2,
-    jobTitle: 'Math Tutor',
-    organizationName: 'Bright Minds Tutoring',
-    organizationType: 'Tutoring Center',
-    datePosted: '2025-07-17',
-  },
-  {
-    id: 3,
-    jobTitle: 'Camp Counselor',
-    organizationName: 'Evergreen Summer Camp',
-    organizationType: 'Camp',
-    datePosted: '2025-07-10',
-  },
-  {
-    id: 4,
-    jobTitle: 'Early Childhood Educator',
-    organizationName: 'Little Sprouts Daycare',
-    organizationType: 'Child Care',
-    datePosted: '2025-07-18',
-  },
-  {
-    id: 5,
-    jobTitle: 'STEM Program Lead',
-    organizationName: 'InnovEd Labs',
-    organizationType: 'Educational Technology Company',
-    datePosted: '2025-07-12',
-  },
-  {
-    id: 6,
-    jobTitle: 'Fundraising Coordinator',
-    organizationName: 'Hearts United Foundation',
-    organizationType: 'Charity',
-    datePosted: '2025-07-14',
-  },
-  {
-    id: 7,
-    jobTitle: 'Research Assistant',
-    organizationName: 'Westview University',
-    organizationType: 'Post-Secondary',
-    datePosted: '2025-07-16',
-  },
-  {
-    id: 8,
-    jobTitle: 'Volunteer Organizer',
-    organizationName: 'Youth Future Initiative',
-    organizationType: 'Educational Non-Profit',
-    datePosted: '2025-07-13',
-  },
-  {
-    id: 9,
-    jobTitle: 'Policy Analyst',
-    organizationName: 'Ministry of Learning',
-    organizationType: 'Government Education Department',
-    datePosted: '2025-07-11',
-  },
-  {
-    id: 10,
-    jobTitle: 'Substitute Teacher',
-    organizationName: 'Oak Hill Academy',
-    organizationType: 'Private School',
-    datePosted: '2025-07-19',
-  },
-  {
-    id: 11,
-    jobTitle: 'General Education Assistant',
-    organizationName: 'Northern Pines College',
-    organizationType: 'Other',
-    datePosted: '2025-07-09',
-  },
-  {
-    id: 12,
-    jobTitle: 'Digital Learning Specialist',
-    organizationName: 'Future Pathways Online',
-    organizationType: 'Educational Technology Company',
-    datePosted: '2025-07-20',
-  },
-])
-  */
+function applyFilters(filters: any) {
+  activeFilters.value = filters
+}
 
-const search = ref('')
-const sortOption = ref('date')
-const viewMode = ref<'grid' | 'list'>('grid')
+// Functions to set view mode
+const setGridView = () => {
+  viewMode.value = 'grid'
+}
+const setListView = () => {
+  viewMode.value = 'list'
+}
 
-// Badge color mapping (matches CSS variables in base.css)
+// Define badge styles for different organization types
 const badgeStyles = {
-  'School Board': { bg: 'var(--schoolBoardBadge)', color: 'var(--schoolBoardText)' },
-  'Private School': { bg: 'var(--privateSchoolBadge)', color: 'var(--privateSchoolText)' },
-  Camp: { bg: 'var(--campBadge)', color: 'var(--campText)' },
-  'Child Care': { bg: 'var(--childCareBadge)', color: 'var(--childCareText)' },
-  Charity: { bg: 'var(--charityBadge)', color: 'var(--charityText)' },
-  'Post-Secondary': { bg: 'var(--postSecondaryBadge)', color: 'var(--postSecondaryText)' },
+  'School Board': {
+    bg: 'var(--schoolBoardBadge)',
+    color: 'var(--schoolBoardText)',
+    banner: 'var(--schoolBoardBanner)',
+  },
+  'Private School': {
+    bg: 'var(--privateSchoolBadge)',
+    color: 'var(--privateSchoolText)',
+    banner: 'var(--privateSchoolBanner)',
+  },
+  Camp: {
+    bg: 'var(--campBadge)',
+    color: 'var(--campText)',
+    banner: 'var(--campBanner)',
+  },
+  'Child Care': {
+    bg: 'var(--childCareBadge)',
+    color: 'var(--childCareText)',
+    banner: 'var(--childCareBanner)',
+  },
+  Charity: {
+    bg: 'var(--charityBadge)',
+    color: 'var(--charityText)',
+    banner: 'var(--charityBanner)',
+  },
+  'Post-Secondary': {
+    bg: 'var(--postSecondaryBadge)',
+    color: 'var(--postSecondaryText)',
+    banner: 'var(--postSecondaryBanner)',
+  },
   'Educational Technology Company': {
     bg: 'var(--educationalTechBadge)',
     color: 'var(--educationalTechText)',
+    banner: 'var(--educationalTechBanner)',
   },
-  'Tutoring Center': { bg: 'var(--tutoringCenterBadge)', color: 'var(--tutoringCenterText)' },
+  'Tutoring Center': {
+    bg: 'var(--tutoringCenterBadge)',
+    color: 'var(--tutoringCenterText)',
+    banner: 'var(--tutoringCenterBanner)',
+  },
   'Educational Non-Profit': {
     bg: 'var(--educationalNonProfitBadge)',
     color: 'var(--educationalNonProfitText)',
+    banner: 'var(--educationalNonProfitBanner)',
   },
   'Government Education Department': {
     bg: 'var(--governmentBadge)',
     color: 'var(--governmentText)',
+    banner: 'var(--governmentBanner)',
   },
-  Other: { bg: 'var(--otherBadge)', color: 'var(--otherText)' },
+  Other: {
+    bg: 'var(--inactiveBadge)',
+    color: 'var(--inactiveText)',
+    banner: 'var(--inactiveBanner)',
+  },
+}
+const defaultStyles = {
+  bg: 'var(--inactiveBadge)',
+  color: 'var(--inactiveText)',
+  banner: 'var(--inactiveBanner)',
 }
 
-// Helper to get badge style
+//Helper function to get badge styles based on organization type
 type OrgType = keyof typeof badgeStyles | string
-
 function badgeStyle(orgType: OrgType) {
-  const style = badgeStyles[orgType] || badgeStyles['Other']
+  const style = badgeStyles[orgType] || defaultStyles
   return {
     backgroundColor: style.bg,
     color: style.color,
   }
 }
 
-// Filtering and sorting logic
-const filteredJobs = computed(() => {
-  const filtered = jobs.value.filter((job) =>
-    job.jobTitle.toLowerCase().includes(search.value.toLowerCase()),
-  )
+// Helper function to get banner styles based on organization type
+function bannerStyle(orgType: OrgType) {
+  const style = badgeStyles[orgType] || defaultStyles
+  return {
+    backgroundColor: style.banner,
+  }
+}
 
+// Filter jobs & Sort jobs
+// We use a computed property to filter and sort this data before displaying.
+// This means any UI bindings that rely on filteredJobs will reactively update if you change the search query, filters, or the underlying data.
+const filteredJobs = computed(() => {
+  const s = search.value.toLowerCase()
+  const f = activeFilters.value
+
+  // Filtering logic
+  const filtered = jobSubmissions.value.filter((job) => {
+    const matchSearch = job.jobTitle.toLowerCase().includes(s)
+    const matchOrgType = !f.organizationType || job.organizationType === f.organizationType
+    const matchCity = !f.city || job.city === f.city
+    const matchProvince = !f.province || job.province === f.province
+    const matchCountry = !f.country || job.country === f.country
+    const matchOpportunityType =
+      !f.opportunityType?.length || f.opportunityType.includes(job.opportunityType)
+    const matchSubjectArea =
+      !f.subjectArea?.length ||
+      f.subjectArea.some((area: string) => job.subjectAreas?.includes(area))
+    const matchGradeLevel = !f.gradeLevel?.length || f.gradeLevel.includes(job.gradeLevel)
+    const matchCompensation = !f.compensation || job.compensation === f.compensation
+    const matchYearsOfExperience =
+      !f.yearsOfExperience?.length || f.yearsOfExperience.includes(job.yearsOfExperience)
+
+    return (
+      matchSearch &&
+      matchOrgType &&
+      matchCity &&
+      matchProvince &&
+      matchCountry &&
+      matchOpportunityType &&
+      matchSubjectArea &&
+      matchGradeLevel &&
+      matchCompensation &&
+      matchYearsOfExperience
+    )
+  })
+
+  // Sorting logic
   if (sortOption.value === 'az') {
     return filtered.slice().sort((a, b) => a.jobTitle.localeCompare(b.jobTitle))
   } else if (sortOption.value === 'za') {
@@ -164,34 +185,54 @@ const filteredJobs = computed(() => {
   } else if (sortOption.value === 'date') {
     return filtered
       .slice()
-      .sort((a, b) => new Date(b.datePosted).getTime() - new Date(a.datePosted).getTime())
+      .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())
   } else {
     return filtered
   }
 })
 
-// For toggling view mode
-function setGridView() {
-  viewMode.value = 'grid'
-}
-function setListView() {
-  viewMode.value = 'list'
+function clearFilters() {
+  console.log('Clearing all filters...')
+  activeFilters.value = {}
+  applyFilters({})
+  const event = new CustomEvent('clear-all-filters')
+  window.dispatchEvent(event)
 }
 </script>
 
 <template>
   <div class="max-w-6xl mx-auto">
     <h1 class="page-title text-2xl mb-1">Opportunities</h1>
-
     <div class="search-filter-bar flex flex-wrap gap-4 items-center mt-1 mb-1">
       <!-- Left side group -->
       <div class="flex items-center gap-4 flex-wrap flex-grow relative">
-        <input
-          v-model="search"
-          type="search"
-          placeholder="Search anything..."
-          class="search-input border rounded px-3 py-1"
-        />
+        <div class="search-input-container">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            aria-hidden="true"
+            data-slot="icon"
+            width="22"
+            height="22"
+            class="h-5 w-5 text-20"
+            style="color: #b3b1bb"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+            ></path>
+          </svg>
+          <input
+            v-model="search"
+            type="search"
+            placeholder="Search anything..."
+            class="search-input border rounded px-3 py-1"
+          />
+        </div>
 
         <!-- Filter Icon Button -->
         <button
@@ -225,9 +266,9 @@ function setListView() {
           <FilterPanel
             v-if="showFilter"
             class="absolute top-14 left-0 z-[9999] shadow-lg bg-white border rounded p-4 min-w-[250px]"
+            @update-filters="applyFilters"
           />
         </transition>
-
         <select v-model="sortOption" class="sort-select border rounded px-2 py-1">
           <option value="date">Date Posted</option>
           <option value="az">A-Z</option>
@@ -237,13 +278,33 @@ function setListView() {
 
       <!-- Right side group pushed right -->
       <div class="flex items-center gap-x-4 ml-4">
-        <button
-          class="primary-button flex items-center gap-x-2 px-3 py-1"
-          style="background-color: var(--primary); color: var(--white)"
-        >
-          <i class="fa-solid fa-square-plus" style="margin-right: 0.5rem"></i>
-          <span>Request New Job Posting</span>
-        </button>
+        <a href="/Page3">
+          <button
+            class="create-new-button primary-button flex items-center gap-x-2 px-3 py-1"
+            style="background-color: var(--primary); color: var(--white)"
+          >
+            <svg
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium text-white css-vubbuv"
+              style="
+                fill: white;
+                font-size: 0.875rem;
+                line-height: 1.25rem;
+                font-weight: 600;
+                width: 1.5rem;
+                height: 1.5rem;
+              "
+              focusable="false"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              data-testid="AddIcon"
+              width="15"
+              height="15"
+            >
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"></path>
+            </svg>
+            <span>Create New Job Posting</span>
+          </button>
+        </a>
 
         <!-- Grid View Button -->
         <button
@@ -308,38 +369,52 @@ function setListView() {
       v-if="viewMode === 'grid'"
       class="card-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
     >
-      <JobCardComponent
+      <div
         v-for="job in filteredJobs"
         :key="job.id"
-        :jobName="job.jobTitle"
-        :organizationName="job.organizationName"
-        :organizationType="job.organizationType"
-        :badgeStyle="badgeStyle(job.organizationType)"
-      />
+        @click="openJobDetails(job)"
+        style="cursor: pointer"
+      >
+        <JobCardComponent
+          :jobName="job.jobTitle"
+          :organizationName="job.organizationName"
+          :organizationType="job.organizationType"
+          :badgeStyle="badgeStyle(job.organizationType)"
+          :bannerStyle="bannerStyle(job.organizationType)"
+        />
+      </div>
     </div>
 
     <!-- List/Table View -->
     <div v-else>
-      <table class="job-table">
-        <thead>
-          <tr>
-            <th class="table-heading first-heading">Job Name</th>
-            <th class="table-heading">Organization Name</th>
-            <th class="table-heading last-heading">Organization Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="job in filteredJobs" :key="job.id" class="table-row">
-            <td>{{ job.jobTitle }}</td>
-            <td>{{ job.organizationName }}</td>
-            <td>
-              <span class="badge" :style="badgeStyle(job.organizationType)">
-                {{ job.organizationType }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="job-table-container">
+        <table class="job-table">
+          <thead>
+            <tr>
+              <th class="table-heading first-heading">Job Name</th>
+              <th class="table-heading">Organization Name</th>
+              <th class="table-heading last-heading">Organization Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="job in filteredJobs"
+              :key="job.id"
+              class="table-row"
+              @click="openJobDetails(job)"
+              style="cursor: pointer"
+            >
+              <td>{{ job.jobTitle }}</td>
+              <td>{{ job.organizationName }}</td>
+              <td>
+                <span class="badge" :style="badgeStyle(job.organizationType)">
+                  {{ job.organizationType }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- No results message -->
@@ -350,7 +425,7 @@ function setListView() {
 </template>
 
 <style scoped>
-/* Transition fade-slide */
+/* Your existing CSS unchanged */
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: all 0.3s ease;
@@ -366,18 +441,15 @@ function setListView() {
   transform: translateY(0);
 }
 
-/* Button hover */
 .primary-button:hover {
   background-color: #add9c4;
   cursor: pointer;
 }
 
-/* Filter button cursor */
 button {
   cursor: pointer;
 }
 
-/* Toggle Filter Panel button styles */
 .toggle-filter-btn {
   padding: 0.5rem;
   border-radius: 0.5rem;
@@ -392,7 +464,6 @@ button {
   background: rgb(255 255 255 / 1);
 }
 
-/* Basic styling for inputs/select */
 .search-input,
 .sort-select {
   border: 1px solid #ccc;
@@ -401,12 +472,10 @@ button {
   outline: none;
 }
 
-/* Card grid spacing */
 .card-grid {
   margin-top: 1.5rem;
 }
 
-/* View toggle button */
 .view-toggle-btn {
   padding: 0.5rem;
   border-radius: 0.5rem;
@@ -424,7 +493,6 @@ button {
   background: rgb(179 177 187 / 0.1);
 }
 
-/* List View table styles */
 .job-table {
   width: 100%;
   background-color: var(--cardWhiteBG);
@@ -439,7 +507,6 @@ button {
   border-collapse: separate;
   border-spacing: 0;
 }
-
 .table-heading {
   padding: 1.25rem;
   background-color: #e7eced;
@@ -449,15 +516,12 @@ button {
   line-height: 1rem;
   text-align: left;
 }
-
 .first-heading {
   border-top-left-radius: 0.5rem;
 }
-
 .last-heading {
   border-top-right-radius: 0.5rem;
 }
-
 .table-row td {
   padding: 0.75rem;
   color: var(--heading);
@@ -467,12 +531,60 @@ button {
     background 0.2s,
     color 0.2s;
 }
-
 .table-row:hover td {
   background-color: rgb(4 69 77);
   color: #fff;
   transition:
     background 0.2s,
     color 0.2s;
+}
+.search-input-container {
+  border: 1px solid;
+  padding-top: 8px;
+  padding: 8px;
+  border-radius: 0.5rem;
+  background-color: white;
+  display: flex;
+  gap: 0.5rem;
+  border-color: #04454d73;
+}
+.search-input-container svg {
+  color: #b3b1bb;
+  margin-top: 2px;
+}
+.search-input-container input {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  background-color: white;
+  border: 0px;
+  padding: 0px;
+}
+.search-input-container input:focus-visible {
+  outline: none;
+}
+.sort-select {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 8px;
+  padding-right: 8px;
+  background-color: white;
+  border: 1px solid #04454d73;
+  border-radius: 0.375rem;
+}
+.create-new-button {
+  display: flex;
+  gap: 0.25rem;
+}
+.create-new-button svg {
+  color: white;
+  fill: white;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.job-table-container {
+  margin-top: 1.5rem;
 }
 </style>
