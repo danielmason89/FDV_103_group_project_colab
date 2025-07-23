@@ -16,32 +16,6 @@ onUnmounted(() => {
   })
 })
 
-// Watch for changes in local storage
-const formattedJobs = computed(() => {
-  return jobSubmissions.value.map((job) => ({
-    id: job.id,
-    jobTitle: job.jobTitle,
-    organizationName: job.organizationName,
-    organizationType: job.organizationType,
-    datePosted: job.submittedAt,
-    streetAddress: job.streetAddress,
-    province: job.province,
-    city: job.city,
-    country: job.country,
-    opportunityTypes: job.opportunityTypes,
-    subjectAreas: job.subjectAreas,
-    gradeLevel: job.gradeLevel,
-    compensation: job.compensation,
-    yearsOfExperience: job.yearsOfExperience,
-    certifications: job.certifications,
-    qualifications: job.qualifications,
-    jobDescription: job.jobDescription,
-    applicationLink: job.applicationLink,
-    applicationDeadline: job.applicationDeadline,
-    approvalStatus: job.approvalStatus,
-  }))
-})
-
 // Reactive variables for search, sort, and view mode
 const search = ref('')
 const sortOption = ref('date')
@@ -58,7 +32,6 @@ const setGridView = () => {
 const setListView = () => {
   viewMode.value = 'list'
 }
-
 // Define badge styles for different organization types
 const badgeStyles = {
   'School Board': {
@@ -143,7 +116,7 @@ function bannerStyle(orgType: OrgType) {
 
 // Computed property to filter jobs based on search input and sort option
 const filteredJobs = computed(() => {
-  const filtered = formattedJobs.value.filter((job) =>
+  const filtered = jobSubmissions.value.filter((job) =>
     job.jobTitle.toLowerCase().includes(search.value.toLowerCase()),
   )
   if (sortOption.value === 'az') {
@@ -153,7 +126,7 @@ const filteredJobs = computed(() => {
   } else if (sortOption.value === 'date') {
     return filtered
       .slice()
-      .sort((a, b) => new Date(b.datePosted).getTime() - new Date(a.datePosted).getTime())
+      .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())
   } else {
     return filtered
   }
@@ -462,7 +435,6 @@ button {
   border-collapse: separate;
   border-spacing: 0;
 }
-
 .table-heading {
   padding: 1.25rem;
   background-color: #e7eced;
@@ -472,15 +444,12 @@ button {
   line-height: 1rem;
   text-align: left;
 }
-
 .first-heading {
   border-top-left-radius: 0.5rem;
 }
-
 .last-heading {
   border-top-right-radius: 0.5rem;
 }
-
 .table-row td {
   padding: 0.75rem;
   color: var(--heading);
@@ -490,7 +459,6 @@ button {
     background 0.2s,
     color 0.2s;
 }
-
 .table-row:hover td {
   background-color: rgb(4 69 77);
   color: #fff;
@@ -498,7 +466,6 @@ button {
     background 0.2s,
     color 0.2s;
 }
-
 .search-input-container {
   border: 1px solid;
   padding-top: 8px;
@@ -509,12 +476,10 @@ button {
   gap: 0.5rem;
   border-color: #04454d73;
 }
-
 .search-input-container svg {
   color: #b3b1bb;
   margin-top: 2px;
 }
-
 .search-input-container input {
   font-size: 1rem;
   line-height: 1.5rem;
@@ -522,11 +487,9 @@ button {
   border: 0px;
   padding: 0px;
 }
-
 .search-input-container input:focus-visible {
   outline: none;
 }
-
 .sort-select {
   padding-top: 10px;
   padding-bottom: 10px;
@@ -536,12 +499,10 @@ button {
   border: 1px solid #04454d73;
   border-radius: 0.375rem;
 }
-
 .create-new-button {
   display: flex;
   gap: 0.25rem;
 }
-
 .create-new-button svg {
   color: white;
   fill: white;
@@ -551,7 +512,6 @@ button {
   width: 1.5rem;
   height: 1.5rem;
 }
-
 .job-table-container {
   margin-top: 1.5rem;
 }
