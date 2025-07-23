@@ -302,6 +302,9 @@ function handleSubmit() {
   list.push(submission)
   localStorage.setItem('jobSubmissions', JSON.stringify(list))
 
+  // Update other parts of app such as page 1
+  window.dispatchEvent(new CustomEvent('job-list-updated'))
+
   // Clear draft so next post starts empty
   localStorage.removeItem('jobFormData')
 
