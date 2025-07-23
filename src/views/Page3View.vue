@@ -86,10 +86,17 @@ Object.values(formState).forEach((field) => {
 
 // DROPDOWN OPTIONS - Predefined choices for form dropdowns
 const organizationTypeOptions = [
-  { value: 'nonprofit', label: 'Non-profit' },
-  { value: 'corporate', label: 'Corporate' },
-  { value: 'government', label: 'Government' },
-  { value: 'educational', label: 'Educational' },
+  { value: 'camp', label: 'Camp' },
+  { value: 'charity', label: 'Charity' },
+  { value: 'child-care', label: 'Child Care' },
+  { value: 'educational-non-profit', label: 'Educational Non-Profit' },
+  { value: 'educational-technology-company', label: 'Educational Technology Company' },
+  { value: 'government-education-epartment', label: 'Government Education Department' },
+  { value: 'post-secondary', label: 'Post-Secondary' },
+  { value: 'private-school', label: 'Private School' },
+  { value: 'school-board', label: 'School Board' },
+  { value: 'tutoring-center', label: 'Tutoring Center' },
+  { value: 'other', label: 'Other' },
 ]
 
 const provinceOptions = [
