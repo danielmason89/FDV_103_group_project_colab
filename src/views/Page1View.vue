@@ -10,13 +10,22 @@ const openJobDetails = (job: any) => {
   router.push({ name: 'page2', params: { id: job.id } }) // use lowercase 'page2' to match router
 }
 
-//update the jobSubmissions ref when the data in local storage actually changes
-const jobSubmissions = ref(JSON.parse(localStorage.getItem('jobSubmissions') || '[]'))
+// Reactive ref for job submissions
+const jobSubmissions = ref([] as any[])
+
 onMounted(() => {
+  const data = localStorage.getItem('jobSubmissions') || '[]'
+  const parsed = JSON.parse(data)
+  console.log('Jobs loaded from localStorage:', parsed)
+  jobSubmissions.value = parsed
+
   window.addEventListener('storage', () => {
-    jobSubmissions.value = JSON.parse(localStorage.getItem('jobSubmissions') || '[]')
+    const updatedData = localStorage.getItem('jobSubmissions') || '[]'
+    jobSubmissions.value = JSON.parse(updatedData)
+    console.log('LocalStorage updated, new jobs:', jobSubmissions.value)
   })
 })
+
 onUnmounted(() => {
   window.removeEventListener('storage', () => {
     jobSubmissions.value = JSON.parse(localStorage.getItem('jobSubmissions') || '[]')
@@ -44,6 +53,7 @@ const setGridView = () => {
 const setListView = () => {
   viewMode.value = 'list'
 }
+
 // Define badge styles for different organization types
 const badgeStyles = {
   'School Board': {
@@ -131,7 +141,7 @@ const filteredJobs = computed(() => {
   const s = search.value.toLowerCase()
   const f = activeFilters.value
 
-  // Step 1: Filtering logic
+  // Filtering logic
   const filtered = jobSubmissions.value.filter((job) => {
     const matchSearch = job.jobTitle.toLowerCase().includes(s)
     const matchOrgType = !f.organizationType || job.organizationType === f.organizationType
@@ -162,7 +172,7 @@ const filteredJobs = computed(() => {
     )
   })
 
-  // Step 2: Sorting logic
+  // Sorting logic
   if (sortOption.value === 'az') {
     return filtered.slice().sort((a, b) => a.jobTitle.localeCompare(b.jobTitle))
   } else if (sortOption.value === 'za') {
@@ -404,7 +414,7 @@ function clearFilters() {
 </template>
 
 <style scoped>
-/* Transition fade-slide */
+/* Your existing CSS unchanged */
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: all 0.3s ease;
@@ -420,18 +430,15 @@ function clearFilters() {
   transform: translateY(0);
 }
 
-/* Button hover */
 .primary-button:hover {
   background-color: #add9c4;
   cursor: pointer;
 }
 
-/* Filter button cursor */
 button {
   cursor: pointer;
 }
 
-/* Toggle Filter Panel button styles */
 .toggle-filter-btn {
   padding: 0.5rem;
   border-radius: 0.5rem;
@@ -446,7 +453,6 @@ button {
   background: rgb(255 255 255 / 1);
 }
 
-/* Basic styling for inputs/select */
 .search-input,
 .sort-select {
   border: 1px solid #ccc;
@@ -455,12 +461,10 @@ button {
   outline: none;
 }
 
-/* Card grid spacing */
 .card-grid {
   margin-top: 1.5rem;
 }
 
-/* View toggle button */
 .view-toggle-btn {
   padding: 0.5rem;
   border-radius: 0.5rem;
@@ -478,7 +482,6 @@ button {
   background: rgb(179 177 187 / 0.1);
 }
 
-/* List View table styles */
 .job-table {
   width: 100%;
   background-color: var(--cardWhiteBG);
