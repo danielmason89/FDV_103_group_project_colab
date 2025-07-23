@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import FilterPanel from '@/components/filterPanel.vue'
 import JobCardComponent from '@/components/jobsCardComponent.vue'
+
 import { ref, computed } from 'vue'
 
+/*
 function useStorage() {
   const jobStore = localStorage.getItem(pars)
   JSON.parse(localStorage.getItem(jobSubmissions))
-  console.log('here', jobStore)
+  console.log("here", jobStore)
   const data = ref(storedValue ? JSON.parse(storedValue) : defaultValue)
   return data
 }
+
 export function getJobSubmissions(): JobSubmission[] {
   return JSON.parse(localStorage.getItem('jobSubmissions') || '[]')
 }
-useStorage('test')
+*/
 
 const showFilter = ref(false)
 const toggleFilter = () => {
@@ -22,7 +25,6 @@ const toggleFilter = () => {
 
 // Dummy job posts data (replace with API or file data later)
 
-/*
 const jobs = ref([
   {
     id: 1,
@@ -109,7 +111,6 @@ const jobs = ref([
     datePosted: '2025-07-20',
   },
 ])
-*/
 
 const search = ref('')
 const sortOption = ref('date')
@@ -185,12 +186,33 @@ function setListView() {
     <div class="search-filter-bar flex flex-wrap gap-4 items-center mt-1 mb-1">
       <!-- Left side group -->
       <div class="flex items-center gap-4 flex-wrap flex-grow relative">
-        <input
-          v-model="search"
-          type="search"
-          placeholder="Search anything..."
-          class="search-input border rounded px-3 py-1"
-        />
+        <div class="search-input-container">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            aria-hidden="true"
+            data-slot="icon"
+            width="22"
+            height="22"
+            class="h-5 w-5 text-20"
+            style="color: #b3b1bb"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+            ></path>
+          </svg>
+          <input
+            v-model="search"
+            type="search"
+            placeholder="Search anything..."
+            class="search-input border rounded px-3 py-1"
+          />
+        </div>
 
         <!-- Filter Icon Button -->
         <button
@@ -237,10 +259,28 @@ function setListView() {
       <!-- Right side group pushed right -->
       <div class="flex items-center gap-x-4 ml-4">
         <button
-          class="primary-button flex items-center gap-x-2 px-3 py-1"
+          class="request-new-button primary-button flex items-center gap-x-2 px-3 py-1"
           style="background-color: var(--primary); color: var(--white)"
         >
-          <i class="fa-solid fa-square-plus" style="margin-right: 0.5rem"></i>
+          <svg
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium text-white css-vubbuv"
+            style="
+              fill: white;
+              font-size: 0.875rem;
+              line-height: 1.25rem;
+              font-weight: 600;
+              width: 1.5rem;
+              height: 1.5rem;
+            "
+            focusable="false"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            data-testid="AddIcon"
+            width="15"
+            height="15"
+          >
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"></path>
+          </svg>
           <span>Request New Job Posting</span>
         </button>
 
@@ -319,26 +359,28 @@ function setListView() {
 
     <!-- List/Table View -->
     <div v-else>
-      <table class="job-table">
-        <thead>
-          <tr>
-            <th class="table-heading first-heading">Job Name</th>
-            <th class="table-heading">Organization Name</th>
-            <th class="table-heading last-heading">Organization Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="job in filteredJobs" :key="job.id" class="table-row">
-            <td>{{ job.jobTitle }}</td>
-            <td>{{ job.organizationName }}</td>
-            <td>
-              <span class="badge" :style="badgeStyle(job.organizationType)">
-                {{ job.organizationType }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="job-table-container">
+        <table class="job-table">
+          <thead>
+            <tr>
+              <th class="table-heading first-heading">Job Name</th>
+              <th class="table-heading">Organization Name</th>
+              <th class="table-heading last-heading">Organization Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="job in filteredJobs" :key="job.id" class="table-row">
+              <td>{{ job.jobTitle }}</td>
+              <td>{{ job.organizationName }}</td>
+              <td>
+                <span class="badge" :style="badgeStyle(job.organizationType)">
+                  {{ job.organizationType }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- No results message -->
@@ -473,5 +515,72 @@ button {
   transition:
     background 0.2s,
     color 0.2s;
+}
+
+.search-input-container {
+  border: 1px solid;
+  padding-top: 8px;
+  padding: 8px;
+  border-radius: 0.5rem;
+  background-color: white;
+  display: flex;
+  gap: 0.5rem;
+  border-color: #04454d73;
+}
+
+.search-input-container svg {
+  color: #b3b1bb;
+  margin-top: 2px;
+}
+
+.search-input-container input {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  background-color: white;
+  border: 0px;
+  padding: 0px;
+}
+
+.search-input-container input:focus-visible {
+  outline: none;
+}
+
+.sort-select {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 8px;
+  padding-right: 8px;
+  background-color: white;
+  border: 1px solid #04454d73;
+  border-radius: 0.375rem;
+}
+
+.request-new-button {
+  /* requires class */
+  display: flex;
+  gap: 0.25rem;
+}
+
+.request-new-button svg {
+  color: white;
+  fill: white;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.card-content {
+  padding: 1rem;
+  flex-direction: column;
+  bottom: 0;
+  position: relative;
+  display: flex;
+}
+
+.job-table-container {
+  /* requires class */
+  margin-top: 1.5rem;
 }
 </style>
