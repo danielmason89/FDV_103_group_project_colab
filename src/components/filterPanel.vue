@@ -33,7 +33,7 @@
 
       <!-- Province -->
       <template v-else-if="activeFilter === 'province'">
-        <label class="secondary-label">Province</label>
+        <label class="secondary-label">State/Province</label>
         <select v-model="selected.province" class="secondary-dropdown">
           <option v-for="province in provinces" :key="province" :value="province">
             {{ province }}
@@ -124,7 +124,7 @@ const emit = defineEmits(['update-filters'])
 const filterItems = [
   { key: 'organizationType', label: 'Organization Type' },
   { key: 'city', label: 'City' },
-  { key: 'province', label: 'Province' },
+  { key: 'province', label: 'State/Province' },
   { key: 'country', label: 'Country' },
   { key: 'opportunityTypes', label: 'Opportunity Types' },
   { key: 'subjectArea', label: 'Subject Area' },
