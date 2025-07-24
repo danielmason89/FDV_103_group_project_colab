@@ -10,6 +10,7 @@ interface Props {
   options: Option[]
   required?: boolean
   placeholder?: string
+  error?: string
 }
 
 interface Emits {
@@ -27,12 +28,14 @@ defineEmits<Emits>()
       :value="modelValue"
       @change="$emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
       :required="required"
+      :class="['border rounded px-3 py-2', error && 'field-border-error']"
     >
       <option value="" disabled>{{ placeholder || 'Please select an option' }}</option>
       <option v-for="option in options" :key="option.value" :value="option.value">
         {{ option.label }}
       </option>
     </select>
+    <span v-if="error" class="field-text-error">{{ error }}</span>
   </div>
 </template>
 

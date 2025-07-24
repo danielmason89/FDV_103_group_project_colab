@@ -9,6 +9,7 @@ interface Props {
   options: RadioOption[]
   modelValue: string
   required?: boolean
+  erro?: string
 }
 
 interface Emits {
@@ -22,7 +23,7 @@ defineEmits<Emits>()
 <template>
   <div class="form-group">
     <label class="form-label"> {{ label }}{{ required ? '*' : '' }} </label>
-    <div class="radio-group">
+    <div class="radio-group" :class="['border rounded px-3 py-2', error && 'field-border-error']">
       <label v-for="option in options" :key="option.value" class="radio-item">
         <input
           type="radio"
@@ -34,6 +35,7 @@ defineEmits<Emits>()
         <span>{{ option.label }}</span>
       </label>
     </div>
+    <span v-if="error" class="field-text-error">{{ error }}</span>
   </div>
 </template>
 

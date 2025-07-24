@@ -7,6 +7,7 @@ interface Props {
   rows?: number
   showCharacterCount?: boolean
   maxCharacters?: number
+  error?: string
 }
 
 interface Emits {
@@ -27,10 +28,12 @@ defineEmits<Emits>()
       :rows="rows || 4"
       :required="required"
       :maxlength="maxCharacters"
+      :class="['border rounded px-3 py-2', error && 'field-border-error']"
     ></textarea>
     <div v-if="showCharacterCount" class="character-count">
       {{ modelValue.length }}{{ maxCharacters ? `/${maxCharacters}` : '/0' }}
     </div>
+    <span v-if="error" class="field-text-error">{{ error }}</span>
   </div>
 </template>
 

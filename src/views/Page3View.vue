@@ -9,6 +9,10 @@ import FormTextarea from '../components/FormTextarea.vue'
 import FormCheckboxGrid from '../components/FormCheckboxGrid.vue'
 import FormRadioGroup from '../components/FormRadioGroup.vue'
 import NavigationButtons from '../components/NavigationButtons.vue'
+import { useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/yup'
+import * as yup from 'yup'
+
 const router = useRouter()
 
 // STEP TRACKING - Keep track of which step the user is on
@@ -179,70 +183,97 @@ const certificationOptions = [
 ]
 
 // VALIDATION FUNCTIONS - Check if required fields are filled
-function validateStep1(): boolean {
-  // Check each required field and show error if empty
-  if (!jobTitle.value) {
-    alert('Please enter a job title')
+// Vee‑Validate / Yup schemas
+const step1Schema = toTypedSchema(
+  yup.object({
+    jobTitle: yup.string().required('Job title is required'),
+    organizationName: yup.string().required('Organization name is required'),
+    organizationType: yup.string().required('Select an organization type'),
+    streetAddress: yup.string().required('Street address is required'),
+    province: yup.string().required('Select a province'),
+    city: yup.string().required('City is required'),
+    country: yup.string().required('Select a country'),
+    opportunityTypes: yup.array().min(1, 'Pick at least one opportunity type'),
+  }),
+)
+
+const step2Schema = toTypedSchema(
+  yup.object({
+    compensation: yup.string().required('Select compensation'),
+    qualifications: yup.string().required('Enter qualifications'),
+  }),
+)
+
+const step3Schema = toTypedSchema(
+  yup.object({
+    jobDescription: yup.string().required('Enter a job description'),
+    applicationLink: yup.string().required('Enter an application link'),
+    applicationDeadline: yup.string().required('Pick an application deadline'),
+  }),
+)
+
+// Reactive errors stor (targetBag) for each step
+const step1Errors = reactive<Record<string, string>>({})
+const step2Errors = reactive<Record<string, string>>({})
+const step3Errors = reactive<Record<string, string>>({})
+
+// Helper - Run Yup + show first error
+async function runSchema(
+  schema: any,
+  data: Record<string, unknown>,
+  targetBag: Record<string, string>,
+) {
+  //Clear previous messages
+  Object.keys(targetBag).forEach((k) => delete targetBag[k])
+  try {
+    await schema.validate(data, { abortEarly: false })
+    return true
+  } catch (err: any) {
+    // Yup gives "inner" array - one entry per failed field
+    err.inner.forEach((e: any) => {
+      if (e.path) targetBag[e.path] = e.message
+    })
     return false
   }
-  if (!organizationName.value) {
-    alert('Please enter an organization name')
-    return false
-  }
-  if (!organizationType.value) {
-    alert('Please select an organization type')
-    return false
-  }
-  if (!streetAddress.value) {
-    alert('Please enter a street address')
-    return false
-  }
-  if (!province.value) {
-    alert('Please select a province')
-    return false
-  }
-  if (!city.value) {
-    alert('Please enter a city')
-    return false
-  }
-  if (!country.value) {
-    alert('Please select a country')
-    return false
-  }
-  if (opportunityTypes.value.length === 0) {
-    alert('Please select at least one opportunity type')
-    return false
-  }
-  return true
 }
 
-function validateStep2(): boolean {
-  if (!compensation.value) {
-    alert('Please select recognition and compensation')
-    return false
-  }
-  if (!qualifications.value) {
-    alert('Please enter qualifications')
-    return false
-  }
-  return true
-}
+// Validate Step 1/2/3
+const validateStep1 = () =>
+  runSchema(
+    step1Schema,
+    {
+      jobTitle: jobTitle.value,
+      organizationName: organizationName.value,
+      organizationType: organizationType.value,
+      streetAddress: streetAddress.value,
+      province: province.value,
+      city: city.value,
+      country: country.value,
+      opportunityTypes: opportunityTypes.value,
+    },
+    step1Errors,
+  )
 
-function validateStep3(): boolean {
-  if (!jobDescription.value) {
-    alert('Please enter a job description')
-    return false
-  }
-  if (!applicationLink.value) {
-    alert('Please enter an application link')
-    return false
-  }
-  if (!applicationDeadline.value) {
-    alert('Please enter an application deadline')
-    return false
-  }
-  return true
-}
+const validateStep2 = () =>
+  runSchema(
+    step2Schema,
+    {
+      compensation: compensation.value,
+      qualifications: qualifications.value,
+    },
+    step2Errors,
+  )
+
+const validateStep3 = () =>
+  runSchema(
+    step3Schema,
+    {
+      jobDescription: jobDescription.value,
+      applicationLink: applicationLink.value,
+      applicationDeadline: applicationDeadline.value,
+    },
+    step3Errors,
+  )
 
 // NAVIGATION FUNCTIONS - Handle moving between steps
 function nextStep() {
@@ -284,15 +315,6 @@ function scrollToTop() {
     contentArea.scrollTop = 0
   }
 }
-/* Joren's code, possible testing scenario:
-// FORM SUBMISSION - Handle when user submits the form
-function handleSubmit() {
-  // Simulate random success/failure for testing
-  // In a real app, this would check actual server response
-  const isSuccess = Math.random() > 0.3 // 70% success rate for testing
-  submissionState.value = isSuccess ? 'success' : 'failure'
-}
-*/
 
 // *FORM SUBMISSION - Save & Publish Locally*
 function handleSubmit() {
@@ -467,7 +489,13 @@ function getContinueText(): string {
 
         <div class="form-container">
           <!-- Job title field -->
-          <FormInput v-model="jobTitle" label="Job title" placeholder="Placeholder text" required />
+          <FormInput
+            v-model="jobTitle"
+            label="Job title"
+            placeholder="Placeholder text"
+            required
+            :error="step1Errors.jobTitle"
+          />
 
           <!-- Organization name and type in a row -->
           <div class="form-row">
@@ -476,12 +504,14 @@ function getContinueText(): string {
               label="Organization name"
               placeholder="Placeholder text"
               required
+              :error="step1Errors.organizationName"
             />
             <FormSelect
               v-model="organizationType"
               label="Organization type"
               :options="organizationTypeOptions"
               required
+              :error="step1Errors.organizationType"
             />
           </div>
 
@@ -492,6 +522,7 @@ function getContinueText(): string {
             placeholder="Placeholder text"
             :rows="6"
             :show-character-count="true"
+            :error="step1Errors.aboutOrganization"
           />
 
           <!-- Address fields in rows -->
@@ -501,13 +532,32 @@ function getContinueText(): string {
               label="Street address"
               placeholder="Placeholder text"
               required
+              :error="step1Errors.streetAddress"
             />
-            <FormSelect v-model="province" label="Province" :options="provinceOptions" required />
+            <FormSelect
+              v-model="province"
+              label="Province"
+              :options="provinceOptions"
+              required
+              :error="step1Errors.province"
+            />
           </div>
 
           <div class="form-row">
-            <FormInput v-model="city" label="City" placeholder="Placeholder text" required />
-            <FormSelect v-model="country" label="Country" :options="countryOptions" required />
+            <FormInput
+              v-model="city"
+              label="City"
+              placeholder="Placeholder text"
+              required
+              :error="step1Errors.city"
+            />
+            <FormSelect
+              v-model="country"
+              label="Country"
+              :options="countryOptions"
+              required
+              :error="step1Errors.country"
+            />
           </div>
 
           <!-- Opportunity types as checkboxes -->
@@ -516,6 +566,7 @@ function getContinueText(): string {
             label="Opportunity type"
             :options="opportunityTypeOptions"
             required
+            :error="step1Errors.opportunityTypes"
           />
         </div>
       </div>
@@ -530,6 +581,7 @@ function getContinueText(): string {
             v-model="subjectAreas"
             label="Subject area"
             :options="subjectAreaOptions"
+            :error="step2Errors.subjectAreas"
           />
 
           <!-- Grade levels as checkboxes -->
@@ -537,6 +589,7 @@ function getContinueText(): string {
             v-model="gradeLevel"
             label="Grade level(s)"
             :options="gradeLevelOptions"
+            :error="step2Errors.gradeLevel"
           />
 
           <!-- Compensation as radio buttons -->
@@ -545,6 +598,7 @@ function getContinueText(): string {
             label="Recognition and Compensation"
             :options="compensationOptions"
             required
+            :error="step2Errors.compensation"
           />
 
           <!-- Years of experience dropdown -->
@@ -553,6 +607,7 @@ function getContinueText(): string {
             label="Years of experience required"
             :options="experienceOptions"
             style="max-width: 300px"
+            :error="step2Errors.yearsOfExperience"
           />
 
           <!-- Certifications as checkboxes -->
@@ -560,6 +615,7 @@ function getContinueText(): string {
             v-model="certifications"
             label="Certification required"
             :options="certificationOptions"
+            :error="step2Errors.certifications"
           />
 
           <!-- Qualifications text area -->
@@ -569,6 +625,7 @@ function getContinueText(): string {
             placeholder="Placeholder text"
             :rows="4"
             required
+            :error="step2Errors.qualifications"
           />
         </div>
       </div>
@@ -587,6 +644,7 @@ function getContinueText(): string {
             :show-character-count="true"
             required
             class="large-textarea"
+            :error="step3Errors.jobDescription"
           />
 
           <!-- Application link with description -->
@@ -596,6 +654,7 @@ function getContinueText(): string {
               label="Application Link"
               placeholder="Placeholder text"
               required
+              :error="step3Errors.applicationLink"
             />
             <div class="field-description">(email or link to job posting / job portal)</div>
           </div>
@@ -608,6 +667,7 @@ function getContinueText(): string {
               type="date"
               required
               class="date-input"
+              :error="step3Errors.applicationDeadline"
             />
             <div class="date-format">MM/DD/YYYY</div>
           </div>
