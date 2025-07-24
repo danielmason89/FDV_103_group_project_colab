@@ -278,7 +278,7 @@ function clearFilters() {
 
       <!-- Right side group pushed right -->
       <div class="flex items-center gap-x-4 ml-4">
-        <a href="/Page3">
+        <a href="/page3">
           <button
             class="create-new-button primary-button flex items-center gap-x-2 px-3 py-1"
             style="background-color: var(--primary); color: var(--white)"
