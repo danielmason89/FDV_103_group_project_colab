@@ -139,6 +139,23 @@ function bannerStyle(orgType: OrgType) {
   }
 }
 
+// Helper to check if filter array overlaps with job data (string or array)
+function hasOverlap(
+  filterValues: string[] | undefined,
+  jobValues: string | string[] | undefined,
+): boolean {
+  if (!filterValues || filterValues.length === 0) return true // no filter means match all
+  if (!jobValues) return false // no job data means no match
+
+  if (typeof jobValues === 'string') {
+    return filterValues.includes(jobValues)
+  }
+  if (Array.isArray(jobValues)) {
+    return jobValues.some((val) => filterValues.includes(val))
+  }
+  return false
+}
+
 // Filter jobs & Sort jobs
 // We use a computed property to filter and sort this data before displaying.
 // This means any UI bindings that rely on filteredJobs will reactively update if you change the search query, filters, or the underlying data.
@@ -153,15 +170,18 @@ const filteredJobs = computed(() => {
     const matchCity = !f.city || job.city === f.city
     const matchProvince = !f.province || job.province === f.province
     const matchCountry = !f.country || job.country === f.country
-    const matchOpportunityType =
-      !f.opportunityType?.length || f.opportunityType.includes(job.opportunityType)
+    const matchOpportunityTypes =
+      !f.opportunityTypes?.length ||
+      (job.opportunityTypes &&
+        f.opportunityTypes.some((type: string) => job.opportunityTypes.includes(type)))
     const matchSubjectArea =
       !f.subjectArea?.length ||
-      f.subjectArea.some((area: string) => job.subjectAreas?.includes(area))
-    const matchGradeLevel = !f.gradeLevel?.length || f.gradeLevel.includes(job.gradeLevel)
+      (job.subjectAreas && f.subjectArea.some((area: string) => job.subjectAreas.includes(area)))
+    const matchGradeLevel = hasOverlap(f.gradeLevel, job.gradeLevel)
     const matchCompensation = !f.compensation || job.compensation === f.compensation
     const matchYearsOfExperience =
-      !f.yearsOfExperience?.length || f.yearsOfExperience.includes(job.yearsOfExperience)
+      !f.yearsOfExperience?.length ||
+      (job.yearsOfExperience && f.yearsOfExperience.includes(job.yearsOfExperience))
 
     return (
       matchSearch &&
@@ -169,7 +189,7 @@ const filteredJobs = computed(() => {
       matchCity &&
       matchProvince &&
       matchCountry &&
-      matchOpportunityType &&
+      matchOpportunityTypes &&
       matchSubjectArea &&
       matchGradeLevel &&
       matchCompensation &&
