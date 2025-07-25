@@ -218,6 +218,10 @@ function clearFilters() {
   const event = new CustomEvent('clear-all-filters')
   window.dispatchEvent(event)
 }
+
+const goToPage3 = () => {
+  router.push({ name: 'page3' })
+}
 </script>
 
 <template>
@@ -284,7 +288,7 @@ function clearFilters() {
         <!-- Floating Filter Panel with Transition -->
         <transition name="fade-slide">
           <FilterPanel
-            v-if="showFilter"
+            v-show="showFilter"
             class="absolute top-14 left-0 z-[9999] shadow-lg bg-white border rounded p-4 min-w-[250px]"
             @update-filters="applyFilters"
           />
@@ -298,33 +302,32 @@ function clearFilters() {
 
       <!-- Right side group pushed right -->
       <div class="flex items-center gap-x-4 ml-4">
-        <a href="/page3">
-          <button
-            class="create-new-button primary-button flex items-center gap-x-2 px-3 py-1"
-            style="background-color: var(--primary); color: var(--white)"
+        <button
+          @click="goToPage3"
+          class="create-new-button primary-button flex items-center gap-x-2 px-3 py-1"
+          style="background-color: var(--primary); color: var(--white)"
+        >
+          <svg
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium text-white css-vubbuv"
+            style="
+              fill: white;
+              font-size: 0.875rem;
+              line-height: 1.25rem;
+              font-weight: 600;
+              width: 1.5rem;
+              height: 1.5rem;
+            "
+            focusable="false"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            data-testid="AddIcon"
+            width="15"
+            height="15"
           >
-            <svg
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium text-white css-vubbuv"
-              style="
-                fill: white;
-                font-size: 0.875rem;
-                line-height: 1.25rem;
-                font-weight: 600;
-                width: 1.5rem;
-                height: 1.5rem;
-              "
-              focusable="false"
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              data-testid="AddIcon"
-              width="15"
-              height="15"
-            >
-              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"></path>
-            </svg>
-            <span>Create New Job Posting</span>
-          </button>
-        </a>
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"></path>
+          </svg>
+          <span>Create New Job Posting</span>
+        </button>
 
         <!-- Grid View Button -->
         <button
