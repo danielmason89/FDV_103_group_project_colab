@@ -104,12 +104,47 @@ const organizationTypeOptions = [
   { value: 'Other', label: 'Other' },
 ]
 
-const provinceOptions = [
-  { value: 'Ontario', label: 'Ontario' },
-  { value: 'Quebec', label: 'Quebec' },
-  { value: 'British Columbia', label: 'British Columbia' },
-  { value: 'Alberta', label: 'Alberta' },
-]
+// We’ll keep provinceOptions reactive and update based on selected country
+const allProvinceOptions = {
+  UK: [
+    'London',
+    'Cornwall',
+    'Devon',
+    'Yorkshire',
+    'Kent',
+    'Lancashire',
+    'Cumbria',
+    'Norfolk',
+    'Dorset',
+    'Hampshire',
+    'Northumberland',
+    'Lincolnshire',
+  ],
+  USA: [
+    'California',
+    'Florida',
+    'Georgia',
+    'Illinois',
+    'New York',
+    'Ohio',
+    'Pennsylvania',
+    'Texas',
+  ],
+  Canada: [
+    'Alberta',
+    'British Columbia',
+    'Manitoba',
+    'New Brunswick',
+    'Newfoundland and Labrador',
+    'Nova Scotia',
+    'Ontario',
+    'Prince Edward Island',
+    'Quebec',
+    'Saskatchewan',
+  ],
+}
+// reactive provinceOptions, initially empty
+const provinceOptions = ref<{ value: string; label: string }[]>([])
 
 const countryOptions = [
   { value: 'Canada', label: 'Canada' },
@@ -251,6 +286,21 @@ async function nextStep() {
     }
   }
 }
+
+// Watch country changes to update provinceOptions accordingly and clear province selection
+watch(country, (newCountry) => {
+  if (newCountry && allProvinceOptions[newCountry]) {
+    // Sort alphabetically and map to {value,label}
+    provinceOptions.value = allProvinceOptions[newCountry]
+      .slice()
+      .sort()
+      .map((prov) => ({ value: prov, label: prov }))
+  } else {
+    provinceOptions.value = []
+  }
+  // Clear current province selection on country change
+  province.value = ''
+})
 
 function prevStep() {
   // Go back to previous step

@@ -33,9 +33,16 @@
 
       <!-- Province -->
       <template v-else-if="activeFilter === 'province'">
-        <label class="secondary-label">Province</label>
-        <select v-model="selected.province" class="secondary-dropdown">
-          <option v-for="province in provinces" :key="province" :value="province">
+        <label class="secondary-label">State/Province</label>
+        <p v-if="!selected.country" style="color: #d7263d; margin-top: 0.5rem; font-style: italic">
+          Please select a country first
+        </p>
+        <select
+          v-model="selected.province"
+          class="secondary-dropdown"
+          :disabled="!selected.country"
+        >
+          <option v-for="province in filteredProvinces" :key="province" :value="province">
             {{ province }}
           </option>
         </select>
@@ -54,15 +61,15 @@
       </template>
 
       <!-- Opportunity Type -->
-      <template v-else-if="activeFilter === 'opportunityType'">
-        <label class="secondary-label">Opportunity Type</label>
+      <template v-else-if="activeFilter === 'opportunityTypes'">
+        <label class="secondary-label">Opportunity Types</label>
         <div class="secondary-multiselect">
           <label v-for="type in opportunityTypes" :key="type" class="checkbox-label">
-            <input type="checkbox" :value="type" v-model="selected.opportunityType" />
+            <input type="checkbox" :value="type" v-model="selected.opportunityTypes" />
             {{ type }}
           </label>
         </div>
-        <button @click="selected.opportunityType = []" class="clear-filter-btn">Clear</button>
+        <button @click="selected.opportunityTypes = []" class="clear-filter-btn">Clear</button>
       </template>
 
       <!-- Subject Area -->
@@ -117,16 +124,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, computed, onMounted } from 'vue'
 
 const emit = defineEmits(['update-filters'])
 
 const filterItems = [
   { key: 'organizationType', label: 'Organization Type' },
   { key: 'city', label: 'City' },
-  { key: 'province', label: 'Province' },
+  { key: 'province', label: 'State/Province' },
   { key: 'country', label: 'Country' },
-  { key: 'opportunityType', label: 'Opportunity Type' },
+  { key: 'opportunityTypes', label: 'Opportunity Types' },
   { key: 'subjectArea', label: 'Subject Area' },
   { key: 'gradeLevel', label: 'Grade Level' },
   { key: 'compensation', label: 'Recognition & Compensation' },
@@ -144,7 +151,7 @@ const selected = ref({
   city: '',
   province: '',
   country: '',
-  opportunityType: [] as string[],
+  opportunityTypes: [] as string[],
   subjectArea: [] as string[],
   gradeLevel: [] as string[],
   compensation: '',
@@ -166,7 +173,7 @@ onMounted(() => {
       city: '',
       province: '',
       country: '',
-      opportunityType: [],
+      opportunityTypes: [],
       subjectArea: [],
       gradeLevel: [],
       compensation: '',
@@ -174,6 +181,46 @@ onMounted(() => {
     }
   })
 })
+
+// New province sets by country in alphabetical order as requested
+const provincesByCountry = {
+  Canada: [
+    'Alberta',
+    'British Columbia',
+    'Manitoba',
+    'New Brunswick',
+    'Newfoundland and Labrador',
+    'Nova Scotia',
+    'Ontario',
+    'Prince Edward Island',
+    'Quebec',
+    'Saskatchewan',
+  ],
+  USA: [
+    'California',
+    'Florida',
+    'Georgia',
+    'Illinois',
+    'New York',
+    'Ohio',
+    'Pennsylvania',
+    'Texas',
+  ],
+  UK: [
+    'London',
+    'Cornwall',
+    'Devon',
+    'Yorkshire',
+    'Kent',
+    'Lancashire',
+    'Cumbria',
+    'Norfolk',
+    'Dorset',
+    'Hampshire',
+    'Northumberland',
+    'Lincolnshire',
+  ],
+}
 
 const organizationTypes = [
   'Camp',
@@ -189,7 +236,6 @@ const organizationTypes = [
   'Other',
 ]
 const cities = ['Brampton', 'Toronto', 'Windsor', 'Ottawa', 'London']
-const provinces = ['Ontario', 'Quebec', 'British Columbia', 'Alberta']
 const countries = ['Canada', 'USA', 'UK']
 const opportunityTypes = [
   'Full-Time',
@@ -227,6 +273,11 @@ const subjectAreas = [
 const gradeLevels = ['Preschool', 'K-8', 'Secondary', 'Post-Secondary', 'All Grade Levels']
 const compensations = ['Salary', 'Hourly', 'Volunteer', 'Professional Learning Credits']
 const yearsOfExperience = ['Entry Level', '1-3 years', '3-5 years', '5+ years']
+
+// Compute provinces based on selected country, default empty if none or unmatched
+const filteredProvinces = computed(() => {
+  return provincesByCountry[selected.value.country] || []
+})
 </script>
 
 <style scoped>

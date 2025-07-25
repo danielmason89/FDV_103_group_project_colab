@@ -40,10 +40,40 @@ const search = ref('')
 const sortOption = ref('date')
 const viewMode = ref<'grid' | 'list'>('grid')
 const showFilter = ref(false)
+const isToggleActive = ref(false) // controls toggle button active class explicitly
 const activeFilters = ref({})
+
 const toggleFilter = () => {
   showFilter.value = !showFilter.value
+  isToggleActive.value = showFilter.value
 }
+// Close filter panel if clicking outside of filter list or secondary menu
+function onClickOutside(event: MouseEvent) {
+  const filterList = document.querySelector('.filter-list')
+  const secondaryMenu = document.querySelector('.secondary-menu')
+  const toggleBtn = document.querySelector('.toggle-filter-btn')
+  const target = event.target as Node
+  // If filter panel is open and click target is outside the filter list and secondary menu and toggle button, close panel
+  if (
+    showFilter.value &&
+    filterList &&
+    secondaryMenu &&
+    toggleBtn &&
+    !filterList.contains(target) &&
+    !secondaryMenu.contains(target) &&
+    !toggleBtn.contains(target)
+  ) {
+    showFilter.value = false
+    isToggleActive.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', onClickOutside)
+})
+onUnmounted(() => {
+  document.removeEventListener('click', onClickOutside)
+})
 
 function applyFilters(filters: any) {
   activeFilters.value = filters
@@ -139,6 +169,23 @@ function bannerStyle(orgType: OrgType) {
   }
 }
 
+// Helper to check if filter array overlaps with job data (string or array)
+function hasOverlap(
+  filterValues: string[] | undefined,
+  jobValues: string | string[] | undefined,
+): boolean {
+  if (!filterValues || filterValues.length === 0) return true // no filter means match all
+  if (!jobValues) return false // no job data means no match
+
+  if (typeof jobValues === 'string') {
+    return filterValues.includes(jobValues)
+  }
+  if (Array.isArray(jobValues)) {
+    return jobValues.some((val) => filterValues.includes(val))
+  }
+  return false
+}
+
 // Filter jobs & Sort jobs
 // We use a computed property to filter and sort this data before displaying.
 // This means any UI bindings that rely on filteredJobs will reactively update if you change the search query, filters, or the underlying data.
@@ -153,15 +200,18 @@ const filteredJobs = computed(() => {
     const matchCity = !f.city || job.city === f.city
     const matchProvince = !f.province || job.province === f.province
     const matchCountry = !f.country || job.country === f.country
-    const matchOpportunityType =
-      !f.opportunityType?.length || f.opportunityType.includes(job.opportunityType)
+    const matchOpportunityTypes =
+      !f.opportunityTypes?.length ||
+      (job.opportunityTypes &&
+        f.opportunityTypes.some((type: string) => job.opportunityTypes.includes(type)))
     const matchSubjectArea =
       !f.subjectArea?.length ||
-      f.subjectArea.some((area: string) => job.subjectAreas?.includes(area))
-    const matchGradeLevel = !f.gradeLevel?.length || f.gradeLevel.includes(job.gradeLevel)
+      (job.subjectAreas && f.subjectArea.some((area: string) => job.subjectAreas.includes(area)))
+    const matchGradeLevel = hasOverlap(f.gradeLevel, job.gradeLevel)
     const matchCompensation = !f.compensation || job.compensation === f.compensation
     const matchYearsOfExperience =
-      !f.yearsOfExperience?.length || f.yearsOfExperience.includes(job.yearsOfExperience)
+      !f.yearsOfExperience?.length ||
+      (job.yearsOfExperience && f.yearsOfExperience.includes(job.yearsOfExperience))
 
     return (
       matchSearch &&
@@ -169,7 +219,7 @@ const filteredJobs = computed(() => {
       matchCity &&
       matchProvince &&
       matchCountry &&
-      matchOpportunityType &&
+      matchOpportunityTypes &&
       matchSubjectArea &&
       matchGradeLevel &&
       matchCompensation &&
@@ -197,6 +247,10 @@ function clearFilters() {
   applyFilters({})
   const event = new CustomEvent('clear-all-filters')
   window.dispatchEvent(event)
+}
+
+const goToPage3 = () => {
+  router.push({ name: 'page3' })
 }
 </script>
 
@@ -238,7 +292,7 @@ function clearFilters() {
         <button
           @click="toggleFilter"
           class="toggle-filter-btn"
-          :class="{ active: showFilter }"
+          :class="{ active: isToggleActive }"
           aria-label="Toggle Filter Panel"
         >
           <svg
@@ -264,7 +318,7 @@ function clearFilters() {
         <!-- Floating Filter Panel with Transition -->
         <transition name="fade-slide">
           <FilterPanel
-            v-if="showFilter"
+            v-show="showFilter"
             class="absolute top-14 left-0 z-[9999] shadow-lg bg-white border rounded p-4 min-w-[250px]"
             @update-filters="applyFilters"
           />
@@ -278,33 +332,32 @@ function clearFilters() {
 
       <!-- Right side group pushed right -->
       <div class="flex items-center gap-x-4 ml-4">
-        <a href="/Page3">
-          <button
-            class="create-new-button primary-button flex items-center gap-x-2 px-3 py-1"
-            style="background-color: var(--primary); color: var(--white)"
+        <button
+          @click="goToPage3"
+          class="create-new-button primary-button flex items-center gap-x-2 px-3 py-1"
+          style="background-color: var(--primary); color: var(--white)"
+        >
+          <svg
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium text-white css-vubbuv"
+            style="
+              fill: white;
+              font-size: 0.875rem;
+              line-height: 1.25rem;
+              font-weight: 600;
+              width: 1.5rem;
+              height: 1.5rem;
+            "
+            focusable="false"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            data-testid="AddIcon"
+            width="15"
+            height="15"
           >
-            <svg
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium text-white css-vubbuv"
-              style="
-                fill: white;
-                font-size: 0.875rem;
-                line-height: 1.25rem;
-                font-weight: 600;
-                width: 1.5rem;
-                height: 1.5rem;
-              "
-              focusable="false"
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              data-testid="AddIcon"
-              width="15"
-              height="15"
-            >
-              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"></path>
-            </svg>
-            <span>Create New Job Posting</span>
-          </button>
-        </a>
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"></path>
+          </svg>
+          <span>Create New Job Posting</span>
+        </button>
 
         <!-- Grid View Button -->
         <button
