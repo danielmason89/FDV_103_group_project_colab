@@ -1,34 +1,30 @@
 <script setup lang="ts">
-interface Props {
+import { useField } from 'vee-validate'
+
+const props = defineProps<{
+  name: string
   label: string
-  modelValue: string
   placeholder?: string
-  required?: boolean
   type?: string
-  error?: string
-}
+}>()
 
-interface Emits {
-  (e: 'update:modelValue', value: string): void
-}
-
-defineProps<Props>()
-defineEmits<Emits>()
+const { value, errorMessage, handleChange, handleBlur } = useField<string>(props.name)
 </script>
 
 <template>
   <div class="form-group">
-    <label class="form-label"> {{ label }}{{ required ? '*' : '' }} </label>
+    <label class="form-label"> {{ label }}</label>
     <input
       :type="type || 'text'"
-      :value="modelValue"
-      @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       :placeholder="placeholder"
-      :required="required"
-      :class="['border rounded px-3 py-2', error && 'field-border-error']"
+      v-model="value"
+      @blur="handleBlur"
+      @input="handleChange"
+      :class="{ 'border-red-500': errorMessage }"
     />
-    <span v-if="error" class="field-text-error">{{ error }}</span>
-    />
+    <span v-if="errorMessage" class="text-red-600 text-sm">
+      {{ errorMessage }}
+    </span>
   </div>
 </template>
 

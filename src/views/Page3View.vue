@@ -10,6 +10,7 @@ import FormCheckboxGrid from '../components/FormCheckboxGrid.vue'
 import FormRadioGroup from '../components/FormRadioGroup.vue'
 import NavigationButtons from '../components/NavigationButtons.vue'
 import { useForm } from 'vee-validate'
+import { useField } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/yup'
 import * as yup from 'yup'
 
@@ -201,6 +202,10 @@ const step2Schema = toTypedSchema(
   yup.object({
     compensation: yup.string().required('Select compensation'),
     qualifications: yup.string().required('Enter qualifications'),
+    subjectAreas: yup.array().min(1, 'Pick at least one subject area').optional(),
+    gradeLevel: yup.array().min(1, 'Pick at least one grade level').optional(),
+    yearsOfExperience: yup.string().optional(),
+    certifications: yup.array().optional(),
   }),
 )
 
@@ -212,81 +217,28 @@ const step3Schema = toTypedSchema(
   }),
 )
 
-// Reactive errors stor (targetBag) for each step
-const step1Errors = reactive<Record<string, string>>({})
-const step2Errors = reactive<Record<string, string>>({})
-const step3Errors = reactive<Record<string, string>>({})
+// Vee-Validate useForm for each step
+const { errors: step1Errors, validate: validateStep1 } = useForm({
+  validationSchema: step1Schema,
+  initialValues: {},
+})
 
-// Helper - Run Yup + show first error
-async function runSchema(
-  schema: any,
-  data: Record<string, unknown>,
-  targetBag: Record<string, string>,
-) {
-  //Clear previous messages
-  Object.keys(targetBag).forEach((k) => delete targetBag[k])
-  try {
-    await schema.validate(data, { abortEarly: false })
-    return true
-  } catch (err: any) {
-    // Yup gives "inner" array - one entry per failed field
-    err.inner.forEach((e: any) => {
-      if (e.path) targetBag[e.path] = e.message
-    })
-    return false
-  }
-}
+const { errors: step2Errors, validate: validateStep2 } = useForm({
+  validationSchema: step2Schema,
+})
 
-// Validate Step 1/2/3
-const validateStep1 = () =>
-  runSchema(
-    step1Schema,
-    {
-      jobTitle: jobTitle.value,
-      organizationName: organizationName.value,
-      organizationType: organizationType.value,
-      streetAddress: streetAddress.value,
-      province: province.value,
-      city: city.value,
-      country: country.value,
-      opportunityTypes: opportunityTypes.value,
-    },
-    step1Errors,
-  )
-
-const validateStep2 = () =>
-  runSchema(
-    step2Schema,
-    {
-      compensation: compensation.value,
-      qualifications: qualifications.value,
-    },
-    step2Errors,
-  )
-
-const validateStep3 = () =>
-  runSchema(
-    step3Schema,
-    {
-      jobDescription: jobDescription.value,
-      applicationLink: applicationLink.value,
-      applicationDeadline: applicationDeadline.value,
-    },
-    step3Errors,
-  )
+const { errors: step3Errors, validate: validateStep3 } = useForm({
+  validationSchema: step3Schema,
+})
 
 // NAVIGATION FUNCTIONS - Handle moving between steps
-function nextStep() {
+async function nextStep() {
   let isValid = false
 
   // Validate current step before moving forward
-  if (currentStep.value === 1) {
-    isValid = validateStep1()
-  } else if (currentStep.value === 2) {
-    isValid = validateStep2()
-  } else if (currentStep.value === 3) {
-    isValid = validateStep3()
-  }
+  if (currentStep.value === 1) isValid = (await validateStep1()).valid
+  else if (currentStep.value === 2) isValid = (await validateStep2()).valid
+  else if (currentStep.value === 3) isValid = (await validateStep3()).valid
 
   if (isValid) {
     if (currentStep.value < totalSteps) {
@@ -522,7 +474,6 @@ function getContinueText(): string {
             placeholder="Placeholder text"
             :rows="6"
             :show-character-count="true"
-            :error="step1Errors.aboutOrganization"
           />
 
           <!-- Address fields in rows -->
