@@ -40,10 +40,40 @@ const search = ref('')
 const sortOption = ref('date')
 const viewMode = ref<'grid' | 'list'>('grid')
 const showFilter = ref(false)
+const isToggleActive = ref(false) // controls toggle button active class explicitly
 const activeFilters = ref({})
+
 const toggleFilter = () => {
   showFilter.value = !showFilter.value
+  isToggleActive.value = showFilter.value
 }
+// Close filter panel if clicking outside of filter list or secondary menu
+function onClickOutside(event: MouseEvent) {
+  const filterList = document.querySelector('.filter-list')
+  const secondaryMenu = document.querySelector('.secondary-menu')
+  const toggleBtn = document.querySelector('.toggle-filter-btn')
+  const target = event.target as Node
+  // If filter panel is open and click target is outside the filter list and secondary menu and toggle button, close panel
+  if (
+    showFilter.value &&
+    filterList &&
+    secondaryMenu &&
+    toggleBtn &&
+    !filterList.contains(target) &&
+    !secondaryMenu.contains(target) &&
+    !toggleBtn.contains(target)
+  ) {
+    showFilter.value = false
+    isToggleActive.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', onClickOutside)
+})
+onUnmounted(() => {
+  document.removeEventListener('click', onClickOutside)
+})
 
 function applyFilters(filters: any) {
   activeFilters.value = filters
@@ -262,7 +292,7 @@ const goToPage3 = () => {
         <button
           @click="toggleFilter"
           class="toggle-filter-btn"
-          :class="{ active: showFilter }"
+          :class="{ active: isToggleActive }"
           aria-label="Toggle Filter Panel"
         >
           <svg
