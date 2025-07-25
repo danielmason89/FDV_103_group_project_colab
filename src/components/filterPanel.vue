@@ -33,7 +33,7 @@
 
       <!-- Province -->
       <template v-else-if="activeFilter === 'province'">
-        <label class="secondary-label">Province</label>
+        <label class="secondary-label">State/Province</label>
         <select v-model="selected.province" class="secondary-dropdown">
           <option v-for="province in provinces" :key="province" :value="province">
             {{ province }}
@@ -54,15 +54,15 @@
       </template>
 
       <!-- Opportunity Type -->
-      <template v-else-if="activeFilter === 'opportunityType'">
-        <label class="secondary-label">Opportunity Type</label>
+      <template v-else-if="activeFilter === 'opportunityTypes'">
+        <label class="secondary-label">Opportunity Types</label>
         <div class="secondary-multiselect">
           <label v-for="type in opportunityTypes" :key="type" class="checkbox-label">
-            <input type="checkbox" :value="type" v-model="selected.opportunityType" />
+            <input type="checkbox" :value="type" v-model="selected.opportunityTypes" />
             {{ type }}
           </label>
         </div>
-        <button @click="selected.opportunityType = []" class="clear-filter-btn">Clear</button>
+        <button @click="selected.opportunityTypes = []" class="clear-filter-btn">Clear</button>
       </template>
 
       <!-- Subject Area -->
@@ -124,9 +124,9 @@ const emit = defineEmits(['update-filters'])
 const filterItems = [
   { key: 'organizationType', label: 'Organization Type' },
   { key: 'city', label: 'City' },
-  { key: 'province', label: 'Province' },
+  { key: 'province', label: 'State/Province' },
   { key: 'country', label: 'Country' },
-  { key: 'opportunityType', label: 'Opportunity Type' },
+  { key: 'opportunityTypes', label: 'Opportunity Types' },
   { key: 'subjectArea', label: 'Subject Area' },
   { key: 'gradeLevel', label: 'Grade Level' },
   { key: 'compensation', label: 'Recognition & Compensation' },
@@ -144,7 +144,7 @@ const selected = ref({
   city: '',
   province: '',
   country: '',
-  opportunityType: [] as string[],
+  opportunityTypes: [] as string[],
   subjectArea: [] as string[],
   gradeLevel: [] as string[],
   compensation: '',
@@ -166,7 +166,7 @@ onMounted(() => {
       city: '',
       province: '',
       country: '',
-      opportunityType: [],
+      opportunityTypes: [],
       subjectArea: [],
       gradeLevel: [],
       compensation: '',
