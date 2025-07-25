@@ -67,23 +67,6 @@ const formState: Record<string, Ref<string | string[]>> = {
   approvalStatus,
 }
 
-// Watch for changes in any form field and save to browser storage
-Object.values(formState).forEach((field) => {
-  watch(
-    field,
-    () => {
-      // Convert all form data to a simple object
-      const serialized = Object.fromEntries(
-        Object.entries(formState).map(([key, refObj]) => [key, refObj.value]),
-      )
-      // Save to browser's local storage
-      localStorage.setItem('jobFormData', JSON.stringify(serialized))
-      console.log('[Auto-Save] Form data saved to localStorage.')
-    },
-    { deep: true }, // Watch nested changes (like arrays)
-  )
-})
-
 // DROPDOWN OPTIONS - Predefined choices for form dropdowns
 const organizationTypeOptions = [
   { value: 'Camp', label: 'Camp' },
@@ -99,12 +82,48 @@ const organizationTypeOptions = [
   { value: 'Other', label: 'Other' },
 ]
 
-const provinceOptions = [
-  { value: 'Ontario', label: 'Ontario' },
-  { value: 'Quebec', label: 'Quebec' },
-  { value: 'British Columbia', label: 'British Columbia' },
-  { value: 'Alberta', label: 'Alberta' },
-]
+// We’ll keep provinceOptions reactive and update based on selected country
+const allProvinceOptions = {
+  UK: [
+    'London',
+    'Cornwall',
+    'Devon',
+    'Yorkshire',
+    'Kent',
+    'Lancashire',
+    'Cumbria',
+    'Norfolk',
+    'Dorset',
+    'Hampshire',
+    'Northumberland',
+    'Lincolnshire',
+  ],
+  USA: [
+    'California',
+    'Florida',
+    'Georgia',
+    'Illinois',
+    'New York',
+    'Ohio',
+    'Pennsylvania',
+    'Texas',
+  ],
+  Canada: [
+    'Alberta',
+    'British Columbia',
+    'Manitoba',
+    'New Brunswick',
+    'Newfoundland and Labrador',
+    'Nova Scotia',
+    'Ontario',
+    'Prince Edward Island',
+    'Quebec',
+    'Saskatchewan',
+  ],
+}
+
+// reactive provinceOptions, initially empty
+const provinceOptions = ref<{ value: string; label: string }[]>([])
 
 const countryOptions = [
   { value: 'Canada', label: 'Canada' },
@@ -284,15 +303,21 @@ function scrollToTop() {
     contentArea.scrollTop = 0
   }
 }
-/* Joren's code, possible testing scenario:
-// FORM SUBMISSION - Handle when user submits the form
-function handleSubmit() {
-  // Simulate random success/failure for testing
-  // In a real app, this would check actual server response
-  const isSuccess = Math.random() > 0.3 // 70% success rate for testing
-  submissionState.value = isSuccess ? 'success' : 'failure'
-}
-*/
+
+// Watch country changes to update provinceOptions accordingly and clear province selection
+watch(country, (newCountry) => {
+  if (newCountry && allProvinceOptions[newCountry]) {
+    // Sort alphabetically and map to {value,label}
+    provinceOptions.value = allProvinceOptions[newCountry]
+      .slice()
+      .sort()
+      .map((prov) => ({ value: prov, label: prov }))
+  } else {
+    provinceOptions.value = []
+  }
+  // Clear current province selection on country change
+  province.value = ''
+})
 
 // *FORM SUBMISSION - Save & Publish Locally*
 function handleSubmit() {
