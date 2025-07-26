@@ -11,37 +11,35 @@ defineProps<{
 </script>
 
 <template>
-  <div class="card font-bold text-[var(--subHeading)] space-y-4">
-    <!-- Top Section: 2-column grid -->
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+  <div class="card font-bold text-[var(--subHeading)]">
+    <div class="grid grid-cols-1 gap-y-2 gap-x-55 md:gap-x-55 lg:gap-x-2 sm:grid-cols-1 md:grid-cols-2">
       <div class="flex items-center justify-start form-card">
-        <span class="text-lg font-bold text-[var(--subHeading)]">
+        <span class="text-md font-bold text-[var(--subHeading)]">
           {{ category || 'Camp, Child Care' }}
         </span>
       </div>
 
       <div class="form-card">
-        <span class="text-lg font-bold">
+        <span class="font-bold text-md">
           {{ gradeLevel || 'All Grade Levels' }}
         </span>
       </div>
     </div>
     <br/>
-    <!-- Bottom Section: 3-column grid -->
-    <div class="grid grid-cols-1 gap-55 sm:grid-cols-2 md:grid-cols-3">
+    <div class="grid grid-cols-1 gap-x-55 gap-y-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
       <div class="form-card">
-        <span class="block text-lg font-bold">Years of Experience Required:</span>
-        <span class="text-lg">{{ experienceLevel || 'Entry Level' }}</span>
+        <span class="block font-bold text-md">Years of Experience Required:</span>
+        <span class="text-md">{{ experienceLevel || 'Entry Level' }}</span>
       </div>
 
       <div class="form-card">
-        <span class="block text-lg font-bold">Recognition & Compensation:</span>
-        <span class="text-lg">{{ compensation || 'Hourly, Salary' }}</span>
+        <span class="block font-md old text-md">Recognition & Compensation:</span>
+        <span class="text-md">{{ compensation || 'Hourly, Salary' }}</span>
       </div>
 
       <div class="form-card">
-        <span class="block text-lg font-bold">Application Deadline:</span>
-        <span class="text-lg">{{ applicationDeadline || 'dd/mm/yyyy' }}</span>
+        <span class="block font-bold text-md">Application Deadline:</span>
+        <span class="text-md">{{ applicationDeadline || 'dd/mm/yyyy' }}</span>
       </div>
     </div>
   </div>
@@ -50,7 +48,7 @@ defineProps<{
 <style scoped>
 
 .form-card {
-  width: 15vw;
+  width: 12rem;
 }
 
 .card {

@@ -82,7 +82,7 @@ export default {
   border: 3px solid #000000;
   background-color: #dce4e4;
   border-radius: 6px;
-  font-size: 1.4rem;
+  font-size: 1rem;
   text-align: center;
   white-space: nowrap;
   color: #054851;

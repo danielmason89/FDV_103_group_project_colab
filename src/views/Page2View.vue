@@ -7,7 +7,6 @@ import SectionCard from '@/components/SectionCard.vue'
 import jobCardDetailsComponent from '@/components/jobCardDetailsComponent.vue'
 import subjectAreacomponent from '@/components/subjectAreacomponent.vue'
 import '../assets/base.css'
-
 </script>
 
 <template>
@@ -23,7 +22,8 @@ import '../assets/base.css'
             <p class="text-3xl font-bold">Arts School Teacher</p>
             <p class="text-3xl">CoLab Education</p>
           </div>
-          <applyButtonComponent text="Apply Now!" aria-label="Apply for this teaching job" />
+          <br/>
+          <applyButtonComponent class="flex justify-center align-center" text="Apply Now!" aria-label="Apply for this teaching job" />
         </div>
 
         <!-- Badges -->
@@ -35,7 +35,7 @@ import '../assets/base.css'
       <!-- Opportunity Type -->
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <h2 class="mb-2 text-lg font-extrabold">Opportunity Type</h2>
-        <SectionCard class="mb-4 text-xs font-semibold">
+        <SectionCard class="mb-4 font-semibold">
           <opportunityTypeComponent />
         </SectionCard>
       </div>
@@ -43,7 +43,7 @@ import '../assets/base.css'
       <!-- Subject Area -->
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <h2 class="mb-2 text-lg font-extrabold">Subject Area</h2>
-        <SectionCard class="mb-4 text-lg font-semibold">
+        <SectionCard class="mb-4 font-semibold">
           <subjectAreacomponent grid />
         </SectionCard>
       </div>
@@ -51,7 +51,7 @@ import '../assets/base.css'
       <!-- Certifications -->
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <h2 class="mb-2 text-lg font-extrabold">Certifications Required</h2>
-        <SectionCard class="mb-4 text-xs font-semibold">
+        <SectionCard class="mb-4 font-semibold">
           <certificationComponent />
         </SectionCard>
       </div>
@@ -119,11 +119,8 @@ import '../assets/base.css'
 
       <!-- Final Apply Button -->
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
-        <div class="flex justify-evenly align-center">
-          <applyButtonComponent
-            text="Apply Now!"
-            aria-label="Apply for this teaching job"
-          />
+        <div class="flex justify-center">
+          <applyButtonComponent text="Apply Now!" aria-label="Apply for this teaching job" />
         </div>
       </div>
     </div>
@@ -149,5 +146,6 @@ p {
 .card {
   padding: 1rem;
   margin: 1rem 0rem;
+  width: 100%;
 }
 </style>
