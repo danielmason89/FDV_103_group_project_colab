@@ -5,7 +5,7 @@ import { string } from 'yup'
 const props = defineProps<{
   name: string
   label: string
-  options: { value: string; Label: string }[]
+  options: { value: string; label: string }[]
   placeholder?: string
 }>()
 
@@ -15,9 +15,8 @@ const { value, errorMessage, handleChange, handleBlur } = useField<string>(props
 <template>
   <div class="form-group">
     <label class="form-label"> {{ label }}{{ required ? '*' : '' }} </label>
-    <select>
-      v-model="value" @change="handleChange" @blur="handleBlur"
-      <option>value="" disabled{{ placeholder ?? 'Please select an option' }}</option>
+    <select v-model="value" @change="handleChange" @blur="handleBlur">
+      <option value="" disabled>{{ placeholder ?? 'Please select an option' }}</option>
       <option v-for="option in options" :key="option.value" :value="option.value">
         {{ option.label }}
       </option>
