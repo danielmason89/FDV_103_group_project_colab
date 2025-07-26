@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// Import `defineProps` to define and access component props
-import { defineProps } from 'vue'
 
 // Define the props accepted by the component:
 // - text: optional label for the button
