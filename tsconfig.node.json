@@ -17,6 +17,7 @@
     "strict": true,
     "allowJs": true,
     "checkJs": false,
+    "resolveJsonModule": true,
     "jsx": "preserve",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

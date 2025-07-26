@@ -12,6 +12,7 @@
     "allowJs": true,
     "checkJs": false,
     "jsx": "preserve",
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
