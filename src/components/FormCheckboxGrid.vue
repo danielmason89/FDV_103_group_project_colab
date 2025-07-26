@@ -1,51 +1,53 @@
 <script setup lang="ts">
+import { useField } from 'vee-validate'
+
 interface CheckboxOption {
   value: string
   label: string
 }
 
-interface Props {
+const props = defineProps<{
+  name: string
   label: string
   options: CheckboxOption[]
-  modelValue: string[]
   required?: boolean
-}
+}>()
 
-interface Emits {
-  (e: 'update:modelValue', value: string[]): void
-}
+const { value, errorMessage, setValue, handleBlur } = useField<string[]>(props.name, undefined, {
+  initialValue: [],
+})
 
-const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
-
-function handleCheckboxChange(optionValue: string) {
-  const currentValues = [...props.modelValue]
-  const index = currentValues.indexOf(optionValue)
-
-  if (index > -1) {
-    currentValues.splice(index, 1)
-  } else {
-    currentValues.push(optionValue)
-  }
-
-  emit('update:modelValue', currentValues)
+function toggle(optionValue: string) {
+  const next = (value.value ?? []).slice()
+  const idx = next.indexOf(optionValue)
+  if (idx > -1) next.splice(idx, 1)
+  else next.push(optionValue)
+  setValue(next)
 }
 </script>
 
 <template>
   <div class="form-group">
     <label class="form-label"> {{ label }}{{ required ? '*' : '' }} </label>
-    <div class="checkbox-grid">
-      <label v-for="option in options" :key="option.value" class="checkbox-item">
+    <div
+      class="checkbox-grid border rounded px-3 py-2"
+      :class="errorMessage && 'field-border-error'"
+    >
+      <label v-for="opt in options" :key="opt.value" class="checkbox-item">
         <input
           type="checkbox"
-          :checked="modelValue.includes(option.value)"
-          @change="handleCheckboxChange(option.value)"
           class="form-checkbox"
+          :value="opt.value"
+          :checked="(value ?? []).includes(opt.value)"
+          @change="toggle(opt.value)"
+          @blur="handleBlur"
         />
-        <span>{{ option.label }}</span>
+        <span>{{ opt.label }}</span>
       </label>
     </div>
+    <span v-if="errorMessage" class="field-text-error text-red-600 text-sm">
+      {{ errorMessage }}
+    </span>
   </div>
 </template>
 

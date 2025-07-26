@@ -1,36 +1,38 @@
 <script setup lang="ts">
-interface Props {
+import { useField } from 'vee-validate'
+
+const props = defineProps<{
+  name: string
   label: string
-  modelValue: string
   placeholder?: string
   required?: boolean
   rows?: number
   showCharacterCount?: boolean
   maxCharacters?: number
-}
+}>()
 
-interface Emits {
-  (e: 'update:modelValue', value: string): void
-}
-
-defineProps<Props>()
-defineEmits<Emits>()
+const { value, errorMessage, handleBlur } = useField<string>(props.name, undefined, {
+  initialValue: '',
+})
 </script>
 
 <template>
   <div class="form-group">
     <label class="form-label"> {{ label }}{{ required ? '*' : '' }} </label>
     <textarea
-      :value="modelValue"
-      @input="$emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)"
+      :name="name"
+      v-model="value"
+      @blur="handleBlur"
       :placeholder="placeholder"
-      :rows="rows || 4"
+      :rows="rows ?? 4"
       :required="required"
       :maxlength="maxCharacters"
+      :class="{ 'border-red-500': errorMessage }"
     ></textarea>
     <div v-if="showCharacterCount" class="character-count">
-      {{ modelValue.length }}{{ maxCharacters ? `/${maxCharacters}` : '/0' }}
+      {{ value?.length ?? 0 }}{{ maxCharacters ? `/${maxCharacters}` : '/0' }}
     </div>
+    <span v-if="errorMessage" class="text-red-600 text-sm">{{ errorMessage }}</span>
   </div>
 </template>
 

@@ -1,88 +1,45 @@
 <script setup lang="ts">
 // IMPORTS
-import { ref, onMounted, watch, type Ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import BreadcrumbNavigation from '../components/BreadcrumbNavigation.vue'
-import FormInput from '../components/FormInput.vue'
-import FormSelect from '../components/FormSelect.vue'
-import FormTextarea from '../components/FormTextarea.vue'
-import FormCheckboxGrid from '../components/FormCheckboxGrid.vue'
-import FormRadioGroup from '../components/FormRadioGroup.vue'
 import NavigationButtons from '../components/NavigationButtons.vue'
-const router = useRouter()
+// Validation & Form Imports
+import * as yup from 'yup'
+import { fullSchema, step1Yup, step2Yup, step3Yup, type JobForm } from '@/validation/jobSchemas'
+import { useForm, Form } from 'vee-validate'
+import FormInput from '@/components/FormInput.vue'
+import FormSelect from '@/components/FormSelect.vue'
+import FormTextarea from '@/components/FormTextarea.vue'
+import FormCheckboxGrid from '@/components/FormCheckboxGrid.vue'
+import FormRadioGroup from '@/components/FormRadioGroup.vue'
 
-// STEP TRACKING - Keep track of which step the user is on
+// WIZARD STATE
+const router = useRouter()
+// Step Tracking - Keep track of which step the user is on
 const currentStep = ref<1 | 2 | 3>(1) // Start at step 1
 const totalSteps = 3
+
+// VEE-VALIDATE CONTEXT
+const { values, setFieldError } = useForm<JobForm>({
+  validationSchema: fullSchema,
+})
 
 // SUBMISSION STATE - Track if form is being filled, submitted successfully, or failed
 const submissionState = ref<'form' | 'success' | 'failure'>('form')
 
-// STEP 1 FORM FIELDS - Job posting basic information
-const jobTitle = ref('')
-const organizationName = ref('')
-const organizationType = ref('')
-const aboutOrganization = ref('')
-const streetAddress = ref('')
-const province = ref('')
-const city = ref('')
-const country = ref('')
-const opportunityTypes = ref<string[]>([])
-
-// STEP 2 FORM FIELDS - Job requirements and specifications
-const subjectAreas = ref<string[]>([])
-const gradeLevel = ref<string[]>([])
-const compensation = ref('')
-const yearsOfExperience = ref('')
-const certifications = ref<string[]>([])
-const qualifications = ref('')
-
-// STEP 3 FORM FIELDS - Job description and application details
-const jobDescription = ref('')
-const applicationLink = ref('')
-const applicationDeadline = ref('')
+// Approval Status - local, hidden in form
 const approvalStatus = ref<'yes' | 'no'>('yes')
 
 // AUTO-SAVE FUNCTIONALITY - Save form data as user types
-// Group all form fields together for easy saving
-const formState: Record<string, Ref<string | string[]>> = {
-  jobTitle,
-  organizationName,
-  organizationType,
-  aboutOrganization,
-  streetAddress,
-  province,
-  city,
-  country,
-  opportunityTypes,
-  subjectAreas,
-  gradeLevel,
-  compensation,
-  yearsOfExperience,
-  certifications,
-  qualifications,
-  jobDescription,
-  applicationLink,
-  applicationDeadline,
-  approvalStatus,
-}
-
-// Watch for changes in any form field and save to browser storage
-Object.values(formState).forEach((field) => {
-  watch(
-    field,
-    () => {
-      // Convert all form data to a simple object
-      const serialized = Object.fromEntries(
-        Object.entries(formState).map(([key, refObj]) => [key, refObj.value]),
-      )
-      // Save to browser's local storage
-      localStorage.setItem('jobFormData', JSON.stringify(serialized))
-      console.log('[Auto-Save] Form data saved to localStorage.')
-    },
-    { deep: true }, // Watch nested changes (like arrays)
-  )
-})
+watch(
+  values,
+  (v) => {
+    localStorage.setItem('jobFormData', JSON.stringify(v))
+    console.log('[Auto-Save] saved', v)
+  },
+  { deep: true },
+)
 
 // DROPDOWN OPTIONS - Predefined choices for form dropdowns
 const organizationTypeOptions = [
@@ -213,137 +170,69 @@ const certificationOptions = [
   { value: 'other', label: 'Other' },
 ]
 
-// VALIDATION FUNCTIONS - Check if required fields are filled
-function validateStep1(): boolean {
-  // Check each required field and show error if empty
-  if (!jobTitle.value) {
-    alert('Please enter a job title')
-    return false
-  }
-  if (!organizationName.value) {
-    alert('Please enter an organization name')
-    return false
-  }
-  if (!organizationType.value) {
-    alert('Please select an organization type')
-    return false
-  }
-  if (!streetAddress.value) {
-    alert('Please enter a street address')
-    return false
-  }
-  if (!province.value) {
-    alert('Please select a province')
-    return false
-  }
-  if (!city.value) {
-    alert('Please enter a city')
-    return false
-  }
-  if (!country.value) {
-    alert('Please select a country')
-    return false
-  }
-  if (opportunityTypes.value.length === 0) {
-    alert('Please select at least one opportunity type')
-    return false
-  }
-  return true
-}
-
-function validateStep2(): boolean {
-  if (!compensation.value) {
-    alert('Please select recognition and compensation')
-    return false
-  }
-  if (!qualifications.value) {
-    alert('Please enter qualifications')
-    return false
-  }
-  return true
-}
-
-function validateStep3(): boolean {
-  if (!jobDescription.value) {
-    alert('Please enter a job description')
-    return false
-  }
-  if (!applicationLink.value) {
-    alert('Please enter an application link')
-    return false
-  }
-  if (!applicationDeadline.value) {
-    alert('Please enter an application deadline')
-    return false
-  }
-  return true
-}
-
 // NAVIGATION FUNCTIONS - Handle moving between steps
-function nextStep() {
-  let isValid = false
+async function nextStep() {
+  const activeYup =
+    currentStep.value === 1 ? step1Yup : currentStep.value === 2 ? step2Yup : step3Yup
 
-  // Validate current step before moving forward
-  if (currentStep.value === 1) {
-    isValid = validateStep1()
-  } else if (currentStep.value === 2) {
-    isValid = validateStep2()
-  } else if (currentStep.value === 3) {
-    isValid = validateStep3()
+  try {
+    await activeYup.validate(values, { abortEarly: false })
+  } catch (err) {
+    if (err instanceof yup.ValidationError) {
+      err.inner.forEach(({ path, message }) => {
+        if (path) setFieldError(path as keyof JobForm, message)
+      })
+      return
+    }
+    throw err
   }
 
-  if (isValid) {
-    if (currentStep.value < totalSteps) {
-      // Move to next step
-      currentStep.value++
-      scrollToTop()
-    } else {
-      // Submit the form
-      handleSubmit()
-    }
+  if (currentStep.value < totalSteps) {
+    currentStep.value++
+    scrollToTop()
+  } else {
+    handleSubmit()
   }
 }
-
-// Watch country changes to update provinceOptions accordingly and clear province selection
-watch(country, (newCountry) => {
-  if (newCountry && allProvinceOptions[newCountry]) {
-    // Sort alphabetically and map to {value,label}
-    provinceOptions.value = allProvinceOptions[newCountry]
-      .slice()
-      .sort()
-      .map((prov) => ({ value: prov, label: prov }))
-  } else {
-    provinceOptions.value = []
-  }
-  // Clear current province selection on country change
-  province.value = ''
-})
-
+// Scroll to top on First Step
 function prevStep() {
-  // Go back to previous step
   if (currentStep.value > 1) {
     currentStep.value--
     scrollToTop()
   }
 }
-
+// Scroll to top of form when changing Steps
 function scrollToTop() {
-  // Scroll to top of form when changing steps
   const contentArea = document.querySelector('.content-area')
   if (contentArea) {
     contentArea.scrollTop = 0
   }
 }
 
-// *FORM SUBMISSION - Save & Publish Locally*
+// Watch country changes to update provinceOptions accordingly and clear province selection
+type CountryKey = keyof typeof allProvinceOptions
+watch(
+  () => values.country as CountryKey | '',
+  (newCountry) => {
+    values.province = ''
+    provinceOptions.value = newCountry
+      ? allProvinceOptions[newCountry]
+          .slice()
+          .sort()
+          .map((p) => ({ value: p, label: p }))
+      : []
+  },
+)
+
+// FORM SUBMISSION - Save & Publish Locally
 function handleSubmit() {
   // One object with all field values + metadata
   const submission = {
     id: `job-${Date.now()}`, // crude unique id
     submittedAt: new Date().toISOString(), // ISO date‑time
     approved: approvalStatus.value, // "yes" for demo
-    ...Object.fromEntries(Object.entries(formState).map(([key, r]) => [key, r.value])),
-  }
+    ...values,
+  } as const
 
   // Append to jobSubmissions list in localStorage
   const list = JSON.parse(localStorage.getItem('jobSubmissions') || '[]')
@@ -375,13 +264,7 @@ onMounted(() => {
   if (submissionState.value === 'form') {
     const saved = localStorage.getItem('jobFormData')
     if (saved) {
-      const parsed = JSON.parse(saved)
-      // Restore each field from saved data
-      Object.entries(parsed).forEach(([key, value]) => {
-        if (formState[key] && (typeof value === 'string' || Array.isArray(value))) {
-          formState[key].value = value
-        }
-      })
+      Object.assign(values, JSON.parse(saved))
       console.log('[Load] Loaded saved form data from localStorage.')
     }
   }
@@ -402,8 +285,8 @@ function getStepTitle(step: number): string {
   }
 }
 
+// Show "Submit" on last step
 function getContinueText(): string {
-  // Show "Submit" on last step, "Continue" on others
   return currentStep.value === totalSteps ? 'Submit for review' : 'Continue'
 }
 </script>
@@ -501,25 +384,25 @@ function getContinueText(): string {
   <div v-else class="max-w-6xl mx-auto">
     <BreadcrumbNavigation :current-step="currentStep" />
 
-    <form id="multiStepForm" novalidate @submit.prevent="nextStep">
+    <Form id="multiStepForm" @submit.prevent="nextStep">
       <!-- Step 1: Basic job posting information -->
       <div class="form-step" :class="{ active: currentStep === 1 }">
         <h1 class="mb-8 text-4xl font-bold text-teal-700">{{ getStepTitle(1) }}</h1>
 
         <div class="form-container">
           <!-- Job title field -->
-          <FormInput v-model="jobTitle" label="Job title" placeholder="Placeholder text" required />
+          <FormInput name="jobTitle" label="Job title" placeholder="Placeholder text" required />
 
           <!-- Organization name and type in a row -->
           <div class="form-row">
             <FormInput
-              v-model="organizationName"
+              name="organizationName"
               label="Organization name"
               placeholder="Placeholder text"
               required
             />
             <FormSelect
-              v-model="organizationType"
+              name="organizationType"
               label="Organization type"
               :options="organizationTypeOptions"
               required
@@ -528,7 +411,7 @@ function getContinueText(): string {
 
           <!-- About organization text area -->
           <FormTextarea
-            v-model="aboutOrganization"
+            name="aboutOrganization"
             label="About the organization"
             placeholder="Placeholder text"
             :rows="6"
@@ -538,22 +421,22 @@ function getContinueText(): string {
           <!-- Address fields in rows -->
           <div class="form-row">
             <FormInput
-              v-model="streetAddress"
+              name="streetAddress"
               label="Street address"
               placeholder="Placeholder text"
               required
             />
-            <FormSelect v-model="province" label="Province" :options="provinceOptions" required />
+            <FormSelect name="province" label="Province" :options="provinceOptions" required />
           </div>
 
           <div class="form-row">
-            <FormInput v-model="city" label="City" placeholder="Placeholder text" required />
-            <FormSelect v-model="country" label="Country" :options="countryOptions" required />
+            <FormInput name="city" label="City" placeholder="Placeholder text" required />
+            <FormSelect name="country" label="Country" :options="countryOptions" required />
           </div>
 
           <!-- Opportunity types as checkboxes -->
           <FormCheckboxGrid
-            v-model="opportunityTypes"
+            name="opportunityTypes"
             label="Opportunity type"
             :options="opportunityTypeOptions"
             required
@@ -568,21 +451,17 @@ function getContinueText(): string {
         <div class="form-container">
           <!-- Subject areas as checkboxes -->
           <FormCheckboxGrid
-            v-model="subjectAreas"
+            name="subjectAreas"
             label="Subject area"
             :options="subjectAreaOptions"
           />
 
           <!-- Grade levels as checkboxes -->
-          <FormCheckboxGrid
-            v-model="gradeLevel"
-            label="Grade level(s)"
-            :options="gradeLevelOptions"
-          />
+          <FormCheckboxGrid name="gradeLevel" label="Grade level(s)" :options="gradeLevelOptions" />
 
           <!-- Compensation as radio buttons -->
           <FormRadioGroup
-            v-model="compensation"
+            name="compensation"
             label="Recognition and Compensation"
             :options="compensationOptions"
             required
@@ -590,7 +469,7 @@ function getContinueText(): string {
 
           <!-- Years of experience dropdown -->
           <FormSelect
-            v-model="yearsOfExperience"
+            name="yearsOfExperience"
             label="Years of experience required"
             :options="experienceOptions"
             style="max-width: 300px"
@@ -598,14 +477,14 @@ function getContinueText(): string {
 
           <!-- Certifications as checkboxes -->
           <FormCheckboxGrid
-            v-model="certifications"
+            name="certifications"
             label="Certification required"
             :options="certificationOptions"
           />
 
           <!-- Qualifications text area -->
           <FormTextarea
-            v-model="qualifications"
+            name="qualifications"
             label="Qualifications"
             placeholder="Placeholder text"
             :rows="4"
@@ -621,7 +500,7 @@ function getContinueText(): string {
         <div class="form-container">
           <!-- Job description text area -->
           <FormTextarea
-            v-model="jobDescription"
+            name="jobDescription"
             label="Job description"
             placeholder="Placeholder text"
             :rows="8"
@@ -633,7 +512,7 @@ function getContinueText(): string {
           <!-- Application link with description -->
           <div class="form-group">
             <FormInput
-              v-model="applicationLink"
+              name="applicationLink"
               label="Application Link"
               placeholder="Placeholder text"
               required
@@ -644,7 +523,7 @@ function getContinueText(): string {
           <!-- Application deadline with format hint -->
           <div class="form-group">
             <FormInput
-              v-model="applicationDeadline"
+              name="applicationDeadline"
               label="Application Deadline"
               type="date"
               required
@@ -663,7 +542,7 @@ function getContinueText(): string {
         @back="prevStep"
         @continue="nextStep"
       />
-    </form>
+    </Form>
   </div>
 </template>
 
