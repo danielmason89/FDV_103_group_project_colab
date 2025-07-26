@@ -19,4 +19,5 @@ export interface JobSubmission {
   country: string
   aboutOrganization: string
   organizationName: string
+  organizationType: string
 }
