@@ -26,7 +26,7 @@ defineProps<{
       </div>
     </div>
     <br/>
-    <div class="grid grid-cols-1 gap-x-55 gap-y-2 sm:grid:cols:1 md:grid-cols-2 lg:grid-cols-3">
+    <div class="grid grid-cols-1 gap-x-55 gap-y-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
       <div class="form-card">
         <span class="block font-bold text-md">Years of Experience Required:</span>
         <span class="text-md">{{ experienceLevel || 'Entry Level' }}</span>
