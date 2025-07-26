@@ -7,6 +7,7 @@ const props = defineProps<{
   label: string
   options: { value: string; label: string }[]
   placeholder?: string
+  required?: boolean
 }>()
 
 const { value, errorMessage, handleChange, handleBlur } = useField<string>(props.name)
@@ -14,8 +15,9 @@ const { value, errorMessage, handleChange, handleBlur } = useField<string>(props
 
 <template>
   <div class="form-group">
-    <label class="form-label"> {{ label }}{{ required ? '*' : '' }} </label>
+    <label class="form-label"> {{ label }}<span v-if="required" class="required">*</span> </label>
     <select v-model="value" @change="handleChange" @blur="handleBlur">
+      :required="required
       <option value="" disabled>{{ placeholder ?? 'Please select an option' }}</option>
       <option v-for="option in options" :key="option.value" :value="option.value">
         {{ option.label }}

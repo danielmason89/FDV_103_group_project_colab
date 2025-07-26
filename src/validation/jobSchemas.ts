@@ -5,6 +5,7 @@ export const step1Yup = yup.object({
   jobTitle: yup.string().required('Job title is required.'),
   organizationName: yup.string().required('Organization name is required.'),
   organizationType: yup.string().required('Select an organization type.'),
+  aboutOrganization: yup.string().max(3000, 'Field cannot exceed 3000 characters.'),
   streetAddress: yup.string().required('Street address is required.'),
   province: yup.string().required('Select a province.'),
   city: yup.string().required('City is required.'),
@@ -14,7 +15,10 @@ export const step1Yup = yup.object({
 
 export const step2Yup = yup.object({
   compensation: yup.string().required('Select compensation.'),
-  qualifications: yup.string().required('Enter qualifications.'),
+  qualifications: yup
+    .string()
+    .max(3000, 'Field cannot exceed 3000 characters.')
+    .required('Enter qualifications.'),
   subjectAreas: yup.array().min(1, 'Pick at least one subject area.').optional(),
   gradeLevel: yup.array().min(1, 'Pick at least one grade level.').optional(),
   yearsOfExperience: yup.string().optional(),
@@ -22,7 +26,10 @@ export const step2Yup = yup.object({
 })
 
 export const step3Yup = yup.object({
-  jobDescription: yup.string().required('Enter a job description.'),
+  jobDescription: yup
+    .string()
+    .max(3000, 'Field cannot exceed 3000 characters.')
+    .required('Enter a job description.'),
   applicationLink: yup.string().required('Enter an application link.'),
   applicationDeadline: yup.string().required('Pick an application deadline.'),
 })

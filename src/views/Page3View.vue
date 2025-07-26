@@ -222,6 +222,7 @@ watch(
           .map((p) => ({ value: p, label: p }))
       : []
   },
+  { immediate: true },
 )
 
 // FORM SUBMISSION - Save & Publish Locally
@@ -416,6 +417,7 @@ function getContinueText(): string {
             placeholder="Placeholder text"
             :rows="6"
             :show-character-count="true"
+            :max-characters="3000"
           />
 
           <!-- Address fields in rows -->
@@ -426,12 +428,12 @@ function getContinueText(): string {
               placeholder="Placeholder text"
               required
             />
-            <FormSelect name="province" label="Province" :options="provinceOptions" required />
+            <FormSelect name="country" label="Country" :options="countryOptions" required />
           </div>
 
           <div class="form-row">
             <FormInput name="city" label="City" placeholder="Placeholder text" required />
-            <FormSelect name="country" label="Country" :options="countryOptions" required />
+            <FormSelect name="province" label="Province" :options="provinceOptions" required />
           </div>
 
           <!-- Opportunity types as checkboxes -->
@@ -489,6 +491,8 @@ function getContinueText(): string {
             placeholder="Placeholder text"
             :rows="4"
             required
+            :show-character-count="true"
+            :max-characters="3000"
           />
         </div>
       </div>
@@ -505,6 +509,7 @@ function getContinueText(): string {
             placeholder="Placeholder text"
             :rows="8"
             :show-character-count="true"
+            :max-characters="3000"
             required
             class="large-textarea"
           />

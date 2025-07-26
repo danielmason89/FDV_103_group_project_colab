@@ -6,6 +6,7 @@ const props = defineProps<{
   label: string
   placeholder?: string
   type?: string
+  required?: boolean
 }>()
 
 const { value, errorMessage, handleChange, handleBlur } = useField<string>(props.name)
@@ -13,13 +14,16 @@ const { value, errorMessage, handleChange, handleBlur } = useField<string>(props
 
 <template>
   <div class="form-group">
-    <label class="form-label"> {{ label }}</label>
+    <label class="form-label">
+      {{ label }} {{ label }}<span vi-if="required" class="required">*</span>
+    </label>
     <input
       :type="type || 'text'"
       :placeholder="placeholder"
       v-model="value"
       @blur="handleBlur"
       @input="handleChange"
+      :required="required"
       :class="{ 'border-red-500': errorMessage }"
     />
     <span v-if="errorMessage" class="text-red-600 text-sm">
