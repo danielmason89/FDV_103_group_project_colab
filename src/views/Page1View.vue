@@ -256,14 +256,6 @@ const filteredJobs = computed(() => {
   }
 })
 
-function clearFilters() {
-  console.log('Clearing all filters...')
-  activeFilters.value = {}
-  applyFilters({})
-  const event = new CustomEvent('clear-all-filters')
-  window.dispatchEvent(event)
-}
-
 const goToPage3 = () => {
   router.push({ name: 'page3' })
 }

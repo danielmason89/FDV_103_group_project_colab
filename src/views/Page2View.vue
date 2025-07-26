@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// import BreadcrumbNavigation from '@/components/BreadcrumbNavigation.vue'
 import applyButtonComponent from '@/components/applyButtonComponent.vue'
 import opportunityTypeComponent from '@/components/opportunityTypeComponent.vue'
 import certificationComponent from '@/components/certificationComponent.vue'
