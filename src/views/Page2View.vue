@@ -182,7 +182,7 @@ onMounted(() => {
           </div>
           <br />
           <applyButtonComponent
-            :href="job?.applicationLink"
+            :href="job?.applicationLink ?? ''"
             class="flex justify-center align-center"
             text="Apply Now!"
             aria-label="Apply for this teaching job"
