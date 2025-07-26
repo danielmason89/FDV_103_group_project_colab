@@ -3,15 +3,24 @@ import FilterPanel from '@/components/filterPanel.vue'
 import JobCardComponent from '@/components/jobsCardComponent.vue'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import type { JobSubmission } from '../types/job'
+
+const jobs = ref<JobSubmission[]>([])
+
+onMounted(() => {
+  jobs.value = JSON.parse(localStorage.getItem('jobSubmissions') || '[]')
+})
+
 const router = useRouter()
 
-const openJobDetails = (job: any) => {
-  console.log('Navigating to job details with:', job)
-  router.push({ name: 'page2', params: { id: job.id } }) // use lowercase 'page2' to match router
+const openJobDetails = (jobSubmission: JobSubmission) => {
+  console.log('Navigating to job details with:', jobSubmission)
+  localStorage.setItem('selectedJob', JSON.stringify(jobSubmission))
+  router.push({ name: 'page2' })
 }
 
 // Reactive ref for job submissions
-const jobSubmissions = ref([] as any[])
+const jobSubmissions = ref([] as _any[])
 
 function loadJobsFromLocalStorage() {
   const data = localStorage.getItem('jobSubmissions') || '[]'
@@ -75,7 +84,7 @@ onUnmounted(() => {
   document.removeEventListener('click', onClickOutside)
 })
 
-function applyFilters(filters: any) {
+function applyFilters(filters: _any) {
   activeFilters.value = filters
 }
 
@@ -256,10 +265,10 @@ const goToPage3 = () => {
 
 <template>
   <div class="max-w-6xl mx-auto">
-    <h1 class="page-title text-2xl mb-1">Opportunities</h1>
-    <div class="search-filter-bar flex flex-wrap gap-4 items-center mt-1 mb-1">
+    <h1 class="mb-1 text-2xl page-title">Opportunities</h1>
+    <div class="flex flex-wrap items-center gap-4 mt-1 mb-1 search-filter-bar">
       <!-- Left side group -->
-      <div class="flex items-center gap-4 flex-wrap flex-grow relative">
+      <div class="relative flex flex-wrap items-center flex-grow gap-4">
         <div class="search-input-container">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -271,7 +280,7 @@ const goToPage3 = () => {
             data-slot="icon"
             width="22"
             height="22"
-            class="h-5 w-5 text-20"
+            class="w-5 h-5 text-20"
             style="color: #b3b1bb"
           >
             <path
@@ -284,7 +293,7 @@ const goToPage3 = () => {
             v-model="search"
             type="search"
             placeholder="Search anything..."
-            class="search-input border rounded px-3 py-1"
+            class="px-3 py-1 border rounded search-input"
           />
         </div>
 
@@ -305,7 +314,7 @@ const goToPage3 = () => {
             data-slot="icon"
             height="25"
             width="25"
-            class="h-6 w-6 cursor-pointer text-40"
+            class="w-6 h-6 cursor-pointer text-40"
           >
             <path
               stroke-linecap="round"
@@ -323,7 +332,7 @@ const goToPage3 = () => {
             @update-filters="applyFilters"
           />
         </transition>
-        <select v-model="sortOption" class="sort-select border rounded px-2 py-1">
+        <select v-model="sortOption" class="px-2 py-1 border rounded sort-select">
           <option value="date">Date Posted</option>
           <option value="az">A-Z</option>
           <option value="za">Z-A</option>
@@ -331,14 +340,14 @@ const goToPage3 = () => {
       </div>
 
       <!-- Right side group pushed right -->
-      <div class="flex items-center gap-x-4 ml-4">
+      <div class="flex items-center ml-4 gap-x-4">
         <button
           @click="goToPage3"
-          class="create-new-button primary-button flex items-center gap-x-2 px-3 py-1"
+          class="flex items-center px-3 py-1 create-new-button primary-button gap-x-2"
           style="background-color: var(--primary); color: var(--white)"
         >
           <svg
-            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium text-white css-vubbuv"
+            class="text-white MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-vubbuv"
             style="
               fill: white;
               font-size: 0.875rem;
@@ -420,11 +429,12 @@ const goToPage3 = () => {
     <!-- Card Grid View -->
     <div
       v-if="viewMode === 'grid'"
-      class="card-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
+      class="grid grid-cols-1 gap-4 card-grid sm:grid-cols-2 md:grid-cols-3"
     >
       <div
         v-for="job in filteredJobs"
         :key="job.id"
+        :job="job"
         @click="openJobDetails(job)"
         style="cursor: pointer"
       >
@@ -471,7 +481,7 @@ const goToPage3 = () => {
     </div>
 
     <!-- No results message -->
-    <div v-if="filteredJobs.length === 0" class="text-center mt-8">
+    <div v-if="filteredJobs.length === 0" class="mt-8 text-center">
       <p class="text-gray-500">No job postings found matching your criteria.</p>
     </div>
   </div>

@@ -7,6 +7,87 @@ import SectionCard from '@/components/SectionCard.vue'
 import jobCardDetailsComponent from '@/components/jobCardDetailsComponent.vue'
 import subjectAreacomponent from '@/components/subjectAreacomponent.vue'
 import '../assets/base.css'
+
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const job = ref<{
+  jobTitle: string
+  organizationName: string
+  category?: string
+  gradeLevel: string[]
+  certifications: string[]
+  opportunityTypes: string[]
+  compensation: string
+  applicationDeadline: string
+  jobDescription: string
+  qualifications: string
+  aboutOrganization: string
+  applicationLink: string
+  streetAddress: string
+  city: string
+  province: string
+  country: string
+  yearsOfExperience: string
+  subjectAreas: string[]
+} | null>(null)
+
+try {
+  const saved = localStorage.getItem('jobSubmissions')
+  if (saved) {
+    const parsed = JSON.parse(saved)
+
+    const latest = parsed[parsed.length - 1]
+    job.value = {
+    jobTitle: latest.jobTitle,
+    organizationName: latest.organizationName,
+    category: latest.category || 'General',
+    gradeLevel: latest.gradeLevel || [],
+    certifications: latest.certifications || [],
+    opportunityTypes: latest.opportunityTypes || [],
+    compensation: latest.compensation || 'N/A',
+    applicationDeadline: latest.applicationDeadline || 'N/A',
+    jobDescription: latest.jobDescription || 'N/A',
+    qualifications: latest.qualifications || 'N/A',
+    aboutOrganization: latest.aboutOrganization || 'N/A',
+    applicationLink: latest.applicationLink || '#',
+    streetAddress: latest.streetAddress || '',
+    city: latest.city || '',
+    province: latest.province || '',
+    country: latest.country || '',
+    yearsOfExperience: latest.yearsOfExperience || '',
+    subjectAreas: latest.subjectAreas || [],
+    }
+    } else {
+      console.warn('No job submissions found in localStorage.')
+      router.push({ name: 'page1' })
+    }
+} catch (err) {
+  console.error('Failed to load job submission:', err)
+  router.push({ name: 'page1' })
+}
+
+if (!job.value) {
+  console.warn('Missing jobSubmission. Redirecting to homepage.')
+  router.push({ name: 'page1' })
+}
+
+onMounted(() => {
+  try {
+    const selectedJob = localStorage.getItem('selectedJob')
+    if (selectedJob) {
+      job.value = JSON.parse(selectedJob)
+    } else {
+      console.warn('No job selected, redirecting to Page 1')
+      router.push({ name: 'page1' })
+    }
+  } catch (error) {
+    console.error('Error parsing selectedJob:', error)
+    router.push({ name: 'page1' })
+  }
+})
 </script>
 
 <template>
@@ -19,16 +100,29 @@ import '../assets/base.css'
       <div class="p-6 space-y-4 bg-white shadow-md rounded-xl card">
         <div class="flex flex-col justify-between md:flex-row md:items-center">
           <div>
-            <p class="text-3xl font-bold">Arts School Teacher</p>
-            <p class="text-3xl">CoLab Education</p>
+            <p class="text-3xl font-bold">{{ job?.jobTitle || 'Job Title' }}</p>
+            <p class="text-3xl">{{ job?.organizationName || 'Company Name' }}</p>
           </div>
-          <br/>
-          <applyButtonComponent class="flex justify-center align-center" text="Apply Now!" aria-label="Apply for this teaching job" />
+          <br />
+          <applyButtonComponent
+            class="flex justify-center align-center"
+            text="Apply Now!"
+            aria-label="Apply for this teaching job"
+          />
         </div>
 
         <!-- Badges -->
         <div class="job-card-details">
-          <jobCardDetailsComponent />
+          <jobCardDetailsComponent
+            :jobTitle="job?.jobTitle || ''"
+            :companyName="job?.organizationName || ''"
+            :category="job?.category || ''"
+            :gradeLevel="job?.gradeLevel || ''"
+            :yearsOfExperience="job?.yearsOfExperience || ''"
+            :compensation="job?.compensation || ''"
+            :applicationDeadline="job?.applicationDeadline || ''"
+            :subjectAreas="job?.subjectAreas || ''"
+          />
         </div>
       </div>
 
@@ -62,16 +156,7 @@ import '../assets/base.css'
         <p>
           <SectionCard class="mb-2 text-sm font-normal">
             <p>
-              CoLab connects educators across schools to share resources, build communities, and
-              accelerate widespread initiatives. Turning isolated teachers into collaborative
-              innovators.
-            </p>
-            <br />
-            <p>
-              Whether you're a teacher seeking meaningful professional connections or a leader
-              building organizational capacity, CoLab provides the collaborative platform that
-              transforms individual excellence into system-wide impact. Join the network where great
-              teaching spreads.
+              {{ job?.aboutOrganization }}
             </p>
           </SectionCard>
         </p>
@@ -82,17 +167,13 @@ import '../assets/base.css'
         <h2 class="mb-2 text-lg font-extrabold">Job Description</h2>
         <div class="mb-2 text-sm font-normal">
           <p>
-            Colab is looking for an enthusiastic and dedicated Middle School Science Teacher to join
-            our academic team for the upcoming school year. We're seeking a passionate educator who
-            can inspire a love for scientific inquiry and critical thinking in students aged 11-14.
-            This role offers the opportunity to shape young minds, foster curiosity, and contribute
-            to a vibrant school community.
+            {{ job?.jobDescription || 'No job description provided.' }}
           </p>
           <br />
           <p>
-            Location: Ontario (or relevant region)]
+            Location: {{ job?.city }} - {{ job?.province }}, {{ job?.country }}
             <br />
-            Job Type: Full-time, Hybrid
+            Job Type: {{ job?.opportunityTypes?.join(', ') }}
             <br />
             Reports To: School Principal / Head of Department
           </p>
@@ -104,15 +185,11 @@ import '../assets/base.css'
         <h2 class="mb-2 text-lg font-extrabold">Qualifications</h2>
         <div class="mb-2 text-sm font-normal">
           <p>
-            Educational Background: Bachelor's degree or higher in Education. A Master's degree
-            and/or a teaching credential/license is highly preferred.
+            Educational Background: {{ job?.qualifications }}
           </p>
           <br />
           <p>
-            Teaching Experience: Minimum of 1-3 years of demonstrable experience in a classroom
-            setting, preferably within an innovative or technology-integrated learning environment.
-            Experience with project-based learning, inquiry-based learning, or blended learning
-            models is a significant asset.
+            Teaching Experience: {{ job?.yearsOfExperience }}
           </p>
         </div>
       </div>
