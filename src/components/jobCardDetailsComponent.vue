@@ -44,7 +44,7 @@ defineProps<{
 
       <!-- Compensation -->
       <div class="form-card">
-        <span class="block text-md font-md old">Recognition & Compensation:</span>
+        <span class="block text-md font-md bold">Recognition & Compensation:</span>
         <span class="text-sm">{{ compensation || 'N/A' }}</span>
       </div>
 
