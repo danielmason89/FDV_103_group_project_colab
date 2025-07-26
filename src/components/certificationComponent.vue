@@ -1,32 +1,22 @@
 <template>
   <div class="certification-badges">
     <span
-      v-for="certification in certifications"
-      :key="certification.id"
+      v-for="(cert, index) in certifications || ['N/A']"
+      :key="index"
       class="badge"
-      :class="getBadgeClass(certification.type)"
     >
-      {{ certification.label }}
+      {{ cert }}
     </span>
   </div>
 </template>
 
 <script setup lang="ts">
-const certifications = [
-  { id: 1, label: 'Teaching License', type: 'teachingLicense' },
-  { id: 2, label: 'Subject Certifications', type: 'certification' },
-  { id: 3, label: 'Other', type: 'other' },
-]
 
-function getBadgeClass(type: string): string {
-  const badgeClasses: Record<string, string> = {
-    teachingLicense: 'teaching-license-badge',
-    certification: 'certification-badge',
-    other: 'other-badge',
-  }
+defineProps<{
+  certifications?: string[]
+  grid?: boolean
+}>()
 
-  return badgeClasses[type] || 'default-badge'
-}
 </script>
 
 <style scoped>
@@ -61,7 +51,7 @@ function getBadgeClass(type: string): string {
   border: 3px solid #054851; /* Dark green border */
   background-color: #dce4e4;
   border-radius: 6px;
-  font-size: 1.4rem;
+  font-size: 1rem;
   text-align: center;
   white-space: nowrap;
   color: #054851;
