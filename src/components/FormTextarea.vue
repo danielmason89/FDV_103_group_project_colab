@@ -11,24 +11,26 @@ const props = defineProps<{
   maxCharacters?: number
 }>()
 
-const { value, errorMessage, handleChange, handleBlur } = useField<string>(props.name)
+const { value, errorMessage, handleBlur } = useField<string>(props.name, undefined, {
+  initialValue: '',
+})
 </script>
 
 <template>
   <div class="form-group">
     <label class="form-label"> {{ label }}{{ required ? '*' : '' }} </label>
     <textarea
-      name="value"
-      @input="handleChange"
+      :name="name"
+      v-model="value"
       @blur="handleBlur"
       :placeholder="placeholder"
       :rows="rows ?? 4"
       :required="required"
       :maxlength="maxCharacters"
-      :class="{ 'border-red--500': errorMessage }"
+      :class="{ 'border-red-500': errorMessage }"
     ></textarea>
     <div v-if="showCharacterCount" class="character-count">
-      {{ value.length }}{{ maxCharacters ? `/${maxCharacters}` : '/0' }}
+      {{ value?.length ?? 0 }}{{ maxCharacters ? `/${maxCharacters}` : '/0' }}
     </div>
     <span v-if="errorMessage" class="text-red-600 text-sm">{{ errorMessage }}</span>
   </div>

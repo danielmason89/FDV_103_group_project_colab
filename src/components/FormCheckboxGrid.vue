@@ -13,10 +13,12 @@ const props = defineProps<{
   required?: boolean
 }>()
 
-const { value, errorMessage, setValue, handleBlur } = useField<string[]>(props.name)
+const { value, errorMessage, setValue, handleBlur } = useField<string[]>(props.name, undefined, {
+  initialValue: [],
+})
 
 function toggle(optionValue: string) {
-  const next = value.value.slice()
+  const next = (value.value ?? []).slice()
   const idx = next.indexOf(optionValue)
   if (idx > -1) next.splice(idx, 1)
   else next.push(optionValue)
@@ -36,7 +38,7 @@ function toggle(optionValue: string) {
           type="checkbox"
           class="form-checkbox"
           :value="opt.value"
-          :checked="value.includes(opt.value)"
+          :checked="(value ?? []).includes(opt.value)"
           @change="toggle(opt.value)"
           @blur="handleBlur"
         />
