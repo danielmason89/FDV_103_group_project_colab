@@ -7,9 +7,12 @@ import SectionCard from '@/components/SectionCard.vue'
 import jobCardDetailsComponent from '@/components/jobCardDetailsComponent.vue'
 import subjectAreacomponent from '@/components/subjectAreacomponent.vue'
 import '../assets/base.css'
+import jobData from "../data/db.json"
+console.log('Loaded jobs:', jobData)
 
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import type { JobSubmission } from '../types/job'
 
 const router = useRouter()
 
@@ -33,6 +36,62 @@ const job = ref<{
   yearsOfExperience: string
   subjectAreas: string[]
 } | null>(null)
+
+// Helper to normalize job format
+function mapJobData(data: JobSubmission) {
+  return {
+    jobTitle: data.jobTitle || 'Untitled Job',
+    organizationName: data.organizationName || 'Unknown Org',
+    category: data.category || 'General',
+    gradeLevel: Array.isArray(data.gradeLevel)
+      ? data.gradeLevel
+      : typeof data.gradeLevel === 'string'
+        ? [data.gradeLevel]
+        : [],
+    certifications: Array.isArray(data.certifications)
+      ? data.certifications
+      : typeof data.certifications === 'string'
+        ? [data.certifications]
+        : [],
+    opportunityTypes: Array.isArray(data.opportunityTypes)
+      ? data.opportunityTypes
+      : typeof data.opportunityTypes === 'string'
+        ? [data.opportunityTypes]
+        : [],
+    compensation: data.compensation || 'N/A',
+    applicationDeadline: data.applicationDeadline || 'N/A',
+    jobDescription: data.jobDescription || 'N/A',
+    qualifications: data.qualifications || 'N/A',
+    aboutOrganization: data.aboutOrganization || 'N/A',
+    applicationLink: data.applicationLink || '#',
+    streetAddress: Array.isArray(data.streetAddress)
+      ? data.streetAddress.join(', ')
+      : typeof data.streetAddress === 'string'
+        ? data.streetAddress
+        : '',
+    city: Array.isArray(data.city)
+      ? data.city.join(', ')
+      : typeof data.city === 'string'
+        ? data.city
+        : '',
+    province: Array.isArray(data.province)
+      ? data.province.join(', ')
+      : typeof data.province === 'string'
+        ? data.province
+        : '',
+    country: Array.isArray(data.country)
+      ? data.country.join(', ')
+      : typeof data.country === 'string'
+        ? data.country
+        : '',
+    yearsOfExperience: data.yearsOfExperience || '',
+    subjectAreas: Array.isArray(data.subjectAreas)
+      ? data.subjectAreas
+      : typeof data.subjectAreas === 'string'
+        ? [data.subjectAreas]
+        : []
+  }
+}
 
 try {
   const saved = localStorage.getItem('jobSubmissions')
@@ -77,14 +136,26 @@ if (!job.value) {
 onMounted(() => {
   try {
     const selectedJob = localStorage.getItem('selectedJob')
+    const jobSubmissions = localStorage.getItem('jobSubmissions')
+
     if (selectedJob) {
-      job.value = JSON.parse(selectedJob)
-    } else {
-      console.warn('No job selected, redirecting to Page 1')
-      router.push({ name: 'page1' })
+      job.value = mapJobData(JSON.parse(selectedJob))
+      return
     }
-  } catch (error) {
-    console.error('Error parsing selectedJob:', error)
+
+    if (jobSubmissions) {
+      const parsed = JSON.parse(jobSubmissions)
+      if (parsed.length > 0) {
+        job.value = mapJobData(parsed[parsed.length - 1])
+        return
+      }
+    }
+
+    // Nothing worked
+    console.warn('No job data available, redirecting to Page1')
+    router.push({ name: 'page1' })
+  } catch (err) {
+    console.error('Error loading job details:', err)
     router.push({ name: 'page1' })
   }
 })
@@ -130,7 +201,7 @@ onMounted(() => {
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <h2 class="mb-2 text-lg font-extrabold">Opportunity Type</h2>
         <SectionCard class="mb-4 font-semibold">
-          <opportunityTypeComponent />
+          <opportunityTypeComponent :opportunityTypes="job?.opportunityTypes || []" />
         </SectionCard>
       </div>
 
@@ -138,7 +209,7 @@ onMounted(() => {
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <h2 class="mb-2 text-lg font-extrabold">Subject Area</h2>
         <SectionCard class="mb-4 font-semibold">
-          <subjectAreacomponent grid />
+          <subjectAreacomponent grid :subjectAreas="job?.subjectAreas || []" />
         </SectionCard>
       </div>
 
@@ -146,7 +217,7 @@ onMounted(() => {
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <h2 class="mb-2 text-lg font-extrabold">Certifications Required</h2>
         <SectionCard class="mb-4 font-semibold">
-          <certificationComponent />
+          <certificationComponent grid :certifications="job?.certifications || []" />
         </SectionCard>
       </div>
 

@@ -10,5 +10,13 @@ export interface JobSubmission {
   applicationDeadline: string
   jobDescription: string
   qualifications: string
+  certifications: string[]
+  opportunityTypes: string[]
+  applicationLink: string
+  streetAddress: string[]
+  city: string
+  province: string
+  country: string
   aboutOrganization: string
+  organizationName: string
 }

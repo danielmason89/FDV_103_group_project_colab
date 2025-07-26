@@ -4,12 +4,7 @@ import JobCardComponent from '@/components/jobsCardComponent.vue'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import type { JobSubmission } from '../types/job'
-
-const jobs = ref<JobSubmission[]>([])
-
-onMounted(() => {
-  jobs.value = JSON.parse(localStorage.getItem('jobSubmissions') || '[]')
-})
+import localDbJobs from '../data/db.json'
 
 const router = useRouter()
 
@@ -22,26 +17,37 @@ const openJobDetails = (jobSubmission: JobSubmission) => {
 // Reactive ref for job submissions
 const jobSubmissions = ref([] as _any[])
 
-function loadJobsFromLocalStorage() {
-  const data = localStorage.getItem('jobSubmissions') || '[]'
-  const parsed = JSON.parse(data)
-  console.log('Jobs loaded from localStorage:', parsed)
-  jobSubmissions.value = parsed
+async function loadJobs() {
+  let localJobs: JobSubmission[] = []
+
+  const local = localStorage.getItem('jobSubmissions')
+  if (local && local !== '[]') {
+    localJobs = JSON.parse(local)
+  }
+
+  const mergedJobs = [
+    ...localJobs,
+    ...localDbJobs.filter(dbJob => !localJobs.some(localJob => localJob.id === dbJob.id)),
+  ]
+
+  localStorage.setItem('jobSubmissions', JSON.stringify(mergedJobs))
+  jobSubmissions.value = mergedJobs
 }
+
 
 // On component mount, we load the serialized job posts from localStorage, parse it to JSON, and assign it to this ref
 // jobSubmissions then holds an array of all job posts from localStorage.
 // Using ref means Vue tracks it reactively and updates the UI automatically when it changes.
 onMounted(() => {
-  loadJobsFromLocalStorage()
+  loadJobs()
 
-  window.addEventListener('storage', loadJobsFromLocalStorage)
-  window.addEventListener('job-list-updated', loadJobsFromLocalStorage)
+  window.addEventListener('storage', loadJobs)
+  window.addEventListener('job-list-updated', loadJobs)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('storage', loadJobsFromLocalStorage)
-  window.removeEventListener('job-list-updated', loadJobsFromLocalStorage)
+  window.removeEventListener('storage', loadJobs)
+  window.removeEventListener('job-list-updated', loadJobs)
 })
 
 // Reactive variables for search, sort, and view mode

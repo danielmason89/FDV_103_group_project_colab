@@ -1,8 +1,6 @@
 import subjectAreacomponent from '@/components/subjectAreacomponent.vue';
 <script setup lang="ts">
 defineProps<{
-  jobTitle?: string
-  companyName?: string
   category?: string | string[]
   gradeLevel?: string | string[]
   subjectAreas?: string | string[]
@@ -10,7 +8,6 @@ defineProps<{
   compensation?: string
   applicationDeadline?: string
 }>()
-// {{ job.value?.jobTitle }}
 </script>
 
 <template>
