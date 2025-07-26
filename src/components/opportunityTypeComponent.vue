@@ -1,3 +1,11 @@
+    <script setup lang="ts">
+    // Define props expected by the component
+    // - opportunityTypes: optional array of strings representing job types
+    defineProps<{
+      opportunityTypes?: string[]
+    }>()
+    </script>
+
 <template>
   <div class="opportunity-badges">
     <span
@@ -10,20 +18,15 @@
   </div>
 </template>
 
-<script setup lang="ts">
-
-defineProps<{
-  opportunityTypes?: string[]
-}>()
-
-</script>
-
 <style scoped>
+/* Container uses a responsive grid layout to display badges */
 .opportunity-badges {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
+
+/* Responsively adjust grid column count based on screen size */
 @media (max-width: 1350px) {
   .opportunity-badges {
     grid-template-columns: repeat(3, 1fr);
@@ -40,6 +43,7 @@ defineProps<{
   }
 }
 
+/* Styles for individual badge items */
 .badge {
   padding: 5px 10px;
   border: 3px solid #000000;

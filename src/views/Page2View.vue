@@ -7,6 +7,7 @@ import jobCardDetailsComponent from '@/components/jobCardDetailsComponent.vue'
 import subjectAreacomponent from '@/components/subjectAreacomponent.vue'
 import '../assets/base.css'
 import jobData from "../data/db.json"
+
 console.log('Loaded jobs:', jobData)
 
 import { ref, onMounted } from 'vue'
@@ -27,6 +28,7 @@ const job = ref<{
   jobDescription: string
   qualifications: string
   aboutOrganization: string
+  organizationType: string
   applicationLink: string
   streetAddress: string
   city: string
@@ -36,7 +38,7 @@ const job = ref<{
   subjectAreas: string[]
 } | null>(null)
 
-// Helper to normalize job format
+// Helper function to normalize `JobSubmission` into a consistent format
 function mapJobData(data: JobSubmission) {
   return {
     jobTitle: data.jobTitle || 'Untitled Job',
@@ -62,6 +64,7 @@ function mapJobData(data: JobSubmission) {
     jobDescription: data.jobDescription || 'N/A',
     qualifications: data.qualifications || 'N/A',
     aboutOrganization: data.aboutOrganization || 'N/A',
+    organizationType: data.organizationType || 'N/A',
     applicationLink: data.applicationLink || '#',
     streetAddress: Array.isArray(data.streetAddress)
       ? data.streetAddress.join(', ')
@@ -92,6 +95,7 @@ function mapJobData(data: JobSubmission) {
   }
 }
 
+// Get the most recent job submission from localStorage
 try {
   const saved = localStorage.getItem('jobSubmissions')
   if (saved) {
@@ -110,6 +114,7 @@ try {
     jobDescription: latest.jobDescription || 'N/A',
     qualifications: latest.qualifications || 'N/A',
     aboutOrganization: latest.aboutOrganization || 'N/A',
+    organizationType: latest.organizationType || 'N/A',
     applicationLink: latest.applicationLink || '#',
     streetAddress: latest.streetAddress || '',
     city: latest.city || '',
@@ -119,19 +124,23 @@ try {
     subjectAreas: latest.subjectAreas || [],
     }
     } else {
+      // Redirect if no saved submissions are found
       console.warn('No job submissions found in localStorage.')
       router.push({ name: 'page1' })
     }
 } catch (err) {
+  // Redirect on parse failure
   console.error('Failed to load job submission:', err)
   router.push({ name: 'page1' })
 }
 
+// Extra fallback check (redundant but defensive)
 if (!job.value) {
   console.warn('Missing jobSubmission. Redirecting to homepage.')
   router.push({ name: 'page1' })
 }
 
+// On component mount, load the selected job from localStorage
 onMounted(() => {
   try {
     const selectedJob = localStorage.getItem('selectedJob')
@@ -150,7 +159,7 @@ onMounted(() => {
       }
     }
 
-    // Nothing worked
+     // Fallback: redirect if nothing can be loaded
     console.warn('No job data available, redirecting to Page1')
     router.push({ name: 'page1' })
   } catch (err) {
@@ -163,10 +172,8 @@ onMounted(() => {
 <template>
   <main class="bg-[#f5f5f5] py-10 px-4 md:px-8 card" aria-label="Job Details Page">
     <div class="max-w-5xl mx-auto space-y-8">
-      <!-- Breadcrumb -->
-      <!-- <BreadcrumbNavigation :currentStep="2" /> -->
 
-      <!-- Header Card -->
+      <!-- Main job header section with title and apply button -->
       <div class="p-6 space-y-4 bg-white shadow-md rounded-xl card">
         <div class="flex flex-col justify-between md:flex-row md:items-center">
           <div>
@@ -175,19 +182,21 @@ onMounted(() => {
           </div>
           <br />
           <applyButtonComponent
+            :href="job?.applicationLink"
             class="flex justify-center align-center"
             text="Apply Now!"
             aria-label="Apply for this teaching job"
           />
         </div>
 
-        <!-- Badges -->
+         <!-- Job details section with key metadata -->
         <div class="job-card-details">
           <jobCardDetailsComponent
             :jobTitle="job?.jobTitle || ''"
             :companyName="job?.organizationName || ''"
             :category="job?.category || ''"
             :gradeLevel="job?.gradeLevel || ''"
+            :organizationType="job?.organizationType || ''"
             :yearsOfExperience="job?.yearsOfExperience || ''"
             :compensation="job?.compensation || ''"
             :applicationDeadline="job?.applicationDeadline || ''"
@@ -196,7 +205,7 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- Opportunity Type -->
+      <!-- Job opportunity types displayed as badges -->
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <h2 class="mb-2 text-lg font-extrabold">Opportunity Type</h2>
         <SectionCard class="mb-4 font-semibold">
@@ -204,7 +213,7 @@ onMounted(() => {
         </SectionCard>
       </div>
 
-      <!-- Subject Area -->
+      <!-- Subject areas for the job -->
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <h2 class="mb-2 text-lg font-extrabold">Subject Area</h2>
         <SectionCard class="mb-4 font-semibold">
@@ -212,7 +221,7 @@ onMounted(() => {
         </SectionCard>
       </div>
 
-      <!-- Certifications -->
+      <!-- Certifications required for the position -->
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <h2 class="mb-2 text-lg font-extrabold">Certifications Required</h2>
         <SectionCard class="mb-4 font-semibold">
@@ -220,7 +229,7 @@ onMounted(() => {
         </SectionCard>
       </div>
 
-      <!-- About the Organization -->
+      <!-- About the organization text block -->
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <h2 class="mb-2 text-lg font-extrabold">About the Organization</h2>
         <p>
@@ -232,7 +241,7 @@ onMounted(() => {
         </p>
       </div>
 
-      <!-- Job Description -->
+      <!-- Full job description and location -->
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <h2 class="mb-2 text-lg font-extrabold">Job Description</h2>
         <div class="mb-2 text-sm font-normal">
@@ -244,18 +253,16 @@ onMounted(() => {
             Location: {{ job?.city }} - {{ job?.province }}, {{ job?.country }}
             <br />
             Job Type: {{ job?.opportunityTypes?.join(', ') }}
-            <br />
-            Reports To: School Principal / Head of Department
           </p>
         </div>
       </div>
 
-      <!-- Qualifications -->
+      <!-- Qualifications required -->
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <h2 class="mb-2 text-lg font-extrabold">Qualifications</h2>
         <div class="mb-2 text-sm font-normal">
           <p>
-            Educational Background: {{ job?.qualifications }}
+            {{ job?.qualifications }}
           </p>
           <br />
           <p>
@@ -264,10 +271,10 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- Final Apply Button -->
+      <!-- Final call-to-action to apply -->
       <div class="px-6 py-6 bg-white shadow-md rounded-xl md:px-8 md:py-8 card">
         <div class="flex justify-center">
-          <applyButtonComponent text="Apply Now!" aria-label="Apply for this teaching job" />
+          <applyButtonComponent :href="job?.applicationLink" text="Apply Now!" aria-label="Apply for this teaching job" />
         </div>
       </div>
     </div>
@@ -275,14 +282,15 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/* Standard heading and paragraph color tokens */
 h2 {
   color: var(--heading);
 }
-
 p {
   color: var(--subHeading);
 }
 
+/* Layout grid for badge details (e.g., grade, category, etc.) */
 .job-card-details {
   display: grid;
   grid-gap: 1px;
@@ -290,6 +298,7 @@ p {
   grid-template-rows: repeat(2, auto);
 }
 
+/* Base card styling for visual consistency */
 .card {
   padding: 1rem;
   margin: 1rem 0rem;
