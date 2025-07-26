@@ -10,7 +10,6 @@ const props = defineProps<{
   name: string
   label: string
   options: CheckboxOption[]
-  modelValue: string[]
   required?: boolean
 }>()
 

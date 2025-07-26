@@ -18,7 +18,7 @@ const { value, errorMessage, handleChange, handleBlur } = useField<string>(props
   <div class="form-group">
     <label class="form-label"> {{ label }}{{ required ? '*' : '' }} </label>
     <textarea
-      v-model="value"
+      name="value"
       @input="handleChange"
       @blur="handleBlur"
       :placeholder="placeholder"
@@ -28,7 +28,7 @@ const { value, errorMessage, handleChange, handleBlur } = useField<string>(props
       :class="{ 'border-red--500': errorMessage }"
     ></textarea>
     <div v-if="showCharacterCount" class="character-count">
-      {{ modelValue.length }}{{ maxCharacters ? `/${maxCharacters}` : '/0' }}
+      {{ value.length }}{{ maxCharacters ? `/${maxCharacters}` : '/0' }}
     </div>
     <span v-if="errorMessage" class="text-red-600 text-sm">{{ errorMessage }}</span>
   </div>

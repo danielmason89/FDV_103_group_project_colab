@@ -9,7 +9,6 @@ const props = defineProps<{
   name: string
   label: string
   options: RadioOption[]
-  modelValue: string
   required?: boolean
 }>()
 
