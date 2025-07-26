@@ -14,9 +14,7 @@ const { value, errorMessage, handleChange, handleBlur } = useField<string>(props
 
 <template>
   <div class="form-group">
-    <label class="form-label">
-      {{ label }} {{ label }}<span vi-if="required" class="required">*</span>
-    </label>
+    <label class="form-label"> {{ label }}<span vi-if="required" class="required">*</span> </label>
     <input
       :type="type || 'text'"
       :placeholder="placeholder"
