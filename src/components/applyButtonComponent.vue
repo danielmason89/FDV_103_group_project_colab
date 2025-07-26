@@ -22,7 +22,7 @@ function handleClick() {
 
   // If a URL is provided, open it in a new browser tab
   if (props.href) {
-    window.open(props.href, '_blank')
+    window.open(props.href, '_blank', 'noopener,noreferrer')
   }
 }
 
