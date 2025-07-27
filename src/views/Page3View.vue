@@ -533,6 +533,7 @@ function getContinueText(): string {
             placeholder="Placeholder text"
             :rows="6"
             :show-character-count="true"
+            :max-characters="3000"
           />
 
           <!-- Address fields in rows -->
@@ -609,6 +610,7 @@ function getContinueText(): string {
             label="Qualifications"
             placeholder="Placeholder text"
             :rows="4"
+            :max-characters="3000"
             required
           />
         </div>
@@ -626,6 +628,7 @@ function getContinueText(): string {
             placeholder="Placeholder text"
             :rows="8"
             :show-character-count="true"
+            :max-characters="3000"
             required
             class="large-textarea"
           />
