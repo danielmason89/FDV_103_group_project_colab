@@ -99,7 +99,7 @@ const organizationTypeOptions = [
   { value: 'Other', label: 'Other' },
 ]
 
-// We’ll keep provinceOptions reactive and update based on selected country
+// Keep provinceOptions reactive and update based on selected country
 const allProvinceOptions = {
   UK: [
     'London',
@@ -544,12 +544,17 @@ function getContinueText(): string {
               placeholder="Placeholder text"
               required
             />
-            <FormSelect v-model="province" label="Province" :options="provinceOptions" required />
+            <FormSelect v-model="country" label="Country" :options="countryOptions" required />
           </div>
 
           <div class="form-row">
             <FormInput v-model="city" label="City" placeholder="Placeholder text" required />
-            <FormSelect v-model="country" label="Country" :options="countryOptions" required />
+            <FormSelect
+              v-model="province"
+              label="State/Province"
+              :options="provinceOptions"
+              required
+            />
           </div>
 
           <!-- Opportunity types as checkboxes -->
